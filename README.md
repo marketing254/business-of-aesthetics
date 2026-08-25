@@ -15,6 +15,32 @@ npm start        # serve the production build
 > the speakers/events pages are server-rendered per request to stay in sync
 > with the Google Sheet.
 
+## Pushing to GitHub & showing the team
+
+The repo is push-ready (secrets live only in the gitignored `.env.local`;
+CI is set up in `.github/workflows/ci.yml`). To publish:
+
+```bash
+git add -A
+git commit -m "BOA site: Next.js rebuild with live Sheet data and dual themes"
+git remote add origin https://github.com/<your-username>/<repo-name>.git
+git push -u origin main
+```
+
+### Hosting a live preview for the team
+
+GitHub itself can't run this site — GitHub Pages only serves static files,
+and the live Google-Sheet pages (podcast/events/panels/speakers) need a
+server. The 2-minute path that works from your GitHub repo:
+
+1. Go to https://vercel.com/new and import the GitHub repo (free Hobby plan).
+2. When prompted for environment variables, add `BOA_SHEET_ID` (the long ID
+   from the spreadsheet URL). Optionally `NEXT_PUBLIC_YCBM_URL` later.
+3. Deploy — you get a shareable `https://<project>.vercel.app` URL, and every
+   future `git push` redeploys automatically.
+
+(Netlify or any Node host works the same way; only GitHub Pages does not.)
+
 ## Configuration (.env.local)
 
 Copy `.env.example` to `.env.local` and fill in:

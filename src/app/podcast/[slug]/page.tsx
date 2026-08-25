@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Reveal from "@/components/Reveal";
-import CtaBand from "@/components/CtaBand";
-import { fetchPodcasts } from "@/lib/sheet";
+import { FadeUp } from "@/components/motion/Animate";
+import TranscriptView from "@/components/TranscriptView";
+import { fetchPodcasts, fetchTranscript } from "@/lib/sheet";
+import { platforms } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -46,183 +47,274 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
   const { episode, newer, older } = await loadEpisode(slug);
   if (!episode) notFound();
 
-  const image = episode.posterImage || episode.guestPhotoUrl;
+  const transcript = episode.transcriptUrl
+    ? await fetchTranscript(episode.transcriptUrl)
+    : [];
+  const transcriptDocId =
+    episode.transcriptUrl.match(/document\/d\/([\w-]+)/)?.[1] ?? "";
 
   return (
     <>
-      <section className="dark-canvas on-dark relative overflow-hidden">
-        <div className="ghost-word right-[-3%] top-[48%] text-[clamp(120px,16vw,250px)]">
-          episode
-        </div>
-        <div className="relative mx-auto max-w-[1280px] px-5 pb-20 pt-14 lg:pb-24 lg:pt-20">
-          <Link href="/podcast#episodes" className="linkline !text-teal">
-            <span className="arr">&lt;-</span> Back to archive
-          </Link>
+      {/* ============ header + player ============ */}
+      <section className="relative overflow-hidden">
+        <div className="mx-auto max-w-[1180px] px-5 pb-4 pt-12 lg:pt-16">
+          <FadeUp>
+            <Link href="/podcast#episodes" className="linkline">
+              <span className="arr">&lt;-</span> Back to all episodes
+            </Link>
 
-          <div className="mt-10 grid gap-12 lg:grid-cols-[0.95fr_0.75fr] lg:items-end">
-            <Reveal>
-              <span className="kicker">Episode {episode.episode}</span>
-              <h1 className="display mt-6 text-[clamp(34px,5vw,68px)] text-white">
-                {episode.title}
-              </h1>
-              <div className="mt-6 flex flex-wrap gap-3 text-[12px] font-extrabold uppercase tracking-[0.18em] text-white/55">
-                <span>{episode.guestName}</span>
-                <span>{episode.datePublished}</span>
-                <span>{episode.category}</span>
-              </div>
-            </Reveal>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <span className="kicker">Episode #{episode.episode}</span>
+              {episode.category && <span className="chip">{episode.category}</span>}
+            </div>
 
-            <Reveal delay={120}>
-              <div className="signal-panel border border-white/12 bg-white/[0.04] p-6">
-                <div className="relative aspect-[4/3] overflow-hidden border border-white/15 bg-navy-ink">
-                  {image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={image}
-                      alt={episode.title}
-                      referrerPolicy="no-referrer"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="grid h-full place-items-center">
-                      <span className="display text-[64px] italic text-teal">
-                        {episode.initials}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                {episode.audioSource && (
-                  <audio
-                    controls
-                    src={episode.audioSource}
-                    className="mt-5 w-full"
+            <h1 className="display mt-5 max-w-[1000px] text-[clamp(26px,3.4vw,41px)] text-navy">
+              {episode.title}
+            </h1>
+
+            <div className="mt-4 text-[14px] font-semibold text-muted">
+              {episode.datePublished}
+              {episode.guestName && (
+                <>
+                  {" "}
+                  · with{" "}
+                  <span className="font-semibold text-navy">
+                    {episode.guestName}
+                  </span>
+                </>
+              )}
+            </div>
+          </FadeUp>
+
+          {/* player card */}
+          <FadeUp delay={0.1}>
+            <div className="card-frame mt-9 flex flex-col items-center gap-6 p-5 sm:flex-row sm:p-6">
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-line bg-sand">
+                {episode.guestPhotoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={episode.guestPhotoUrl}
+                    alt={episode.guestName || episode.title}
+                    referrerPolicy="no-referrer"
+                    className="h-full w-full object-cover"
                   />
+                ) : (
+                  <div className="dark-canvas grid h-full w-full place-items-center">
+                    <span className="display text-[24px] text-teal">
+                      {episode.initials}
+                    </span>
+                  </div>
                 )}
               </div>
-            </Reveal>
-          </div>
+              <div className="w-full min-w-0 flex-1">
+                <div className="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                  <span className="live-dot" /> Listen to this episode
+                </div>
+                {episode.audioSource ? (
+                  <audio
+                    controls
+                    preload="metadata"
+                    src={episode.audioSource}
+                    className="mt-3 w-full"
+                  />
+                ) : (
+                  <p className="mt-3 text-[13.5px] text-muted">
+                    Audio for this episode is being prepared.
+                  </p>
+                )}
+              </div>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto grid max-w-[1280px] gap-12 px-5 lg:grid-cols-[0.7fr_0.3fr]">
-          <article>
-            <Reveal>
-              <span className="kicker">Episode Notes</span>
-              <div className="mt-6 space-y-5 text-[16px] leading-relaxed text-muted">
+      {/* ============ show notes + sidebar ============ */}
+      <section className="py-14 lg:py-16">
+        <div className="mx-auto grid max-w-[1180px] items-start gap-12 px-5 lg:grid-cols-[1fr_320px]">
+          <FadeUp>
+            <article>
+              <span className="kicker">Episode Show Notes</span>
+              <h2 className="display mt-4 text-[clamp(24px,3vw,34px)] text-navy">
+                About This Episode
+              </h2>
+              <div className="mt-6 space-y-5 text-[16px] leading-[1.8] text-muted">
                 {paragraphs(episode.description).map((p) => (
                   <p key={p}>{p}</p>
                 ))}
               </div>
-            </Reveal>
-          </article>
+            </article>
+          </FadeUp>
 
-          <Reveal delay={100}>
-            <aside className="card-frame p-7">
-              <h2 className="display text-[24px] text-navy">Listen and read</h2>
-              <div className="mt-5 space-y-3">
-                {episode.audioSource && (
-                  <a
-                    href={episode.audioSource}
-                    target="_blank"
-                    rel="noopener"
-                    className="btn btn-navy w-full"
-                  >
-                    Open Audio <span className="arr">-&gt;</span>
-                  </a>
-                )}
-                {episode.transcriptUrl && (
-                  <a
-                    href={episode.transcriptUrl}
-                    target="_blank"
-                    rel="noopener"
-                    className="btn btn-outline w-full"
-                  >
-                    Transcript
-                  </a>
-                )}
-                {episode.episodeUrl && (
-                  <a
-                    href={episode.episodeUrl}
-                    target="_blank"
-                    rel="noopener"
-                    className="btn btn-outline w-full"
-                  >
-                    Original BOA Page
-                  </a>
-                )}
-              </div>
-              <dl className="mt-7 space-y-4 border-t border-line pt-6 text-[13px]">
-                <div>
-                  <dt className="font-extrabold uppercase tracking-[0.18em] text-muted">
-                    Guest
-                  </dt>
-                  <dd className="mt-1 font-bold text-ink">{episode.guestName}</dd>
+          <div className="space-y-6 lg:sticky lg:top-28">
+            <FadeUp delay={0.08}>
+              <aside className="card-frame p-7">
+                <div className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                  Listen Anywhere
                 </div>
-                <div>
-                  <dt className="font-extrabold uppercase tracking-[0.18em] text-muted">
-                    Category
-                  </dt>
-                  <dd className="mt-1 font-bold text-ink">{episode.category}</dd>
+                <h3 className="display mt-2 text-[22px] text-navy">
+                  Subscribe to the Show
+                </h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-muted">
+                  New episodes every week. Follow on your favourite platform.
+                </p>
+                <div className="mt-5 space-y-2.5">
+                  {platforms.map((p) => (
+                    <a
+                      key={p.name}
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener"
+                      className="group flex items-center justify-between rounded-xl border border-line bg-cream px-4 py-3 text-[13.5px] font-semibold text-navy transition-all hover:border-teal hover:bg-paper hover:text-teal-deep"
+                    >
+                      {p.name}
+                      <span className="arr transition-transform group-hover:translate-x-1">
+                        -&gt;
+                      </span>
+                    </a>
+                  ))}
                 </div>
-                <div>
-                  <dt className="font-extrabold uppercase tracking-[0.18em] text-muted">
-                    Published
-                  </dt>
-                  <dd className="mt-1 font-bold text-ink">
-                    {episode.datePublished}
-                  </dd>
+              </aside>
+            </FadeUp>
+
+            <FadeUp delay={0.14}>
+              <aside className="card-frame p-7">
+                <div className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                  Episode Details
                 </div>
-              </dl>
-            </aside>
-          </Reveal>
+                <dl className="mt-4 space-y-4 text-[13px]">
+                  {episode.guestName && (
+                    <div>
+                      <dt className="font-semibold uppercase tracking-[0.16em] text-muted">
+                        Guest
+                      </dt>
+                      <dd className="mt-1 font-bold text-ink">
+                        {episode.guestName}
+                      </dd>
+                    </div>
+                  )}
+                  {episode.category && (
+                    <div>
+                      <dt className="font-semibold uppercase tracking-[0.16em] text-muted">
+                        Category
+                      </dt>
+                      <dd className="mt-1 font-bold text-ink">
+                        {episode.category}
+                      </dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt className="font-semibold uppercase tracking-[0.16em] text-muted">
+                      Published
+                    </dt>
+                    <dd className="mt-1 font-bold text-ink">
+                      {episode.datePublished}
+                    </dd>
+                  </div>
+                  {episode.contactInfo && (
+                    <div>
+                      <dt className="font-semibold uppercase tracking-[0.16em] text-muted">
+                        Connect with the guest
+                      </dt>
+                      <dd className="mt-1 whitespace-pre-line break-words font-semibold leading-relaxed text-ink">
+                        {episode.contactInfo}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              </aside>
+            </FadeUp>
+          </div>
         </div>
       </section>
 
+      {/* ============ transcript ============ */}
+      {(transcript.length > 0 || transcriptDocId) && (
+        <section id="transcript" className="scroll-mt-24 pb-20">
+          <div className="mx-auto max-w-[1180px] px-5">
+            <FadeUp>
+              <h2 className="display text-[clamp(24px,3vw,34px)] text-navy">
+                Episode Transcript
+              </h2>
+            </FadeUp>
+            <div className="mt-7">
+              {transcript.length > 0 ? (
+                <TranscriptView blocks={transcript} />
+              ) : (
+                <div className="card-frame overflow-hidden">
+                  <iframe
+                    src={`https://docs.google.com/document/d/${transcriptDocId}/preview`}
+                    title={`Transcript — Episode ${episode.episode}`}
+                    loading="lazy"
+                    className="h-[720px] w-full border-0"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ============ prev / next ============ */}
       {(newer || older) && (
-        <section className="border-y border-line bg-paper py-16">
-          <div className="mx-auto grid max-w-[1280px] gap-px overflow-hidden border border-line bg-line px-0 md:grid-cols-2">
-            {newer && (
-              <Link
-                href={`/podcast/${newer.slug}`}
-                className="group bg-paper p-7 transition-colors hover:bg-cream"
-              >
-                <span className="linkline">
-                  Newer episode <span className="arr">-&gt;</span>
-                </span>
-                <h3 className="display mt-3 text-[22px] text-navy group-hover:text-teal-deep">
-                  EP {newer.episode}: {newer.title}
-                </h3>
-              </Link>
+        <section className="pb-4">
+          <div className="mx-auto grid max-w-[1180px] gap-5 px-5 md:grid-cols-2">
+            {older ? (
+              <FadeUp>
+                <Link
+                  href={`/podcast/${older.slug}`}
+                  className="card-frame group block h-full p-7"
+                >
+                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                    &lt;- Previous Episode
+                  </span>
+                  <h3 className="mt-3 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
+                    {older.title}
+                  </h3>
+                </Link>
+              </FadeUp>
+            ) : (
+              <div />
             )}
-            {older && (
-              <Link
-                href={`/podcast/${older.slug}`}
-                className="group bg-paper p-7 transition-colors hover:bg-cream"
-              >
-                <span className="linkline">
-                  Older episode <span className="arr">-&gt;</span>
-                </span>
-                <h3 className="display mt-3 text-[22px] text-navy group-hover:text-teal-deep">
-                  EP {older.episode}: {older.title}
-                </h3>
-              </Link>
+            {newer && (
+              <FadeUp delay={0.08}>
+                <Link
+                  href={`/podcast/${newer.slug}`}
+                  className="card-frame group block h-full p-7 md:text-right"
+                >
+                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                    Next Episode -&gt;
+                  </span>
+                  <h3 className="mt-3 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
+                    {newer.title}
+                  </h3>
+                </Link>
+              </FadeUp>
             )}
           </div>
         </section>
       )}
 
-      <CtaBand
-        eyebrow="Make It Practical"
-        title={
-          <>
-            Turn this episode into <em>your next move.</em>
-          </>
-        }
-        copy="Bring your goals, market, and current numbers to a free strategy meeting. We will help you translate the idea into a plan."
-        primary={{ href: "/msm", label: "Book a Strategy Meeting" }}
-        secondary={{ href: "/podcast#episodes", label: "Browse More Episodes" }}
-      />
+      {/* ============ guest CTA ============ */}
+      <section className="py-24 text-center">
+        <div className="mx-auto max-w-[640px] px-5">
+          <FadeUp>
+            <span className="kicker center justify-center">
+              Share Your Expertise
+            </span>
+            <h2 className="display mt-4 text-[clamp(24px,3.0vw,32px)] text-navy">
+              Want to be a guest on <em>the show?</em>
+            </h2>
+            <p className="mx-auto mt-4 max-w-[500px] text-[15.5px] leading-relaxed text-muted">
+              We&apos;re always looking for practice owners, clinicians, and
+              industry experts with valuable insights to share with our
+              audience.
+            </p>
+            <Link href="/speakers" className="btn btn-navy mt-8">
+              Apply to Be a Guest <span className="arr">-&gt;</span>
+            </Link>
+          </FadeUp>
+        </div>
+      </section>
     </>
   );
 }

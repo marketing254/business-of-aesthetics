@@ -153,10 +153,19 @@ function value(row: SheetRow, ...keys: string[]) {
 }
 
 function compact(text: string) {
-  return (text || "")
-    .replace(/\r\n/g, "\n")
-    .replace(/\u00a0/g, " ")
-    .trim();
+  return (
+    (text || "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\u00a0/g, " ")
+      // editors paste \u2705/\u2714 bullets into sheet cells \u2014 strip them so the
+      // site renders its own refined list markers instead of emoji
+      .replace(/[\u2705\u2714\u2611\u2713\u2610\u25b6\u25cf\u{1F539}\u{1F538}]/gu, "")
+      .replace(/[\ufe0f\u200b]/g, "")
+      .split("\n")
+      .map((line) => line.replace(/^\s*[\u2022\u25aa\u25e6\u2219\u00b7*]+\s*/, "").trimEnd())
+      .join("\n")
+      .trim()
+  );
 }
 
 function firstLine(text: string) {
@@ -251,6 +260,94 @@ export function driveImageUrl(url: string, width = 1200): string {
     trimmed.match(/\/d\/([\w-]{20,})/) || trimmed.match(/[?&]id=([\w-]{20,})/);
   if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w${width}`;
   return trimmed;
+}
+
+/**
+ * Convert a YouTube or Vimeo link — in any common form — into a player
+ * embed URL. Accepts watch, youtu.be, embed, live, and shorts YouTube
+ * links, plus vimeo.com/<id> and player.vimeo.com/video/<id>.
+ * Returns "" if the URL isn't a recognizable video link.
+ */
+export function videoEmbedUrl(url: string): string {
+  const trimmed = (url || "").trim();
+  if (!trimmed) return "";
+
+  const yt =
+    trimmed.match(/youtu\.be\/([\w-]{6,})/i) ||
+    trimmed.match(/[?&]v=([\w-]{6,})/i) ||
+    trimmed.match(/youtube\.com\/(?:embed|live|shorts)\/([\w-]{6,})/i);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+
+  const vimeo = trimmed.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
+
+  return "";
+}
+
+export interface TranscriptBlock {
+  time?: string;
+  /** section heading, e.g. "Introduction & Diagnosing the Operator Trap" */
+  heading?: string;
+  /** speaker name for dialogue turns */
+  speaker?: string;
+  text: string;
+}
+
+/**
+ * Pull a podcast transcript straight from its Google Doc so it renders
+ * inline on the episode page. Uses the doc's plain-text export (works for
+ * any link-shared doc) and splits it into timestamped blocks. Cached for
+ * an hour - transcripts don't change once published.
+ */
+export async function fetchTranscript(url: string): Promise<TranscriptBlock[]> {
+  const m = (url || "").match(/docs\.google\.com\/document\/d\/([\w-]+)/i);
+  if (!m) return [];
+  try {
+    const res = await fetch(
+      `https://docs.google.com/document/d/${m[1]}/export?format=txt`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (text.trimStart().startsWith("<")) return [];
+
+    const blocks: TranscriptBlock[] = [];
+    let current: TranscriptBlock | null = null;
+    const timeRe = /^\d{1,2}:\d{2}(?::\d{2})?$/;
+    const headingRe = /^(\d{1,2}:\d{2}(?::\d{2})?)\s*[\u2013\u2014-]+\s*(.+)$/;
+    const speakerRe = /^([A-Za-z][A-Za-z.'\u2019 -]{1,28}?):\s*(.*)$/;
+
+    for (const raw of text.replace(/^\uFEFF/, '').split(/\r?\n/)) {
+      const line = raw.trim();
+      if (!line) continue;
+
+      const heading = line.match(headingRe);
+      if (heading) {
+        blocks.push({ time: heading[1], heading: heading[2].trim(), text: '' });
+        current = null;
+        continue;
+      }
+      if (timeRe.test(line)) {
+        current = { time: line, text: '' };
+        blocks.push(current);
+        continue;
+      }
+      const turn = line.match(speakerRe);
+      if (turn && turn[1].trim().split(/\s+/).length <= 4) {
+        current = { speaker: turn[1].trim(), text: turn[2].trim() };
+        blocks.push(current);
+        continue;
+      }
+      if (!current) {
+        current = { text: '' };
+        blocks.push(current);
+      }
+      current.text += (current.text ? '\n' : '') + line;
+    }
+    return blocks.filter((b) => b.text.trim().length > 0 || b.heading);
+  } catch {
+    return [];
+  }
 }
 
 async function fetchSheetRows(gid: string): Promise<SheetRow[]> {

@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
 import type { SheetPodcast } from "@/lib/sheet";
+
+const EASE = [0.22, 0.61, 0.21, 1] as const;
 
 function initials(name: string) {
   return name
@@ -43,7 +46,7 @@ export default function EpisodeExplorer({
   if (!episodes.length) {
     return (
       <div className="card-frame p-10 text-center text-[15px] text-muted">
-        Podcast episodes are syncing from the database. Check back shortly.
+        New episodes are being added — check back shortly.
       </div>
     );
   }
@@ -76,56 +79,66 @@ export default function EpisodeExplorer({
         </div>
       </div>
 
-      <div className="mt-9 grid gap-px overflow-hidden border border-line bg-line">
-        {list.map((e) => (
-          <Link
-            key={e.episode}
-            href={`/podcast/${e.slug}`}
-            className="group grid gap-5 bg-paper p-5 transition-colors hover:bg-cream md:grid-cols-[120px_1fr_auto] md:items-center md:p-6"
-          >
-            <div>
-              <span className="index-no text-[15px]">
-                EP {String(e.episode).padStart(3, "0")}
-              </span>
-              <div className="mt-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">
-                {e.datePublished}
-              </div>
-            </div>
+      <motion.div layout className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
+        <AnimatePresence mode="popLayout" initial={false}>
+          {list.map((e) => (
+            <motion.div
+              key={e.episode}
+              layout
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: EASE }}
+            >
+              <Link
+                href={`/podcast/${e.slug}`}
+                className="group grid gap-5 bg-paper p-5 transition-colors hover:bg-cream md:grid-cols-[120px_1fr_auto] md:items-center md:p-6"
+              >
+                <div>
+                  <span className="index-no text-[15px]">
+                    EP {String(e.episode).padStart(3, "0")}
+                  </span>
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+                    {e.datePublished}
+                  </div>
+                </div>
 
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className="chip">{e.category}</span>
-                <span className="text-[12px] font-bold text-muted">
-                  {e.guestName}
-                </span>
-              </div>
-              <h3 className="display mt-3 text-[20px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
-                {e.title}
-              </h3>
-            </div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="chip">{e.category}</span>
+                    <span className="inline-flex items-center gap-2 text-[12px] font-bold text-muted">
+                      {e.guestPhotoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={e.guestPhotoUrl}
+                          alt={e.guestName}
+                          referrerPolicy="no-referrer"
+                          className="h-6 w-6 rounded-full border border-line object-cover object-top"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="dark-canvas grid h-6 w-6 shrink-0 place-items-center rounded-full text-[9px] font-semibold text-teal">
+                          {e.initials || initials(e.guestName)}
+                        </span>
+                      )}
+                      {e.guestName}
+                    </span>
+                  </div>
+                  <h3 className="display mt-3 text-[20px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+                    {e.title}
+                  </h3>
+                </div>
 
-            <div className="flex items-center gap-3 md:justify-end">
-              {e.guestPhotoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={e.guestPhotoUrl}
-                  alt={e.guestName}
-                  referrerPolicy="no-referrer"
-                  className="h-11 w-11 rounded-full border border-line object-cover object-top"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="dark-canvas grid h-11 w-11 shrink-0 place-items-center rounded-full text-[13px] font-extrabold text-teal">
-                  {e.initials || initials(e.guestName)}
-                </span>
-              )}
-              <span className="linkline">
-                Open <span className="arr">-&gt;</span>
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
+                <div className="flex items-center md:justify-end">
+                  <span className="linkline">
+                    Open <span className="arr">-&gt;</span>
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
 
       {list.length === 0 && (
         <p className="mt-10 text-center text-[15px] text-muted">

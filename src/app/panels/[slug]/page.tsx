@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Reveal from "@/components/Reveal";
 import CtaBand from "@/components/CtaBand";
+import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
+import TiltCard from "@/components/motion/TiltCard";
 import { fetchEventPanels } from "@/lib/sheet";
 
 export const dynamic = "force-dynamic";
@@ -46,22 +47,22 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
           </Link>
 
           <div className="mt-10 grid gap-12 lg:grid-cols-[0.7fr_0.3fr]">
-            <Reveal>
+            <FadeUp>
               <span className="kicker">{panel.monthYear || "Live Panel"}</span>
-              <h1 className="display mt-6 text-[clamp(34px,5vw,66px)] text-white">
+              <h1 className="display mt-6 text-[clamp(29px,4.1vw,50px)] text-white">
                 {panel.title}
               </h1>
               <p className="mt-6 max-w-[760px] text-[17px] leading-relaxed text-white/75">
                 {panel.description}
               </p>
-            </Reveal>
+            </FadeUp>
 
-            <Reveal delay={120}>
-              <aside className="signal-panel border border-white/12 bg-white/[0.04] p-7">
+            <FadeUp delay={0.12}>
+              <TiltCard maxTilt={6} className="signal-panel border border-white/12 bg-white/[0.04] p-7">
                 <span className="chip teal">Live Panel</span>
                 <dl className="mt-6 space-y-5 text-[13px]">
                   <div>
-                    <dt className="font-extrabold uppercase tracking-[0.18em] text-white/50">
+                    <dt className="font-semibold uppercase tracking-[0.18em] text-white/50">
                       Date
                     </dt>
                     <dd className="mt-1 font-bold text-white">
@@ -69,7 +70,7 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
                     </dd>
                   </div>
                   <div>
-                    <dt className="font-extrabold uppercase tracking-[0.18em] text-white/50">
+                    <dt className="font-semibold uppercase tracking-[0.18em] text-white/50">
                       Time
                     </dt>
                     <dd className="mt-1 font-bold text-white">
@@ -93,25 +94,26 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
                     </Link>
                   )}
                 </div>
-              </aside>
-            </Reveal>
+              </TiltCard>
+            </FadeUp>
           </div>
         </div>
       </section>
 
       <section className="border-y border-line bg-paper py-20">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[680px]">
               <span className="kicker">Panelists</span>
-              <h2 className="display mt-5 text-[clamp(28px,3.8vw,44px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
                 The voices in the room.
               </h2>
             </div>
-          </Reveal>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {panel.panelists.map((person, index) => (
-              <Reveal key={person.name} delay={(index % 3) * 70} className="h-full">
+          </FadeUp>
+          <DrawLine className="mt-8 h-px w-full bg-line" />
+          <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {panel.panelists.map((person) => (
+              <StaggerItem key={person.name} className="h-full">
                 <div className="card-frame flex h-full items-center gap-5 p-6">
                   {person.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -123,7 +125,7 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
                     />
                   ) : (
                     <span className="dark-canvas grid h-20 w-20 shrink-0 place-items-center rounded-full">
-                      <span className="display text-[24px] italic text-teal">
+                      <span className="display text-[24px] text-teal">
                         {person.initials}
                       </span>
                     </span>
@@ -132,14 +134,14 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
                     <h3 className="display text-[22px] text-navy">
                       {person.name}
                     </h3>
-                    <div className="mt-1 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-teal-deep">
+                    <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                       Featured panelist
                     </div>
                   </div>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 

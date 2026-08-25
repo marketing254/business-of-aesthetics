@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Reveal from "./Reveal";
+import Aurora from "./motion/Aurora";
 
 export default function CtaBand({
   eyebrow = "Free Strategy Meeting",
@@ -19,7 +20,8 @@ export default function CtaBand({
   secondary?: { href: string; label: string };
 }) {
   return (
-    <section className="on-dark relative overflow-hidden bg-navy py-24 sm:py-28">
+    <section className="dark-canvas on-dark relative overflow-hidden py-24 sm:py-28">
+      <Aurora intensity={0.4} />
       <div
         aria-hidden
         className="absolute inset-0"
@@ -35,7 +37,7 @@ export default function CtaBand({
         <Reveal>
           <div className="mx-auto max-w-[760px] text-center">
             <span className="kicker center justify-center">{eyebrow}</span>
-            <h2 className="display mx-auto mt-5 text-[clamp(32px,4.6vw,58px)] text-white">
+            <h2 className="display mx-auto mt-5 text-[clamp(27px,3.8vw,44px)] text-white">
               {title}
             </h2>
             <p className="mx-auto mt-5 max-w-[600px] text-[16.5px] leading-relaxed text-white/75">

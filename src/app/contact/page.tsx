@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
 import ContactForm from "@/components/ContactForm";
 import { site } from "@/lib/data";
+import { FadeUp, FadeIn, Stagger, StaggerItem } from "@/components/motion/Animate";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -41,9 +40,9 @@ export default function ContactPage() {
           hello
         </div>
         <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-16 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:pt-20">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">Contact Us</span>
-            <h1 className="display mt-6 text-[clamp(38px,5vw,66px)] text-navy">
+            <h1 className="display mt-6 text-[clamp(32px,4.1vw,50px)] text-navy">
               Let&apos;s start a <em>conversation.</em>
             </h1>
             <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-muted">
@@ -60,19 +59,38 @@ export default function ContactPage() {
                 Listen to the Podcast
               </Link>
             </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="offset-frame tone-img relative mx-auto aspect-[4/3] max-w-[500px] overflow-hidden rounded-[3px]">
-              <Image
-                src="/assets/contact-hero.jpg"
-                alt="Get in touch with the BOA team"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 500px"
-                className="object-cover"
-              />
+          </FadeUp>
+          <FadeUp delay={0.12}>
+            <div className="offset-frame card-frame relative mx-auto max-w-[500px] bg-sand p-9">
+              <span className="kicker">Quick Facts</span>
+              <ul className="mt-8 space-y-6">
+                <li className="border-b border-line pb-6">
+                  <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                    Response Time
+                  </div>
+                  <div className="display mt-2 text-[22px] text-navy">
+                    Within 1 business day
+                  </div>
+                </li>
+                <li className="border-b border-line pb-6">
+                  <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                    Toll-Free
+                  </div>
+                  <div className="display mt-2 text-[22px] text-navy">
+                    {site.phone}
+                  </div>
+                </li>
+                <li>
+                  <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                    Office
+                  </div>
+                  <div className="display mt-2 text-[22px] text-navy">
+                    Las Vegas, NV
+                  </div>
+                </li>
+              </ul>
             </div>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 
@@ -81,84 +99,86 @@ export default function ContactPage() {
       {/* info + form */}
       <section className="bg-paper py-24">
         <div className="mx-auto grid max-w-[1280px] gap-12 px-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <Reveal>
-            <div className="card-frame divide-y divide-line">
-              <div className="p-7 pb-5">
+          <FadeUp>
+            <div className="card-frame">
+              <div className="border-b border-line p-7 pb-5">
                 <h3 className="display text-[26px] text-navy">
                   Reach us directly
                 </h3>
               </div>
-              {[
-                {
-                  label: "Email",
-                  value: site.email,
-                  href: `mailto:${site.email}`,
-                  sub: "We reply within 1 business day",
-                },
-                {
-                  label: "Toll-Free",
-                  value: site.phone,
-                  href: site.phoneHref,
-                  sub: "Leave us a message any time",
-                },
-                {
-                  label: "Community",
-                  value: "Join the BOA Facebook Group",
-                  href: site.socials.facebook,
-                  sub: "3,700+ aesthetic practitioners",
-                },
-                {
-                  label: "Podcast Guest",
-                  value: "Apply to be a guest",
-                  href: "/speakers",
-                  sub: "We're always looking for great voices",
-                },
-                {
-                  label: "WhatsApp",
-                  value: "Chat on WhatsApp",
-                  href: site.whatsapp,
-                  sub: "Fastest way to reach us",
-                },
-                {
-                  label: "Office",
-                  value: "1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104, USA",
-                  sub: "",
-                },
-                {
-                  label: "Business Hours",
-                  value: site.hours,
-                  sub: "Closed weekends & US holidays",
-                },
-              ].map((row) => (
-                <div key={row.label} className="flex gap-5 p-6">
-                  <div className="w-[110px] shrink-0 pt-0.5 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-teal-deep">
-                    {row.label}
-                  </div>
-                  <div className="min-w-0">
-                    {row.href ? (
-                      <a
-                        href={row.href}
-                        target={row.href.startsWith("http") ? "_blank" : undefined}
-                        rel={row.href.startsWith("http") ? "noopener" : undefined}
-                        className="text-[14.5px] font-bold text-navy transition-colors hover:text-teal-deep"
-                      >
-                        {row.value}
-                      </a>
-                    ) : (
-                      <div className="text-[14.5px] font-bold text-navy">
-                        {row.value}
-                      </div>
-                    )}
-                    {row.sub && (
-                      <div className="mt-0.5 text-[12.5px] text-muted">
-                        {row.sub}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-              <div className="flex items-center gap-5 p-6">
-                <div className="w-[110px] shrink-0 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-teal-deep">
+              <Stagger className="divide-y divide-line">
+                {[
+                  {
+                    label: "Email",
+                    value: site.email,
+                    href: `mailto:${site.email}`,
+                    sub: "We reply within 1 business day",
+                  },
+                  {
+                    label: "Toll-Free",
+                    value: site.phone,
+                    href: site.phoneHref,
+                    sub: "Leave us a message any time",
+                  },
+                  {
+                    label: "Community",
+                    value: "Join the BOA Facebook Group",
+                    href: site.socials.facebook,
+                    sub: "3,700+ aesthetic practitioners",
+                  },
+                  {
+                    label: "Podcast Guest",
+                    value: "Apply to be a guest",
+                    href: "/speakers",
+                    sub: "We're always looking for great voices",
+                  },
+                  {
+                    label: "WhatsApp",
+                    value: "Chat on WhatsApp",
+                    href: site.whatsapp,
+                    sub: "Fastest way to reach us",
+                  },
+                  {
+                    label: "Office",
+                    value: "1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104, USA",
+                    sub: "",
+                  },
+                  {
+                    label: "Business Hours",
+                    value: site.hours,
+                    sub: "Closed weekends & US holidays",
+                  },
+                ].map((row) => (
+                  <StaggerItem key={row.label} className="flex gap-5 p-6">
+                    <div className="w-[110px] shrink-0 pt-0.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                      {row.label}
+                    </div>
+                    <div className="min-w-0">
+                      {row.href ? (
+                        <a
+                          href={row.href}
+                          target={row.href.startsWith("http") ? "_blank" : undefined}
+                          rel={row.href.startsWith("http") ? "noopener" : undefined}
+                          className="text-[14.5px] font-bold text-navy transition-colors hover:text-teal-deep"
+                        >
+                          {row.value}
+                        </a>
+                      ) : (
+                        <div className="text-[14.5px] font-bold text-navy">
+                          {row.value}
+                        </div>
+                      )}
+                      {row.sub && (
+                        <div className="mt-0.5 text-[12.5px] text-muted">
+                          {row.sub}
+                        </div>
+                      )}
+                    </div>
+                  </StaggerItem>
+                ))}
+              </Stagger>
+              <div className="flex items-center gap-5 border-t border-line p-6">
+                <div className="w-[110px] shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                   Follow Us
                 </div>
                 <div className="flex gap-2.5">
@@ -180,29 +200,29 @@ export default function ContactPage() {
                 </div>
               </div>
             </div>
-          </Reveal>
+          </FadeUp>
 
-          <Reveal delay={100}>
+          <FadeUp delay={0.1}>
             <ContactForm />
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 
       {/* map */}
       <section className="border-y border-line bg-sand py-24">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[640px]">
               <span className="kicker">Find Us</span>
-              <h2 className="display mt-5 text-[clamp(28px,3.8vw,44px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
                 Visit our <em>office</em>
               </h2>
               <p className="mt-4 text-[15.5px] text-muted">
                 1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104
               </p>
             </div>
-          </Reveal>
-          <Reveal delay={100}>
+          </FadeUp>
+          <FadeIn delay={0.1}>
             <div className="card-frame mt-10 h-[380px] overflow-hidden">
               <iframe
                 src="https://www.google.com/maps?q=1810+E+Sahara+Ave,+Las+Vegas,+NV+89104&output=embed"
@@ -212,19 +232,19 @@ export default function ContactPage() {
                 className="h-full w-full border-0"
               />
             </div>
-          </Reveal>
+          </FadeIn>
         </div>
       </section>
 
       {/* faq */}
       <section className="py-24">
         <div className="mx-auto max-w-[820px] px-5">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">Quick Questions</span>
-            <h2 className="display mt-5 text-[clamp(28px,3.8vw,44px)] text-navy">
+            <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
               Before you <em>write</em>
             </h2>
-          </Reveal>
+          </FadeUp>
           <div className="mt-10">
             {faqs.map((f, i) => (
               <details key={f.q} className="faq" open={i === 0}>

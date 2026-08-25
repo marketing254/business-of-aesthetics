@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Reveal from "@/components/Reveal";
 import CtaBand from "@/components/CtaBand";
-import { fetchEventReplays } from "@/lib/sheet";
+import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
+import TiltCard from "@/components/motion/TiltCard";
+import { fetchEventReplays, videoEmbedUrl } from "@/lib/sheet";
 
 export const dynamic = "force-dynamic";
 
@@ -36,19 +37,6 @@ function blocks(text: string) {
     .filter(Boolean);
 }
 
-function embedUrl(url: string) {
-  const trimmed = url.trim();
-  const youtube =
-    trimmed.match(/youtu\.be\/([^?]+)/i) ||
-    trimmed.match(/[?&]v=([^&]+)/i);
-  if (youtube) return `https://www.youtube.com/embed/${youtube[1]}`;
-
-  const vimeo = trimmed.match(/vimeo\.com\/(\d+)/i);
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
-
-  return "";
-}
-
 export default async function EventReplayDetailPage({
   params,
 }: ReplayDetailProps) {
@@ -56,7 +44,7 @@ export default async function EventReplayDetailPage({
   const replay = await loadReplay(slug);
   if (!replay) notFound();
 
-  const embed = embedUrl(replay.videoUrl);
+  const embed = videoEmbedUrl(replay.videoUrl);
 
   return (
     <>
@@ -70,59 +58,73 @@ export default async function EventReplayDetailPage({
           </Link>
 
           <div className="mt-10 grid gap-12 lg:grid-cols-[0.68fr_0.32fr]">
-            <Reveal>
-              <span className="kicker">Event Replay</span>
-              <h1 className="display mt-6 text-[clamp(34px,5vw,66px)] text-white">
-                {replay.title}
-              </h1>
-              <div className="mt-6 flex flex-wrap gap-3 text-[12px] font-extrabold uppercase tracking-[0.18em] text-white/55">
-                <span>{replay.date}</span>
-                <span>{replay.duration}</span>
-                <span>{replay.category}</span>
-              </div>
-            </Reveal>
-
-            <Reveal delay={120}>
-              <aside className="signal-panel border border-white/12 bg-white/[0.04] p-7">
-                <span className="chip teal">Replay</span>
-                <p className="mt-5 text-[14px] leading-relaxed text-white/70">
-                  Watch the replay, then use the notes and transcript links to
-                  review the decisions with your team.
-                </p>
-                <div className="mt-7 space-y-3">
-                  {replay.videoUrl && (
-                    <a
-                      href={replay.videoUrl}
-                      target="_blank"
-                      rel="noopener"
-                      className="btn btn-teal w-full"
-                    >
-                      Watch Source <span className="arr">-&gt;</span>
-                    </a>
-                  )}
-                  {replay.descriptionIsLink && (
-                    <a
-                      href={replay.description}
-                      target="_blank"
-                      rel="noopener"
-                      className="btn btn-ghost-light w-full"
-                    >
-                      Briefing Doc
-                    </a>
-                  )}
-                  {replay.transcript && (
-                    <a
-                      href={replay.transcript}
-                      target="_blank"
-                      rel="noopener"
-                      className="btn btn-ghost-light w-full"
-                    >
-                      Transcript
-                    </a>
-                  )}
+            <div>
+              <FadeUp>
+                <span className="kicker">Event Replay</span>
+              </FadeUp>
+              <FadeUp delay={0.1}>
+                <h1 className="display mt-6 text-[clamp(29px,4.1vw,50px)] text-white">
+                  {replay.title}
+                </h1>
+              </FadeUp>
+              <FadeUp delay={0.2}>
+                <div className="mt-6 flex flex-wrap gap-3 text-[12px] font-semibold uppercase tracking-[0.18em] text-white/55">
+                  <span>{replay.date}</span>
+                  <span>{replay.duration}</span>
+                  <span>{replay.category}</span>
                 </div>
-              </aside>
-            </Reveal>
+              </FadeUp>
+            </div>
+
+            <FadeUp delay={0.15}>
+              <TiltCard maxTilt={6}>
+                <aside className="signal-panel border border-white/12 bg-white/[0.04] p-7">
+                  <span className="chip teal">Replay</span>
+                  <p className="mt-5 text-[14px] leading-relaxed text-white/70">
+                    Watch the replay, then use the notes and transcript links to
+                    review the decisions with your team.
+                  </p>
+                  <Stagger className="mt-7 space-y-3">
+                    {replay.videoUrl && (
+                      <StaggerItem>
+                        <a
+                          href={replay.videoUrl}
+                          target="_blank"
+                          rel="noopener"
+                          className="btn btn-teal w-full"
+                        >
+                          Watch Source <span className="arr">-&gt;</span>
+                        </a>
+                      </StaggerItem>
+                    )}
+                    {replay.descriptionIsLink && (
+                      <StaggerItem>
+                        <a
+                          href={replay.description}
+                          target="_blank"
+                          rel="noopener"
+                          className="btn btn-ghost-light w-full"
+                        >
+                          Briefing Doc
+                        </a>
+                      </StaggerItem>
+                    )}
+                    {replay.transcript && (
+                      <StaggerItem>
+                        <a
+                          href={replay.transcript}
+                          target="_blank"
+                          rel="noopener"
+                          className="btn btn-ghost-light w-full"
+                        >
+                          Transcript
+                        </a>
+                      </StaggerItem>
+                    )}
+                  </Stagger>
+                </aside>
+              </TiltCard>
+            </FadeUp>
           </div>
         </div>
       </section>
@@ -130,8 +132,8 @@ export default async function EventReplayDetailPage({
       <section className="py-20 lg:py-24">
         <div className="mx-auto max-w-[1280px] px-5">
           {embed ? (
-            <Reveal>
-              <div className="overflow-hidden border border-line bg-navy-ink">
+            <FadeUp>
+              <TiltCard maxTilt={4} glare={false} className="overflow-hidden border border-line bg-navy-ink">
                 <iframe
                   src={embed}
                   title={replay.title}
@@ -139,32 +141,36 @@ export default async function EventReplayDetailPage({
                   allowFullScreen
                   className="aspect-video w-full"
                 />
+              </TiltCard>
+            </FadeUp>
+          ) : (
+            <FadeUp>
+              <div className="signal-panel flex flex-col items-center justify-center gap-4 border border-line bg-sand px-8 py-20 text-center">
+                <span className="chip teal">{replay.category || "Replay"}</span>
+                <p className="display text-[clamp(24px,3vw,34px)] text-navy">
+                  {replay.videoUrl
+                    ? "Watch this session via the source link above."
+                    : "Video coming to this replay soon."}
+                </p>
+                <p className="max-w-[440px] text-[14px] leading-relaxed text-muted">
+                  In the meantime, the notes below cover the full session.
+                </p>
               </div>
-            </Reveal>
-          ) : replay.imageUrl ? (
-            <Reveal>
-              <div className="signal-panel border border-line bg-paper p-6">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={replay.imageUrl}
-                  alt={replay.title}
-                  referrerPolicy="no-referrer"
-                  className="max-h-[560px] w-full object-contain"
-                />
-              </div>
-            </Reveal>
-          ) : null}
+            </FadeUp>
+          )}
+
+          <DrawLine className="mt-14 h-px bg-line" />
 
           <div className="mt-14 grid gap-10 lg:grid-cols-[0.32fr_0.68fr]">
-            <Reveal>
+            <FadeUp>
               <div>
                 <span className="kicker">Replay Notes</span>
-                <h2 className="display mt-5 text-[clamp(28px,3.8vw,44px)] text-navy">
+                <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
                   Key takeaways and context.
                 </h2>
               </div>
-            </Reveal>
-            <Reveal delay={100}>
+            </FadeUp>
+            <FadeUp delay={0.1}>
               <div className="space-y-5 text-[15.5px] leading-relaxed text-muted">
                 {blocks(replay.summary || "").map((line) => (
                   <p key={line}>{line}</p>
@@ -174,7 +180,7 @@ export default async function EventReplayDetailPage({
                     <p key={line}>{line}</p>
                   ))}
               </div>
-            </Reveal>
+            </FadeUp>
           </div>
         </div>
       </section>

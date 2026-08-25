@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { kbCategories, kbFaqs } from "@/lib/data";
 
 export default function KbExplorer() {
@@ -29,13 +30,23 @@ export default function KbExplorer() {
         </div>
       </aside>
 
-      <div>
-        {list.map((f, i) => (
-          <details key={f.q} className="faq" open={i === 0}>
-            <summary>{f.q}</summary>
-            <div className="faq-body">{f.a}</div>
-          </details>
-        ))}
+      <div className="relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={cat}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.28, ease: [0.22, 0.61, 0.21, 1] }}
+          >
+            {list.map((f, i) => (
+              <details key={f.q} className="faq" open={i === 0}>
+                <summary>{f.q}</summary>
+                <div className="faq-body">{f.a}</div>
+              </details>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

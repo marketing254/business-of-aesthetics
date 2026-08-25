@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import Reveal from "@/components/Reveal";
 import CtaBand from "@/components/CtaBand";
 import EpisodeExplorer from "@/components/EpisodeExplorer";
+import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
+import WordReveal from "@/components/motion/WordReveal";
+import Aurora from "@/components/motion/Aurora";
 import { hosts, platforms } from "@/lib/data";
 import { fetchPodcasts } from "@/lib/sheet";
 
@@ -12,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Podcast - Business Lessons for Aesthetic Practices",
   description:
-    "The Business of Aesthetics podcast archive, powered by the live BOA database.",
+    "Weekly conversations with the leading minds in dermatology, plastic surgery and aesthetics — the complete Business of Aesthetics podcast archive.",
 };
 
 const reviews = [
@@ -41,70 +43,64 @@ export default async function PodcastPage() {
   return (
     <>
       <section className="dark-canvas on-dark relative overflow-hidden">
+        <Aurora intensity={0.45} />
         <div className="ghost-word right-[-3%] top-[52%] text-[clamp(120px,16vw,250px)]">
           fieldnotes
         </div>
-        <div className="relative mx-auto grid max-w-[1280px] items-end gap-12 px-5 pb-20 pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-24">
-          <Reveal>
+        <div className="relative mx-auto max-w-[1280px] px-5 pb-16 pt-16 lg:pb-20 lg:pt-24">
+          <FadeUp>
             <span className="kicker">The Business of Aesthetics Podcast</span>
-            <h1 className="display mt-6 text-[clamp(38px,5.2vw,72px)] text-white">
-              A living archive of <em>practice decisions</em>.
-            </h1>
-            <p className="mt-6 max-w-[590px] text-[17px] leading-relaxed text-white/75">
-              Every episode is pulled from the BOA database: title, guest,
-              audio, transcript, category, and original episode link. No stale
-              cards, no dummy media.
+            <WordReveal
+              text="A living archive of *practice decisions*."
+              className="display mt-6 max-w-[820px] text-[clamp(32px,4.3vw,52px)] text-white"
+            />
+            <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-white/75">
+              Weekly conversations with the operators, surgeons, and growth
+              experts shaping aesthetic medicine — every episode with full
+              audio, notes, and transcript.
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-9 flex flex-wrap items-center gap-6">
               <a href="#episodes" className="btn btn-teal">
                 Explore Episodes <span className="arr">-&gt;</span>
               </a>
-              <Link href="/speakers" className="btn btn-ghost-light">
-                Apply to be a Guest
+              <Link href="/speakers" className="linkline !text-teal">
+                Apply to be a Guest <span className="arr">-&gt;</span>
               </Link>
             </div>
-          </Reveal>
+          </FadeUp>
 
-          <Reveal delay={120}>
+          <FadeUp delay={0.12}>
             {latest ? (
-              <article className="signal-panel relative border border-white/12 bg-white/[0.04] p-6 backdrop-blur">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2.5 text-[10.5px] font-extrabold uppercase tracking-[0.22em] text-teal">
-                      <span className="live-dot" /> Latest from the Sheet
-                    </div>
-                    <div className="mt-2 text-[12px] font-bold text-white/55">
-                      Episode {latest.episode} - {latest.datePublished}
-                    </div>
-                  </div>
-                  <span className="chip teal">{latest.category}</span>
+              <div className="mt-14 max-w-[620px] border border-white/12 bg-white/[0.03] p-6 sm:p-7">
+                <div className="flex items-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal">
+                  <span className="live-dot" /> Latest Episode
                 </div>
 
-                <div className="mt-6 grid gap-5 sm:grid-cols-[128px_1fr]">
-                  <div className="relative aspect-square overflow-hidden border border-white/15 bg-navy-ink">
-                    {latest.posterImage || latest.guestPhotoUrl ? (
+                <div className="mt-5 flex items-center gap-4">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-white/15 bg-navy-ink">
+                    {latest.guestPhotoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={latest.posterImage || latest.guestPhotoUrl}
-                        alt={latest.title}
+                        src={latest.guestPhotoUrl}
+                        alt={latest.guestName}
                         referrerPolicy="no-referrer"
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="grid h-full place-items-center">
-                        <span className="display text-[38px] italic text-teal">
+                      <div className="grid h-full w-full place-items-center">
+                        <span className="display text-[16px] text-teal">
                           {latest.initials}
                         </span>
                       </div>
                     )}
                   </div>
-                  <div>
-                    <h2 className="display text-[clamp(22px,2.5vw,32px)] leading-tight text-white">
+                  <div className="min-w-0">
+                    <div className="text-[11.5px] font-bold text-white/55">
+                      Episode {latest.episode} · {latest.datePublished}
+                    </div>
+                    <h2 className="display mt-1 text-[19px] leading-snug text-white">
                       {latest.title}
                     </h2>
-                    <div className="mt-3 text-[12.5px] font-extrabold uppercase tracking-[0.16em] text-white/60">
-                      {latest.guestName}
-                    </div>
                   </div>
                 </div>
 
@@ -112,49 +108,40 @@ export default async function PodcastPage() {
                   <audio
                     controls
                     src={latest.audioSource}
-                    className="mt-6 w-full"
+                    className="mt-5 w-full"
                   />
                 )}
 
-                <div className="mt-6 flex flex-wrap gap-4">
-                  <Link href={`/podcast/${latest.slug}`} className="linkline !text-teal">
-                    Episode page <span className="arr">-&gt;</span>
-                  </Link>
-                  {latest.transcriptUrl && (
-                    <a
-                      href={latest.transcriptUrl}
-                      target="_blank"
-                      rel="noopener"
-                      className="linkline !text-teal"
-                    >
-                      Transcript <span className="arr">-&gt;</span>
-                    </a>
-                  )}
-                </div>
-              </article>
+                <Link
+                  href={`/podcast/${latest.slug}`}
+                  className="linkline !text-teal mt-5 inline-flex"
+                >
+                  Episode page <span className="arr">-&gt;</span>
+                </Link>
+              </div>
             ) : (
-              <div className="signal-panel border border-white/12 bg-white/[0.04] p-8 text-white/70">
+              <div className="mt-14 max-w-[620px] border border-white/12 bg-white/[0.03] p-8 text-white/70">
                 Podcast data is syncing from Google Sheets.
               </div>
             )}
-          </Reveal>
+          </FadeUp>
         </div>
 
         <div className="relative border-t border-white/10">
-          <div className="mx-auto grid max-w-[1280px] grid-cols-2 gap-y-8 px-5 py-10 lg:grid-cols-4">
-            {[
-              { value: podcasts.length || "294", label: "Database Episodes" },
-              { value: categories.length || "Live", label: "Topic Tracks" },
-              { value: "Weekly", label: "Release Cadence" },
-              { value: "Audio + Notes", label: "Detail Pages" },
-            ].map((s) => (
-              <div key={s.label} className="stat-rule">
-                <div className="display text-[34px] text-white">{s.value}</div>
-                <div className="mt-1.5 text-[10.5px] font-extrabold uppercase tracking-[0.22em] text-teal">
-                  {s.label}
-                </div>
-              </div>
-            ))}
+          <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-2 px-5 py-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55">
+            <span>
+              <span className="text-teal">{podcasts.length || "294"}</span>{" "}
+              Episodes &amp; Counting
+            </span>
+            <span className="text-white/25">·</span>
+            <span>
+              <span className="text-teal">{categories.length || "12+"}</span>{" "}
+              Topic Tracks
+            </span>
+            <span className="text-white/25">·</span>
+            <span>
+              New <span className="text-teal">Weekly</span>
+            </span>
           </div>
         </div>
       </section>
@@ -166,8 +153,8 @@ export default async function PodcastPage() {
               Follow the show
             </h3>
             <p className="mt-1 text-[13.5px] text-muted">
-              Platform links stay lightweight; each internal episode page holds
-              the actual audio and transcript from the Sheet.
+              Every episode page here also carries the full audio, notes, and
+              transcript.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -188,11 +175,11 @@ export default async function PodcastPage() {
 
       <section id="episodes" className="scroll-mt-24 py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="grid gap-8 lg:grid-cols-[0.62fr_1fr]">
               <div>
                 <span className="kicker">The Archive</span>
-                <h2 className="display mt-4 text-[clamp(30px,4vw,52px)] text-navy">
+                <h2 className="display mt-4 text-[clamp(26px,3.3vw,40px)] text-navy">
                   Search the <em>whole catalog</em>.
                 </h2>
               </div>
@@ -202,69 +189,72 @@ export default async function PodcastPage() {
                 original BOA link.
               </p>
             </div>
-          </Reveal>
+          </FadeUp>
           <div className="mt-10">
             <EpisodeExplorer episodes={podcasts} />
           </div>
         </div>
       </section>
 
-      <section className="border-y border-line bg-sand py-24">
+      <section className="border-y border-line py-24">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="mx-auto max-w-[680px] text-center">
               <span className="kicker center justify-center">
                 What Listeners Say
               </span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 Trusted by the <em>aesthetics community</em>
               </h2>
             </div>
-          </Reveal>
-          <div className="mt-12 grid gap-7 md:grid-cols-3">
+          </FadeUp>
+          <Stagger className="mt-14 grid gap-10 md:grid-cols-3">
             {reviews.map((r, i) => (
-              <Reveal key={r.name} delay={i * 90} className="h-full">
-                <figure className="card-frame flex h-full flex-col p-8">
-                  <blockquote className="mt-1 flex-1 text-[14.5px] italic leading-relaxed text-ink/85">
+              <StaggerItem
+                key={r.name}
+                className={`h-full ${i > 0 ? "md:border-l md:border-line md:pl-10" : ""}`}
+              >
+                <figure className="flex h-full flex-col">
+                  <blockquote className="flex-1 text-[14.5px] italic leading-relaxed text-ink/85">
                     &ldquo;{r.quote}&rdquo;
                   </blockquote>
-                  <figcaption className="mt-5 border-t border-line pt-4 text-[13.5px] font-extrabold text-navy">
+                  <figcaption className="mt-5 border-t border-line pt-4 text-[13.5px] font-semibold text-navy">
                     {r.name}
                   </figcaption>
                 </figure>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       <section id="hosts" className="py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[640px]">
               <span className="kicker">The Voices</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 Hosted by <em>industry leaders</em>
               </h2>
             </div>
-          </Reveal>
-          <div className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-5">
-            {hosts.map((h, i) => (
-              <Reveal key={h.name} delay={i * 70} className="h-full">
-                <div className="card-frame h-full p-6 text-center">
+          </FadeUp>
+          <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+            {hosts.map((h) => (
+              <StaggerItem key={h.name} className="h-full">
+                <div className="h-full border-t border-line pt-6 text-center">
                   {h.image ? (
-                    <div className="tone-img relative mx-auto h-24 w-24 overflow-hidden rounded-full border border-line">
+                    <div className="tone-img relative mx-auto h-20 w-20 overflow-hidden rounded-full border border-line">
                       <Image
                         src={h.image}
                         alt={h.name}
                         fill
-                        sizes="96px"
+                        sizes="80px"
                         className="object-cover object-top"
                       />
                     </div>
                   ) : (
-                    <div className="dark-canvas mx-auto grid h-24 w-24 place-items-center rounded-full">
-                      <span className="display text-[24px] italic text-teal">
+                    <div className="dark-canvas mx-auto grid h-20 w-20 place-items-center rounded-full">
+                      <span className="display text-[20px] text-teal">
                         {h.name
                           .split(" ")
                           .filter((w) => !w.includes("."))
@@ -274,19 +264,19 @@ export default async function PodcastPage() {
                       </span>
                     </div>
                   )}
-                  <h3 className="mt-4 text-[15.5px] font-extrabold text-navy">
+                  <h3 className="mt-4 text-[15.5px] font-semibold text-navy">
                     {h.name}
                   </h3>
-                  <div className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-deep">
+                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                     {h.role}
                   </div>
                   <p className="mt-2.5 text-[12.5px] leading-relaxed text-muted">
                     {h.bio}
                   </p>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 

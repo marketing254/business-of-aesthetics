@@ -4,7 +4,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import Magnetic from "@/components/motion/Magnetic";
+import ThemeToggle from "@/components/ThemeToggle";
 import { site } from "@/lib/data";
+
+/** Sliding indicator shared across nav links via layoutId. */
+function ActiveMark() {
+  return (
+    <motion.span
+      layoutId="nav-active-mark"
+      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+      className="absolute inset-x-0 -bottom-[2px] h-[1.5px] bg-teal"
+    />
+  );
+}
 
 const links = [
   { href: "/about", label: "About" },
@@ -98,7 +112,7 @@ export default function Navbar() {
           >
             <span className="live-dot shrink-0" />
             <span className="truncate">
-              <b className="font-extrabold text-teal">
+              <b className="font-semibold text-teal">
                 New · Ep {site.latestEpisode.number}
               </b>{" "}
               — {site.latestEpisode.guest}, {site.latestEpisode.title}
@@ -110,17 +124,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* main navbar */}
-      <header
-        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
-          scrolled
-            ? "border-line bg-cream/90 shadow-[0_10px_40px_-18px_rgba(19,42,84,0.25)] backdrop-blur-md"
-            : "border-line/70 bg-cream"
-        }`}
-      >
+      {/* main navbar — floating pill bar */}
+      <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5">
         <div
-          className={`mx-auto flex max-w-[1280px] items-center justify-between gap-6 px-5 transition-all duration-300 ${
-            scrolled ? "py-2.5" : "py-4"
+          className={`mx-auto flex max-w-[1240px] items-center justify-between gap-6 rounded-full border px-4 transition-all duration-300 sm:px-6 ${
+            scrolled
+              ? "border-line bg-paper/95 py-2 shadow-[0_18px_50px_-22px_rgba(19,42,84,0.35)] backdrop-blur-md"
+              : "border-line/80 bg-paper py-2.5 shadow-[0_10px_36px_-24px_rgba(19,42,84,0.28)]"
           }`}
         >
           <Link href="/" className="shrink-0" aria-label="Business of Aesthetics — home">
@@ -142,9 +152,12 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`nav-link ${pathname === l.href ? "active" : ""}`}
+                className={`nav-link relative ${
+                  pathname === l.href ? "text-teal-deep" : ""
+                }`}
               >
                 {l.label}
+                {pathname === l.href && <ActiveMark />}
               </Link>
             ))}
 
@@ -155,8 +168,8 @@ export default function Navbar() {
               onMouseLeave={() => setSvcOpen(false)}
             >
               <button
-                className={`nav-link flex items-center gap-1.5 ${
-                  servicesActive ? "active" : ""
+                className={`nav-link relative flex items-center gap-1.5 ${
+                  servicesActive ? "text-teal-deep" : ""
                 }`}
                 aria-expanded={svcOpen}
                 onClick={() => setSvcOpen((v) => !v)}
@@ -178,28 +191,32 @@ export default function Navbar() {
                     strokeLinecap="round"
                   />
                 </svg>
+                {servicesActive && <ActiveMark />}
               </button>
 
-              <div
-                className={`absolute left-1/2 top-full w-[640px] -translate-x-1/2 pt-4 transition-all duration-200 ${
-                  svcOpen
-                    ? "pointer-events-auto visible translate-y-0 opacity-100"
-                    : "pointer-events-none invisible -translate-y-1.5 opacity-0"
-                }`}
+              <AnimatePresence>
+                {svcOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 12, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.985 }}
+                transition={{ duration: 0.24, ease: [0.22, 0.61, 0.21, 1] }}
+                style={{ x: "-50%" }}
+                className="absolute left-1/2 top-full w-[640px] pt-4"
               >
-                <div className="grid grid-cols-[1.2fr_1fr] overflow-hidden rounded-[3px] border border-line bg-paper shadow-[0_40px_80px_-30px_rgba(12,18,41,0.35)]">
+                <div className="grid grid-cols-[1.2fr_1fr] overflow-hidden rounded-2xl border border-line bg-paper shadow-[0_40px_80px_-30px_rgba(12,18,41,0.35)]">
                   <div className="flex flex-col p-3">
                     {services.map((s) => (
                       <Link
                         key={s.href}
                         href={s.href}
-                        className="group/svc flex gap-4 rounded-[2px] p-4 transition-colors hover:bg-sand"
+                        className="group/svc flex gap-4 rounded-xl p-4 transition-colors hover:bg-sand"
                       >
                         <span className="index-no text-[15px] leading-6">
                           {s.no}
                         </span>
                         <span>
-                          <span className="block text-[14px] font-extrabold tracking-wide text-navy transition-colors group-hover/svc:text-teal-deep">
+                          <span className="block text-[14px] font-semibold tracking-wide text-navy transition-colors group-hover/svc:text-teal-deep">
                             {s.title}
                           </span>
                           <span className="mt-1 block text-[12.5px] leading-relaxed text-muted">
@@ -230,28 +247,36 @@ export default function Navbar() {
                     </Link>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {links.slice(4).map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`nav-link ${pathname === l.href ? "active" : ""}`}
+                className={`nav-link relative ${
+                  pathname === l.href ? "text-teal-deep" : ""
+                }`}
               >
                 {l.label}
+                {pathname === l.href && <ActiveMark />}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link href="/msm" className="btn btn-navy hidden !px-6 !py-3.5 lg:inline-flex">
-              Book a Meeting <span className="arr">→</span>
-            </Link>
+            <ThemeToggle className="hidden sm:grid" />
+            <Magnetic className="hidden lg:inline-block" strength={0.2}>
+              <Link href="/msm" className="btn btn-navy !px-6 !py-3.5">
+                Book a Meeting <span className="arr">→</span>
+              </Link>
+            </Magnetic>
 
             {/* hamburger */}
             <button
-              className="flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-[2px] border border-line bg-paper xl:hidden"
+              className="flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-full border border-line bg-paper xl:hidden"
               aria-label="Open menu"
               aria-expanded={open}
               onClick={() => setOpen(true)}
@@ -265,21 +290,26 @@ export default function Navbar() {
       </header>
 
       {/* mobile full-screen menu */}
-      <div
-        className={`dark-canvas fixed inset-0 z-[60] flex flex-col overflow-y-auto transition-all duration-300 xl:hidden ${
-          open ? "visible opacity-100" : "invisible opacity-0"
-        }`}
-        aria-hidden={!open}
+      <AnimatePresence>
+        {open && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.28, ease: "easeOut" }}
+        className="dark-canvas fixed inset-0 z-[60] flex flex-col overflow-y-auto xl:hidden"
       >
+        <div className="fixed left-5 top-5 z-[70]">
+          <ThemeToggle className="!border-white/25 !text-white hover:!text-teal" />
+        </div>
         <button
-          className="fixed right-5 top-5 z-[70] grid h-12 w-12 place-items-center rounded-[2px] border border-white/25 text-white transition-colors hover:border-teal hover:text-teal"
+          className="fixed right-5 top-5 z-[70] grid h-12 w-12 place-items-center rounded-full border border-white/25 text-white transition-colors hover:border-teal hover:text-teal"
           aria-label="Close menu"
           onClick={() => setOpen(false)}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
         <div className="flex min-h-full flex-col px-7 pb-10 pt-24">
-          {open && (
             <nav className="menu-stagger flex flex-col" aria-label="Mobile">
               {links.slice(0, 4).map((l, i) => (
                 <Link
@@ -357,7 +387,6 @@ export default function Navbar() {
                 </Link>
               ))}
             </nav>
-          )}
 
           <div className="mt-auto pt-10">
             <Link href="/msm" className="btn btn-teal w-full">
@@ -376,7 +405,9 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

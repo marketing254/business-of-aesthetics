@@ -4,7 +4,18 @@ import Counter from "@/components/Counter";
 import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
 import TestimonialSlider from "@/components/TestimonialSlider";
-import HeroSignalScene from "@/components/HeroSignalScene";
+import {
+  FadeUp,
+  Stagger,
+  StaggerItem,
+  DrawLine,
+} from "@/components/motion/Animate";
+import WordReveal from "@/components/motion/WordReveal";
+import TiltCard from "@/components/motion/TiltCard";
+import Parallax from "@/components/motion/Parallax";
+import Magnetic from "@/components/motion/Magnetic";
+import Aurora from "@/components/motion/Aurora";
+import PillarRail from "@/components/motion/PillarRail";
 import {
   fetchEventPanels,
   fetchPanelReplays,
@@ -78,141 +89,180 @@ export default async function Home() {
 
   const latestEpisode = podcasts[0];
   const latestReplays = panelReplays.slice(0, 3);
-  const featuredPanels = upcomingPanels.slice(0, 2);
+  const nextPanel = upcomingPanels[0];
 
   return (
     <>
-      <section className="hero-signal dark-canvas on-dark hero-microgrid relative overflow-hidden">
-        <HeroSignalScene />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,18,41,0.96)_0%,rgba(12,18,41,0.78)_44%,rgba(12,18,41,0.22)_100%)]" />
-        <div className="absolute left-5 top-1/2 hidden -translate-y-1/2 xl:block">
-          <div className="flex items-center gap-5 [writing-mode:vertical-rl]">
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.28em] text-white/35">
-              Business of Aesthetics
-            </span>
-            <span className="h-20 w-px bg-teal/60" />
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.28em] text-teal">
-              Live Signal Map
-            </span>
+      <section className="relative overflow-hidden">
+        <Aurora intensity={0.55} />
+        <Parallax
+          speed={0.1}
+          className="ghost-word left-[-2%] top-[58%] text-[clamp(120px,16vw,260px)]"
+        >
+          aesthetics
+        </Parallax>
+        <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-16 pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-24">
+          <div>
+            <FadeUp>
+              <span className="kicker">Your Success Matters - Since 2007</span>
+            </FadeUp>
+            <WordReveal
+              as="h1"
+              className="display mt-6 max-w-[680px] text-[clamp(36px,4.6vw,58px)] text-navy"
+              text="The operating system for *aesthetic practice growth*."
+            />
+            <FadeUp delay={0.3}>
+              <p className="mt-6 max-w-[540px] text-[17px] leading-relaxed text-muted">
+                BOA is where dermatology, plastic surgery, and aesthetic leaders
+                turn conversations into decisions: podcasts, live panels,
+                replays, and strategy sessions that connect directly to growth.
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-5">
+                <Magnetic>
+                  <Link href="/msm" className="btn btn-navy">
+                    Book Strategy Meeting <span className="arr">-&gt;</span>
+                  </Link>
+                </Magnetic>
+                <Link href="/podcast" className="linkline !text-[13px]">
+                  Explore the Archive <span className="arr">-&gt;</span>
+                </Link>
+              </div>
+              <div className="mt-10 flex flex-wrap gap-x-9 gap-y-3 border-t border-line pt-6 text-[13px] font-bold text-navy">
+                <span>
+                  <b className="text-teal-deep">60-min</b> 1-on-1 audit
+                </span>
+                <span>
+                  <b className="text-teal-deep">100% free</b>, no obligation
+                </span>
+                <span>
+                  <b className="text-teal-deep">4.9/5</b> from 200+ practices
+                </span>
+              </div>
+            </FadeUp>
           </div>
-        </div>
 
-        <div className="relative z-10 mx-auto grid max-w-[1280px] gap-12 px-5 pb-20 pt-16 lg:min-h-[780px] lg:grid-cols-[0.9fr_1fr] lg:items-center lg:pb-24 lg:pt-20">
-          <Reveal>
-            <span className="kicker">Your Success Matters - Since 2007</span>
-            <h1 className="display mt-6 max-w-[760px] text-[clamp(44px,7vw,92px)] text-white">
-              The operating system for <em>aesthetic practice growth</em>.
-            </h1>
-            <p className="mt-6 max-w-[580px] text-[17px] leading-relaxed text-white/75">
-              BOA is where dermatology, plastic surgery, and aesthetic leaders
-              turn conversations into decisions: podcasts, live panels,
-              replays, and strategy sessions that connect directly to growth.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Link href="/msm" className="btn btn-teal">
-                Book Strategy Meeting <span className="arr">-&gt;</span>
-              </Link>
-              <Link href="/podcast" className="btn btn-ghost-light">
-                Explore the Archive
-              </Link>
-            </div>
-
-            <div className="mt-10 grid max-w-[620px] gap-px overflow-hidden border border-white/12 bg-white/12 sm:grid-cols-3">
-              {[
-                { value: "60 min", label: "1-on-1 audit" },
-                { value: "294", label: "podcast episodes" },
-                { value: "Live", label: "sheet database" },
-              ].map((stat) => (
-                <div key={stat.label} className="bg-navy-ink/65 p-5">
-                  <div className="display text-[28px] text-white">{stat.value}</div>
-                  <div className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-teal">
-                    {stat.label}
+          <FadeUp delay={0.14}>
+            <div className="relative mx-auto w-full max-w-[480px]">
+              {latestEpisode ? (
+                <TiltCard
+                  maxTilt={4}
+                  className="signal-panel border border-line bg-sand p-7 sm:p-8"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                      <span className="live-dot" /> Latest Episode
+                    </span>
+                    <span className="chip teal">{latestEpisode.category}</span>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal delay={140}>
-            <div className="ml-auto w-full max-w-[520px] lg:pt-32">
-              <div className="signal-panel border border-white/12 bg-white/[0.045] p-6 backdrop-blur-md">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="chip teal">Latest Signal</span>
-                  <span className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-white/55">
-                    <span className="live-dot" /> Live
-                  </span>
-                </div>
-
-                {latestEpisode ? (
+                  <div className="display mt-6 text-[clamp(30px,3vw,38px)] leading-none text-navy/80">
+                    {String(latestEpisode.episode).padStart(2, "0")}
+                  </div>
                   <Link
                     href={`/podcast/${latestEpisode.slug}`}
-                    className="group mt-6 block border-t border-white/10 pt-6"
+                    className="group mt-4 block"
                   >
-                    <div className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-teal">
-                      Episode {latestEpisode.episode}
-                    </div>
-                    <h2 className="display mt-3 text-[clamp(24px,2.9vw,34px)] leading-tight text-white group-hover:text-teal">
+                    <h2 className="line-clamp-2 text-[16px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
                       {latestEpisode.title}
                     </h2>
-                    <div className="mt-4 text-[12px] font-extrabold uppercase tracking-[0.16em] text-white/55">
-                      {latestEpisode.guestName} - {latestEpisode.category}
-                    </div>
+                    <p className="mt-2 text-[12px] font-medium uppercase tracking-[0.12em] text-muted">
+                      {latestEpisode.guestName}
+                    </p>
+                    <span className="linkline mt-5">
+                      Listen now <span className="arr">-&gt;</span>
+                    </span>
                   </Link>
-                ) : (
-                  <p className="mt-6 border-t border-white/10 pt-6 text-[14px] text-white/65">
-                    Podcast data is syncing from the BOA Sheet.
-                  </p>
-                )}
+                </TiltCard>
+              ) : (
+                <div className="signal-panel border border-line bg-sand p-8">
+                  <span className="kicker">The BOA Podcast</span>
+                  <h2 className="display mt-4 text-[26px] text-navy">
+                    New episodes drop every week.
+                  </h2>
+                </div>
+              )}
 
-                <div className="mt-7 grid gap-px overflow-hidden border border-white/10 bg-white/10">
-                  {featuredPanels.map((panel) => (
-                    <Link
-                      key={panel.slug}
-                      href={`/panels/${panel.slug}`}
-                      className="group bg-navy-ink/60 p-4 transition-colors hover:bg-navy-ink"
-                    >
-                      <div className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-white/45">
-                        Upcoming panel - {panel.monthYear || panel.dateLabel}
-                      </div>
-                      <div className="mt-2 text-[14px] font-extrabold leading-snug text-white group-hover:text-teal">
-                        {panel.title}
-                      </div>
-                    </Link>
-                  ))}
+              <div className="mt-5 grid grid-cols-3 gap-6 rounded-2xl border border-line bg-paper p-6">
+                <div className="stat-rule">
+                  <div className="display text-[26px] leading-none text-navy">
+                    <Counter target={podcasts.length || 294} suffix="+" />
+                  </div>
+                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
+                    Episodes
+                  </div>
+                </div>
+                <div className="stat-rule">
+                  <div className="display text-[26px] leading-none text-navy">
+                    <Counter target={panelReplays.length || 16} suffix="+" />
+                  </div>
+                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
+                    Replays
+                  </div>
+                </div>
+                <div className="stat-rule">
+                  <div className="display text-[26px] leading-none text-navy">
+                    <Counter target={19} suffix=" yrs" />
+                  </div>
+                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
+                    Experience
+                  </div>
                 </div>
               </div>
             </div>
-          </Reveal>
+          </FadeUp>
         </div>
+
+        {nextPanel && (
+          <div className="border-t border-line bg-paper">
+            <div className="mx-auto max-w-[1280px] px-5">
+              <Link
+                href={`/panels/${nextPanel.slug}`}
+                className="group flex flex-wrap items-center gap-x-5 gap-y-1 py-4 text-[13px]"
+              >
+                <span className="flex items-center gap-2 font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                  <span className="live-dot" /> Next Live Panel
+                </span>
+                <span className="font-bold text-navy transition-colors group-hover:text-teal-deep">
+                  {nextPanel.title}
+                </span>
+                <span className="font-bold uppercase tracking-[0.14em] text-muted">
+                  {nextPanel.dateLabel || nextPanel.monthYear}
+                </span>
+                <span className="arr ml-auto text-teal-deep transition-transform group-hover:translate-x-1">
+                  -&gt;
+                </span>
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
 
       <Marquee />
 
       <section className="bg-paper">
-        <div className="mx-auto grid max-w-[1280px] gap-px overflow-hidden px-5 py-14 sm:grid-cols-2 lg:grid-cols-4">
-          {authority.map((a, i) => (
-            <Reveal key={a.no} delay={i * 80}>
+        <Stagger className="mx-auto grid max-w-[1280px] gap-px overflow-hidden px-5 py-14 sm:grid-cols-2 lg:grid-cols-4">
+          {authority.map((a) => (
+            <StaggerItem key={a.no}>
               <div className="stat-rule h-full pr-6">
                 <span className="index-no text-[14px]">{a.no}</span>
-                <h3 className="mt-2 text-[15.5px] font-extrabold text-navy">
+                <h3 className="mt-2 text-[15.5px] font-semibold text-navy">
                   {a.title}
                 </h3>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
                   {a.copy}
                 </p>
               </div>
-            </Reveal>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         <div className="border-t border-line">
           <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-12 gap-y-4 px-5 py-8">
-            <span className="text-[10.5px] font-extrabold uppercase tracking-[0.24em] text-muted">
+            <span className="text-[10.5px] font-semibold uppercase tracking-[0.24em] text-muted">
               Trusted by leaders in aesthetic medicine
             </span>
             {orgs.map((o) => (
               <span
                 key={o}
-                className="display text-[17px] italic text-navy/40 transition-colors hover:text-navy"
+                className="display text-[17px] text-navy/40 transition-colors hover:text-navy"
               >
                 {o}
               </span>
@@ -221,106 +271,77 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
-            <div className="grid gap-8 lg:grid-cols-[0.48fr_1fr]">
-              <div>
-                <span className="kicker">What We Do</span>
-                <h2 className="display mt-5 text-[clamp(30px,4vw,54px)] text-navy">
-                  Four systems, <em>one growth loop</em>.
-                </h2>
-              </div>
-              <p className="max-w-[720px] text-[16px] leading-relaxed text-muted lg:pt-10">
-                The podcast creates insight, events create live momentum, panels
-                create sharper decisions, and MSM turns the best ideas into a
-                practical plan for your market.
-              </p>
-            </div>
-          </Reveal>
-          <div className="mt-14 grid gap-px overflow-hidden border border-line bg-line lg:grid-cols-4">
-            {pillars.map((p, i) => (
-              <Reveal key={p.no} delay={i * 80} className="h-full">
-                <Link
-                  href={p.href}
-                  className="group flex h-full flex-col bg-paper p-8 transition-colors hover:bg-cream"
-                >
-                  <span className="index-no text-[16px]">{p.no}</span>
-                  <h3 className="display mt-8 text-[24px] text-navy transition-colors group-hover:text-teal-deep">
-                    {p.title}
-                  </h3>
-                  <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted">
-                    {p.copy}
-                  </p>
-                  <span className="linkline mt-8">
-                    {p.cta} <span className="arr">-&gt;</span>
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PillarRail
+        kicker="What We Do"
+        heading="Four systems, one growth loop."
+        items={pillars}
+      />
 
       <section className="dark-canvas on-dark relative overflow-hidden py-24 lg:py-32">
-        <div className="ghost-word right-[-4%] top-[8%] text-[clamp(120px,16vw,250px)]">
+        <Parallax speed={0.12} className="ghost-word right-[-4%] top-[8%] text-[clamp(120px,16vw,250px)]">
           results
-        </div>
+        </Parallax>
         <div className="relative mx-auto grid max-w-[1280px] items-center gap-16 px-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">By the Numbers</span>
-            <h2 className="display mt-5 text-[clamp(32px,4.2vw,54px)] text-white">
-              Growth that is measured, not <em>imagined</em>.
-            </h2>
+            <WordReveal
+              as="h2"
+              className="display mt-5 text-[clamp(27px,3.4vw,41px)] text-white"
+              text="Growth that is measured, not *imagined*."
+            />
             <p className="mt-6 max-w-[520px] text-[16px] leading-relaxed text-white/75">
               Aesthetic practices do not grow on theory. They grow on
               disciplined execution, peer insight, useful data, and consistent
               patient acquisition systems.
             </p>
-            <Link href="/about" className="btn btn-teal mt-9">
-              Read Our Story <span className="arr">-&gt;</span>
-            </Link>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10">
-              {[
-                { n: 3700, s: "+", label: "Practitioners" },
-                { n: podcasts.length || 294, s: "+", label: "Podcast Episodes" },
-                { n: panelReplays.length || 16, s: "+", label: "Panel Replays" },
-                { n: 19, s: " yrs", label: "Industry Experience" },
-              ].map((st) => (
-                <div key={st.label} className="bg-navy-ink/70 p-7">
-                  <div className="display text-[clamp(38px,4.5vw,58px)] leading-none text-white">
+            <Magnetic className="mt-9 inline-block">
+              <Link href="/about" className="btn btn-teal">
+                Read Our Story <span className="arr">-&gt;</span>
+              </Link>
+            </Magnetic>
+          </FadeUp>
+          <Stagger className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10">
+            {[
+              { n: 3700, s: "+", label: "Practitioners" },
+              { n: podcasts.length || 294, s: "+", label: "Podcast Episodes" },
+              { n: panelReplays.length || 16, s: "+", label: "Panel Replays" },
+              { n: 19, s: " yrs", label: "Industry Experience" },
+            ].map((st) => (
+              <StaggerItem key={st.label}>
+                <div className="bg-navy-ink/70 p-7">
+                  <div className="display text-[clamp(32px,3.7vw,44px)] leading-none text-white">
                     <Counter target={st.n} suffix={st.s} />
                   </div>
-                  <div className="mt-2.5 text-[11px] font-extrabold uppercase tracking-[0.22em] text-teal">
+                  <div className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal">
                     {st.label}
                   </div>
                 </div>
-              ))}
-            </div>
-          </Reveal>
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </section>
 
       <section className="border-b border-line bg-paper py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div>
                 <span className="kicker">The BOA Podcast</span>
-                <h2 className="display mt-4 text-[clamp(30px,4vw,48px)] text-navy">
-                  Latest <em>database episodes</em>
-                </h2>
+                <WordReveal
+                  as="h2"
+                  className="display mt-4 text-[clamp(26px,3.3vw,36px)] text-navy"
+                  text="Latest *episodes*"
+                />
               </div>
               <Link href="/podcast" className="linkline">
                 All Episodes <span className="arr">-&gt;</span>
               </Link>
             </div>
-          </Reveal>
-          <div className="mt-12 grid gap-px overflow-hidden border border-line bg-line">
+          </FadeUp>
+          <Stagger className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
             {podcasts.slice(0, 3).map((episode) => (
-              <Reveal key={episode.slug}>
+              <StaggerItem key={episode.slug}>
                 <Link
                   href={`/podcast/${episode.slug}`}
                   className="group grid gap-5 bg-paper p-6 transition-colors hover:bg-cream md:grid-cols-[130px_1fr_auto] md:items-center"
@@ -329,7 +350,7 @@ export default async function Home() {
                     <span className="index-no text-[15px]">
                       EP {episode.episode}
                     </span>
-                    <div className="mt-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">
+                    <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
                       {episode.datePublished}
                     </div>
                   </div>
@@ -346,69 +367,75 @@ export default async function Home() {
                     Listen <span className="arr">-&gt;</span>
                   </span>
                 </Link>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       <section className="py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div>
                 <span className="kicker">Expert Panels</span>
-                <h2 className="display mt-4 text-[clamp(30px,4vw,48px)] text-navy">
-                  Recent <em>replay rooms</em>
-                </h2>
+                <WordReveal
+                  as="h2"
+                  className="display mt-4 text-[clamp(26px,3.3vw,36px)] text-navy"
+                  text="Recent *replay rooms*"
+                />
               </div>
               <Link href="/panels#series" className="linkline">
                 Panel Archive <span className="arr">-&gt;</span>
               </Link>
             </div>
-          </Reveal>
-          <div className="mt-12 grid gap-7 md:grid-cols-3">
-            {latestReplays.map((replay, index) => (
-              <Reveal key={replay.slug} delay={index * 80} className="h-full">
-                <Link
-                  href={`/panels/replays/${replay.slug}`}
-                  className="card-frame group flex h-full flex-col p-7"
-                >
-                  <span className="chip teal self-start">{replay.category}</span>
-                  <h3 className="display mt-5 flex-1 text-[23px] leading-snug text-navy group-hover:text-teal-deep">
-                    {replay.title}
-                  </h3>
-                  <div className="mt-6 border-t border-line pt-4 text-[12px] font-extrabold uppercase tracking-[0.16em] text-muted">
-                    {replay.date} - {replay.duration || "Replay"}
-                  </div>
-                  <span className="linkline mt-5">
-                    Watch replay <span className="arr">-&gt;</span>
-                  </span>
-                </Link>
-              </Reveal>
+          </FadeUp>
+          <Stagger className="mt-12 grid gap-7 md:grid-cols-3">
+            {latestReplays.map((replay) => (
+              <StaggerItem key={replay.slug} className="h-full">
+                <TiltCard maxTilt={4} className="h-full">
+                  <Link
+                    href={`/panels/replays/${replay.slug}`}
+                    className="card-frame group flex h-full flex-col p-7"
+                  >
+                    <span className="chip teal self-start">{replay.category}</span>
+                    <h3 className="display mt-5 flex-1 text-[23px] leading-snug text-navy group-hover:text-teal-deep">
+                      {replay.title}
+                    </h3>
+                    <div className="mt-6 border-t border-line pt-4 text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
+                      {replay.date} - {replay.duration || "Replay"}
+                    </div>
+                    <span className="linkline mt-5">
+                      Watch replay <span className="arr">-&gt;</span>
+                    </span>
+                  </Link>
+                </TiltCard>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       <section className="border-y border-line bg-sand py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="mx-auto max-w-[720px] text-center">
               <span className="kicker center justify-center">Real Results</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
-                What happens when strategy meets <em>execution</em>.
-              </h2>
+              <WordReveal
+                as="h2"
+                className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy"
+                text="What happens when strategy meets *execution*."
+              />
               <p className="mt-4 text-[16px] text-muted">
                 An independent dermatology practice, 14 months into a full BOA
                 and MSM engagement.
               </p>
             </div>
-          </Reveal>
+          </FadeUp>
 
-          <Reveal delay={120}>
-            <div className="mx-auto mt-14 max-w-[900px] overflow-hidden rounded-[3px] border border-line bg-paper">
-              <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-line bg-cream text-[10.5px] font-extrabold uppercase tracking-[0.2em]">
+          <FadeUp delay={0.12}>
+            <div className="mx-auto mt-14 max-w-[900px] overflow-hidden rounded-2xl border border-line bg-paper">
+              <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-line bg-cream text-[10.5px] font-semibold uppercase tracking-[0.2em]">
                 <div className="p-5 text-muted">Metric</div>
                 <div className="border-l border-line p-5 text-muted">
                   Before BOA
@@ -447,7 +474,7 @@ export default async function Home() {
                   key={r.label}
                   className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-line last:border-b-0"
                 >
-                  <div className="flex items-center p-5 text-[13px] font-extrabold uppercase tracking-wide text-navy">
+                  <div className="flex items-center p-5 text-[13px] font-semibold uppercase tracking-wide text-navy">
                     {r.label}
                   </div>
                   <div className="display flex items-center border-l border-line p-5 text-[22px] text-navy/40">
@@ -462,25 +489,27 @@ export default async function Home() {
                 </div>
               ))}
             </div>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 
       <section className="py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="mx-auto mb-14 max-w-[640px] text-center">
               <span className="kicker center justify-center">
                 Why People Love Us
               </span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
-                From the <em>community</em>
-              </h2>
+              <WordReveal
+                as="h2"
+                className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy"
+                text="From the *community*"
+              />
             </div>
-          </Reveal>
-          <Reveal delay={100}>
+          </FadeUp>
+          <FadeUp delay={0.1}>
             <TestimonialSlider />
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import Reveal from "@/components/Reveal";
 import CtaBand from "@/components/CtaBand";
 import KbExplorer from "@/components/KbExplorer";
 import { featuredArticle, articles, tools } from "@/lib/data";
+import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
+import WordReveal from "@/components/motion/WordReveal";
+import TiltCard from "@/components/motion/TiltCard";
 
 export const metadata: Metadata = {
   title: "Resources",
@@ -28,11 +29,12 @@ export default function ResourcesPage() {
           learn
         </div>
         <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-16 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:pt-20">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">Resources</span>
-            <h1 className="display mt-6 text-[clamp(38px,5vw,64px)] text-navy">
-              Practical wisdom for <em>growing a modern practice.</em>
-            </h1>
+            <WordReveal
+              text="Practical wisdom for *growing a modern practice.*"
+              className="display mt-6 text-[clamp(32px,4.1vw,49px)] text-navy"
+            />
             <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-muted">
               Our living library of blogs, working tools and the most common
               questions we hear from dermatology, plastic surgery and med-spa
@@ -46,19 +48,24 @@ export default function ResourcesPage() {
                 Open the FAQ
               </a>
             </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="offset-frame tone-img relative mx-auto aspect-[4/3] max-w-[500px] overflow-hidden rounded-[3px]">
-              <Image
-                src="/assets/resources-hero.jpg"
-                alt="The BOA resource library"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 500px"
-                className="object-cover"
-              />
+          </FadeUp>
+          <FadeUp delay={0.12}>
+            <div className="offset-frame card-frame relative mx-auto max-w-[500px] bg-sand p-9">
+              <span className="kicker">The Library, In Numbers</span>
+              <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-9">
+                {kbStats.map((s) => (
+                  <div key={s.label} className="stat-rule">
+                    <div className="display text-[clamp(26px,3vw,36px)] leading-none text-navy">
+                      {s.v}
+                    </div>
+                    <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                      {s.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 
@@ -73,7 +80,7 @@ export default function ResourcesPage() {
             <a
               key={s.href}
               href={s.href}
-              className="flex shrink-0 items-baseline gap-2.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-navy transition-colors hover:text-teal-deep"
+              className="flex shrink-0 items-baseline gap-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-navy transition-colors hover:text-teal-deep"
             >
               <span className="index-no">{s.no}</span> {s.label}
             </a>
@@ -84,10 +91,10 @@ export default function ResourcesPage() {
       {/* blogs */}
       <section id="blogs" className="scroll-mt-32 bg-paper py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[720px]">
               <span className="kicker">Section 01 · Blogs</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 Insights from the front lines of{" "}
                 <em>aesthetic practice growth.</em>
               </h2>
@@ -97,79 +104,55 @@ export default function ResourcesPage() {
                 industry.
               </p>
             </div>
-          </Reveal>
+          </FadeUp>
 
           {/* featured */}
-          <Reveal delay={100}>
-            <a
-              href="#blogs"
-              className="card-frame group mt-12 grid overflow-hidden lg:grid-cols-[1.05fr_0.95fr]"
+          <FadeUp delay={0.1}>
+            <TiltCard
+              maxTilt={2}
+              className="card-frame group relative mt-12 overflow-hidden bg-sand"
             >
-              <div className="tone-img relative min-h-[280px]">
-                <Image
-                  src={featuredArticle.image}
-                  alt={featuredArticle.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 640px"
-                  className="object-cover"
-                />
-                <span className="chip teal absolute left-5 top-5">
-                  {featuredArticle.tag}
-                </span>
-              </div>
-              <div className="flex flex-col justify-center p-9 lg:p-14">
-                <h3 className="display text-[clamp(23px,2.5vw,32px)] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+              <a href="#blogs" className="block p-9 lg:p-14">
+                <span className="chip teal">{featuredArticle.tag}</span>
+                <h3 className="display mt-6 max-w-[760px] text-[clamp(23px,2.8vw,36px)] leading-snug text-navy transition-colors group-hover:text-teal-deep">
                   {featuredArticle.title}
                 </h3>
-                <p className="mt-4 text-[14.5px] leading-relaxed text-muted">
+                <p className="mt-4 max-w-[620px] text-[14.5px] leading-relaxed text-muted">
                   {featuredArticle.desc}
                 </p>
-                <div className="mt-6 text-[12px] font-extrabold uppercase tracking-[0.16em] text-muted">
+                <div className="mt-6 text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
                   {featuredArticle.date} · {featuredArticle.read} ·{" "}
                   {featuredArticle.author}
                 </div>
                 <span className="linkline mt-6">
                   Read the full article <span className="arr">→</span>
                 </span>
-              </div>
-            </a>
-          </Reveal>
+              </a>
+            </TiltCard>
+          </FadeUp>
 
           {/* grid */}
-          <div className="mt-10 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-            {articles.map((a, i) => (
-              <Reveal key={a.title} delay={(i % 3) * 80} className="h-full">
+          <Stagger className="mt-10 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            {articles.map((a) => (
+              <StaggerItem key={a.title} className="h-full">
                 <a
                   href="#blogs"
-                  className="card-frame group flex h-full flex-col overflow-hidden"
+                  className="card-frame group flex h-full flex-col p-7"
                 >
-                  <div className="tone-img relative aspect-[16/9]">
-                    <Image
-                      src={a.image}
-                      alt={a.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover"
-                    />
-                    <span className="chip solid absolute left-4 top-4">
-                      {a.category}
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="display flex-1 text-[18px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
-                      {a.title}
-                    </h3>
-                    <p className="mt-3 text-[13px] leading-relaxed text-muted">
-                      {a.desc}
-                    </p>
-                    <div className="mt-4 border-t border-line pt-3.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">
-                      {a.date} · {a.read}
-                    </div>
+                  <span className="chip self-start">{a.category}</span>
+                  <h3 className="display mt-5 flex-1 text-[18px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+                    {a.title}
+                  </h3>
+                  <p className="mt-3 text-[13px] leading-relaxed text-muted">
+                    {a.desc}
+                  </p>
+                  <div className="mt-4 border-t border-line pt-3.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+                    {a.date} · {a.read}
                   </div>
                 </a>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
 
           <div className="mt-12 text-center">
             <a href="#blogs" className="btn btn-outline">
@@ -182,10 +165,10 @@ export default function ResourcesPage() {
       {/* tools */}
       <section id="tools" className="scroll-mt-32 border-y border-line bg-sand py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[720px]">
               <span className="kicker">Section 02 · Tools</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 Free tools we actually <em>use with our clients.</em>
               </h2>
               <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
@@ -193,10 +176,10 @@ export default function ResourcesPage() {
                 one is built to give you a real answer in five minutes or less.
               </p>
             </div>
-          </Reveal>
-          <div className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+          </FadeUp>
+          <Stagger className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
             {tools.map((t, i) => (
-              <Reveal key={t.title} delay={(i % 3) * 70} className="h-full">
+              <StaggerItem key={t.title} className="h-full">
                 <div className="card-frame flex h-full flex-col p-7">
                   <div className="flex items-center justify-between">
                     <span className="chip">{t.tag}</span>
@@ -214,19 +197,19 @@ export default function ResourcesPage() {
                     {t.cta} <span className="arr">→</span>
                   </Link>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       {/* knowledge base */}
       <section id="faq" className="scroll-mt-32 py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[720px]">
               <span className="kicker">Section 03 · Knowledge Base / FAQ</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 Answers to the questions we <em>hear every single week.</em>
               </h2>
               <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
@@ -235,17 +218,17 @@ export default function ResourcesPage() {
                 jump to relevant questions.
               </p>
             </div>
-          </Reveal>
+          </FadeUp>
           <div className="mt-12">
             <KbExplorer />
           </div>
 
           {/* stats */}
-          <div className="mt-16 grid grid-cols-2 gap-px overflow-hidden border border-line bg-line lg:grid-cols-4">
+          <div className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
             {kbStats.map((s) => (
               <div key={s.label} className="bg-paper p-7 text-center">
                 <div className="display text-[32px] text-navy">{s.v}</div>
-                <div className="mt-1 text-[10.5px] font-extrabold uppercase tracking-[0.2em] text-teal-deep">
+                <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                   {s.label}
                 </div>
               </div>

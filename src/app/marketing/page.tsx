@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
+import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
+import WordReveal from "@/components/motion/WordReveal";
+import Parallax from "@/components/motion/Parallax";
 
 export const metadata: Metadata = {
   title: "Marketing Services (MSM)",
@@ -70,12 +71,12 @@ export default function MarketingPage() {
           grow
         </div>
         <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-20 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:pt-20">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">Marketing</span>
-            <h1 className="display mt-6 text-[clamp(38px,5vw,64px)] text-navy">
-              Grow your practice with{" "}
-              <em>marketing that actually works.</em>
-            </h1>
+            <WordReveal
+              text="Grow your practice with *marketing that actually works.*"
+              className="display mt-6 text-[clamp(32px,4.1vw,49px)] text-navy"
+            />
             <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-muted">
               Four focus areas, no fluff. Built specifically for dermatology,
               plastic surgery and aesthetic practices that want to attract more
@@ -90,19 +91,27 @@ export default function MarketingPage() {
                 Listen to the Podcast
               </Link>
             </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="offset-frame tone-img relative mx-auto aspect-[4/5] max-w-[460px] overflow-hidden rounded-[3px]">
-              <Image
-                src="/assets/hero-marketing.jpg"
-                alt="Marketing for aesthetic practices"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 460px"
-                className="object-cover"
-              />
+          </FadeUp>
+          <Parallax speed={0.14}>
+            <div className="offset-frame card-frame relative mx-auto max-w-[460px] bg-sand p-9">
+              <span className="kicker">Four Focus Areas</span>
+              <ul className="mt-8 space-y-6">
+                {pillars.map((p) => (
+                  <li
+                    key={p.no}
+                    className="flex items-baseline gap-5 border-b border-line pb-6 last:border-0 last:pb-0"
+                  >
+                    <span className="display text-[15px] text-teal-deep">
+                      {p.no}
+                    </span>
+                    <span className="display text-[25px] text-navy">
+                      {p.title}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </Reveal>
+          </Parallax>
         </div>
       </section>
 
@@ -111,19 +120,19 @@ export default function MarketingPage() {
       {/* pillars */}
       <section className="bg-paper py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[640px]">
               <span className="kicker">Four Focus Areas</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 Everything you need, <em>nothing you don&apos;t.</em>
               </h2>
             </div>
-          </Reveal>
-          <div className="mt-14 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {pillars.map((p, i) => (
-              <Reveal key={p.no} delay={i * 80} className="h-full">
+          </FadeUp>
+          <Stagger className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+            {pillars.map((p) => (
+              <StaggerItem key={p.no} className="h-full">
                 <div className="group h-full bg-paper p-8 transition-colors hover:bg-cream">
-                  <span className="display text-[42px] italic text-teal-deep/25 transition-colors group-hover:text-teal-deep/60">
+                  <span className="display text-[32px] text-teal-deep/25 transition-all duration-300 group-hover:scale-110 group-hover:text-teal">
                     {p.no}
                   </span>
                   <h3 className="display mt-3 text-[24px] text-navy">
@@ -141,27 +150,32 @@ export default function MarketingPage() {
                     ))}
                   </ul>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       {/* process */}
       <section className="py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[640px]">
               <span className="kicker">How It Works</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 A simple, <em>proven process</em>
               </h2>
             </div>
-          </Reveal>
-          <div className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+          </FadeUp>
+          <Stagger className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
             {process.map((s, i) => (
-              <Reveal key={s.no} delay={i * 80} className="h-full">
-                <div className="relative h-full border-l border-line pl-7">
+              <StaggerItem key={s.no} className="h-full">
+                <div className="relative h-full pl-7">
+                  <DrawLine
+                    vertical
+                    delay={i * 0.12}
+                    className="absolute left-0 top-0 h-full w-px bg-line"
+                  />
                   <span
                     className="absolute -left-[5px] top-1 h-[9px] w-[9px] rounded-full bg-teal"
                     aria-hidden
@@ -174,9 +188,9 @@ export default function MarketingPage() {
                     {s.copy}
                   </p>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -186,17 +200,17 @@ export default function MarketingPage() {
           proof
         </div>
         <div className="relative mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[640px]">
               <span className="kicker">Real Results</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-white">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-white">
                 What growth <em>looks like</em>
               </h2>
               <p className="mt-4 text-[15.5px] text-white/70">
                 Numbers from real practices in our community.
               </p>
             </div>
-          </Reveal>
+          </FadeUp>
           <div className="mt-14 grid gap-10 sm:grid-cols-3">
             {[
               {
@@ -215,17 +229,17 @@ export default function MarketingPage() {
                 copy: "Across hundreds of high-intent search terms.",
               },
             ].map((s, i) => (
-              <Reveal key={s.title} delay={i * 90}>
+              <FadeUp key={s.title} delay={i * 0.09}>
                 <div className="stat-rule">
-                  <div className="display text-[clamp(44px,5vw,64px)] leading-none text-white">
+                  <div className="display text-[clamp(37px,4.1vw,49px)] leading-none text-white">
                     {s.v}
                   </div>
-                  <div className="mt-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-teal">
+                  <div className="mt-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal">
                     {s.title}
                   </div>
                   <p className="mt-2 text-[13.5px] text-white/65">{s.copy}</p>
                 </div>
-              </Reveal>
+              </FadeUp>
             ))}
           </div>
         </div>
@@ -234,8 +248,8 @@ export default function MarketingPage() {
       {/* cta box */}
       <section className="border-b border-line bg-sand py-20 text-center">
         <div className="mx-auto max-w-[640px] px-5">
-          <Reveal>
-            <h2 className="display text-[clamp(28px,3.6vw,42px)] text-navy">
+          <FadeUp>
+            <h2 className="display text-[clamp(24px,3.0vw,32px)] text-navy">
               Ready to <em>grow?</em>
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
@@ -246,7 +260,7 @@ export default function MarketingPage() {
             <Link href="/msm" className="btn btn-navy mt-8">
               Book Your Strategy Meeting <span className="arr">→</span>
             </Link>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 

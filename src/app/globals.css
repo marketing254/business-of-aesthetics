@@ -1,27 +1,64 @@
 @import "tailwindcss";
 
 /* ============================================================
-   BOA — "Editorial Atelier" design system
-   Brand: navy #1D2A54 · teal #13AFA0 · cream paper · Fraunces/Manrope
+   BOA design system v3 — built from the logo: teal + deep navy.
+   Semantic tokens drive BOTH themes; every utility color maps to
+   a variable, so light/dark is a single [data-theme] switch.
+   Type: Bricolage Grotesque (display) + Figtree (body).
    ============================================================ */
 
-@theme {
-  --color-cream: #faf8f3;
-  --color-paper: #ffffff;
-  --color-sand: #f1eee6;
-  --color-line: #e4dfd3;
-  --color-ink: #191817;
-  --color-muted: #6e6a5f;
-  --color-navy: #1d2a54;
-  --color-navy-deep: #131c3d;
-  --color-navy-ink: #0c1229;
-  --color-teal: #13afa0;
-  --color-teal-deep: #0d8d81;
-  --color-teal-soft: #e0f2ef;
-  --color-gold: #c2a24b;
+:root {
+  /* light theme */
+  --bg: #f5faf9;
+  --surface: #ffffff;
+  --surface-2: #eaf3f1;
+  --border: #dbe7e4;
+  --heading: #16294e;
+  --text: #27384a;
+  --text-muted: #5d6f7b;
+  --accent: #10a89a;
+  --accent-strong: #0b8478;
+  --accent-soft: #d9f0ed;
+  --dark-1: #0c1730;
+  --dark-2: #13223f;
+  --shadow-soft: 0 24px 48px -24px rgba(19, 42, 84, 0.18);
+  --on-heading: #ffffff;
+}
 
-  --font-sans: var(--font-manrope), system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+[data-theme="dark"] {
+  --bg: #0a1322;
+  --surface: #101d31;
+  --surface-2: #16273f;
+  --border: #22385466;
+  --heading: #ecf4f5;
+  --text: #c3d1da;
+  --text-muted: #8ba0ad;
+  --accent: #1fc2b2;
+  --accent-strong: #4adcca;
+  --accent-soft: #12352f;
+  --dark-1: #071021;
+  --dark-2: #0f1e37;
+  --shadow-soft: 0 24px 48px -24px rgba(0, 0, 0, 0.5);
+  --on-heading: #0a1322;
+}
+
+@theme inline {
+  --color-cream: var(--bg);
+  --color-paper: var(--surface);
+  --color-sand: var(--surface-2);
+  --color-line: var(--border);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+  --color-navy: var(--heading);
+  --color-navy-deep: var(--dark-2);
+  --color-navy-ink: var(--dark-1);
+  --color-teal: var(--accent);
+  --color-teal-deep: var(--accent-strong);
+  --color-teal-soft: var(--accent-soft);
+  --color-gold: #c9ab5a;
+
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-display: var(--font-heading), system-ui, sans-serif;
 }
 
 html {
@@ -45,16 +82,15 @@ body {
 
 .display {
   font-family: var(--font-display);
-  font-weight: 640;
-  letter-spacing: 0;
-  line-height: 1.04;
-  font-variation-settings: "opsz" 100;
+  font-weight: 570;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
 }
 
 .display em,
 .display i {
-  font-style: italic;
-  font-weight: 560;
+  font-style: normal;
+  font-weight: 640;
   color: var(--color-teal-deep);
 }
 
@@ -68,9 +104,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.28em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-teal-deep);
   white-space: nowrap;
@@ -96,8 +132,8 @@ body {
 /* index number ornament, e.g. section numbers */
 .index-no {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 550;
+  letter-spacing: 0.04em;
   color: var(--color-teal-deep);
 }
 
@@ -108,13 +144,13 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 15px 28px;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  padding: 13px 26px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
-  border-radius: 2px;
+  border-radius: 999px;
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -132,10 +168,11 @@ body {
 
 .btn-navy {
   background: var(--color-navy);
-  color: #fff;
+  color: var(--on-heading);
 }
 .btn-navy:hover {
   background: var(--color-teal-deep);
+  color: #fff;
 }
 
 .btn-teal {
@@ -153,11 +190,11 @@ body {
 }
 .btn-outline:hover {
   background: var(--color-navy);
-  color: #fff;
+  color: var(--on-heading);
 }
 
 .btn-light {
-  background: #fff;
+  background: var(--surface);
   color: var(--color-navy);
 }
 .btn-light:hover {
@@ -180,9 +217,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-teal-deep);
   border-bottom: 1px solid transparent;
@@ -204,7 +241,7 @@ body {
 .card-frame {
   background: var(--color-paper);
   border: 1px solid var(--color-line);
-  border-radius: 3px;
+  border-radius: 18px;
   transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 .card-frame:hover {
@@ -216,7 +253,7 @@ body {
 .signal-panel {
   position: relative;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 18px;
   box-shadow: 0 30px 70px -40px rgba(12, 18, 41, 0.45);
 }
 
@@ -226,8 +263,8 @@ body {
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(19, 175, 160, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(19, 175, 160, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(19, 175, 160, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(19, 175, 160, 0.05) 1px, transparent 1px);
   background-size: 34px 34px;
   mask-image: linear-gradient(120deg, #000, transparent 72%);
 }
@@ -238,30 +275,10 @@ body {
     linear-gradient(180deg, #ffffff, var(--color-cream));
 }
 
-.hero-signal {
-  min-height: clamp(720px, 92vh, 980px);
-}
-
-.hero-signal::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 34%;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent, var(--color-cream));
-}
-
-.hero-microgrid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.065) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.065) 1px, transparent 1px);
-  background-size: 42px 42px;
-}
-
-/* dark section with fine dot grid */
+/* dark section with fine dot grid — kept faint so text stays the focus */
 .dark-canvas {
   background-color: var(--color-navy-ink);
-  background-image: radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: 26px 26px;
   color: #fff;
 }
@@ -291,23 +308,12 @@ body {
   border: 1px solid var(--color-teal);
   pointer-events: none;
   z-index: -1;
-  border-radius: 3px;
+  border-radius: 20px;
 }
 
 /* ---------- marquee ---------- */
 
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 42s linear infinite;
-}
-.marquee-track:hover {
-  animation-play-state: paused;
-}
+/* marquee movement is GSAP-driven (see Marquee.tsx) */
 
 /* ---------- reveal on scroll ---------- */
 
@@ -325,9 +331,6 @@ body {
     opacity: 1;
     transform: none;
     transition: none;
-  }
-  .marquee-track {
-    animation: none;
   }
 }
 
@@ -408,7 +411,7 @@ details.faq .faq-body {
   padding: 14px 16px;
   background: var(--color-cream);
   border: 1px solid var(--color-line);
-  border-radius: 2px;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 15px;
   color: var(--color-ink);
@@ -431,10 +434,9 @@ details.faq .faq-body {
 .ghost-word {
   position: absolute;
   font-family: var(--font-display);
-  font-weight: 900;
-  font-style: italic;
+  font-weight: 800;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(29, 42, 84, 0.08);
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--heading) 9%, transparent);
   pointer-events: none;
   user-select: none;
   line-height: 0.8;
@@ -459,11 +461,11 @@ details.faq .faq-body {
   gap: 6px;
   padding: 5px 12px;
   font-size: 10.5px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   border: 1px solid var(--color-line);
-  border-radius: 2px;
+  border-radius: 999px;
   background: #fff;
   color: var(--color-navy);
   white-space: nowrap;
@@ -471,7 +473,7 @@ details.faq .faq-body {
 .chip.solid {
   background: var(--color-navy);
   border-color: var(--color-navy);
-  color: #fff;
+  color: var(--on-heading);
 }
 .chip.teal {
   background: var(--color-teal);
@@ -483,11 +485,11 @@ details.faq .faq-body {
 .fpill {
   padding: 9px 18px;
   font-size: 11.5px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   border: 1px solid var(--color-line);
-  border-radius: 2px;
+  border-radius: 999px;
   background: #fff;
   color: var(--color-muted);
   cursor: pointer;
@@ -501,7 +503,7 @@ details.faq .faq-body {
 .fpill.active {
   background: var(--color-navy);
   border-color: var(--color-navy);
-  color: #fff;
+  color: var(--on-heading);
 }
 
 /* stat rule block */

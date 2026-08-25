@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
 import PanelExplorer from "@/components/PanelExplorer";
+import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
+import WordReveal from "@/components/motion/WordReveal";
+import TiltCard from "@/components/motion/TiltCard";
+import Parallax from "@/components/motion/Parallax";
 import {
   fetchEventPanels,
   fetchPanelReplays,
@@ -15,7 +18,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Expert Panels",
   description:
-    "BOA expert panels and panel replays powered by the live BOA Google Sheet database.",
+    "Moderated live panels with senior aesthetic leaders — watch every replay free and see what's coming next.",
 };
 
 const panelTopics = [
@@ -55,60 +58,62 @@ const comparison = [
 
 function UpcomingPanel({ panel }: { panel: SheetEvent }) {
   return (
-    <Link href={`/panels/${panel.slug}`} className="card-frame group flex h-full flex-col p-7">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <span className="index-no text-[15px]">
-            {panel.day || panel.monthYear}
-          </span>
-          <div className="mt-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">
-            {panel.time || "8:00 PM ET"}
+    <TiltCard maxTilt={5} className="card-frame group flex h-full flex-col p-7">
+      <Link href={`/panels/${panel.slug}`} className="contents">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <span className="index-no text-[15px]">
+              {panel.day || panel.monthYear}
+            </span>
+            <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+              {panel.time || "8:00 PM ET"}
+            </div>
+          </div>
+          <span className="chip teal">Live Panel</span>
+        </div>
+
+        <h3 className="display mt-5 text-[24px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+          {panel.title}
+        </h3>
+        <p className="mt-4 line-clamp-5 flex-1 text-[14px] leading-relaxed text-muted">
+          {panel.description}
+        </p>
+
+        <div className="mt-6 border-t border-line pt-4">
+          <div className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+            Panelists
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {panel.panelists.map((person) => (
+              <span
+                key={person.name}
+                className="inline-flex items-center gap-2 border border-line bg-cream px-2.5 py-1.5 text-[12px] font-bold text-ink"
+              >
+                {person.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={person.imageUrl}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="h-6 w-6 rounded-full object-cover object-top"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-navy-ink text-[9px] text-teal">
+                    {person.initials}
+                  </span>
+                )}
+                {person.name}
+              </span>
+            ))}
           </div>
         </div>
-        <span className="chip teal">Live Panel</span>
-      </div>
 
-      <h3 className="display mt-5 text-[24px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
-        {panel.title}
-      </h3>
-      <p className="mt-4 line-clamp-5 flex-1 text-[14px] leading-relaxed text-muted">
-        {panel.description}
-      </p>
-
-      <div className="mt-6 border-t border-line pt-4">
-        <div className="text-[10.5px] font-extrabold uppercase tracking-[0.2em] text-teal-deep">
-          Panelists
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {panel.panelists.map((person) => (
-            <span
-              key={person.name}
-              className="inline-flex items-center gap-2 border border-line bg-cream px-2.5 py-1.5 text-[12px] font-bold text-ink"
-            >
-              {person.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={person.imageUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="h-6 w-6 rounded-full object-cover object-top"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="grid h-6 w-6 place-items-center rounded-full bg-navy-ink text-[9px] text-teal">
-                  {person.initials}
-                </span>
-              )}
-              {person.name}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <span className="linkline mt-7">
-        Open panel <span className="arr">-&gt;</span>
-      </span>
-    </Link>
+        <span className="linkline mt-7">
+          Open panel <span className="arr">-&gt;</span>
+        </span>
+      </Link>
+    </TiltCard>
   );
 }
 
@@ -122,19 +127,20 @@ export default async function PanelsPage() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <div className="ghost-word left-[-2%] top-[58%] text-[clamp(110px,15vw,230px)]">
+        <Parallax speed={0.15} className="ghost-word left-[-2%] top-[58%] text-[clamp(110px,15vw,230px)]">
           panels
-        </div>
+        </Parallax>
         <div className="relative mx-auto grid max-w-[1280px] gap-12 px-5 pb-20 pt-14 lg:grid-cols-[0.95fr_1fr] lg:pt-20">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">The BOA Expert Panel Series</span>
-            <h1 className="display mt-6 text-[clamp(36px,4.8vw,68px)] text-navy">
-              Live debates and replay pages from <em>the database</em>.
-            </h1>
+            <WordReveal
+              text="Live debates between *senior aesthetic leaders*."
+              className="display mt-6 text-[clamp(31px,3.9vw,52px)] text-navy"
+            />
             <p className="mt-6 max-w-[590px] text-[16.5px] leading-relaxed text-muted">
-              Upcoming panels and archived replays now come from the Sheet.
-              Each replay has its own page with source video, transcript links,
-              and notes.
+              Moderated, 60-minute conversations with the operators shaping
+              modern practice. Every session is recorded, every replay is
+              free — with notes and transcripts on its own page.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <a href="#upcoming" className="btn btn-navy">
@@ -144,26 +150,26 @@ export default async function PanelsPage() {
                 Replay Archive
               </a>
             </div>
-          </Reveal>
+          </FadeUp>
 
-          <Reveal delay={120}>
-            <div className="signal-panel grid gap-px overflow-hidden border border-line bg-line">
+          <FadeUp delay={0.12}>
+            <Stagger className="signal-panel grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
               {[
                 { label: "Upcoming panels", value: upcomingPanels.length },
                 { label: "Replay pages", value: panelReplays.length },
                 { label: "Latest category", value: latest?.category || "Live" },
               ].map((stat) => (
-                <div key={stat.label} className="bg-paper p-7">
-                  <div className="display text-[clamp(28px,4vw,48px)] italic leading-none text-teal-deep">
+                <StaggerItem key={stat.label} className="bg-paper p-7">
+                  <div className="display text-[clamp(24px,3.3vw,36px)] leading-none text-teal-deep">
                     {stat.value}
                   </div>
-                  <div className="mt-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-muted">
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
                     {stat.label}
                   </div>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
-          </Reveal>
+            </Stagger>
+          </FadeUp>
         </div>
       </section>
 
@@ -171,52 +177,51 @@ export default async function PanelsPage() {
 
       <section id="upcoming" className="scroll-mt-24 border-b border-line bg-paper py-24">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div className="max-w-[720px]">
                 <span className="kicker">Upcoming Panels</span>
-                <h2 className="display mt-5 text-[clamp(30px,4vw,50px)] text-navy">
+                <h2 className="display mt-5 text-[clamp(26px,3.3vw,38px)] text-navy">
                   The next live <em>decision rooms</em>.
                 </h2>
                 <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
-                  These rows come from `event-panels`, including registration
-                  links and speaker images from Google Drive.
+                  The next live sessions on the calendar — moderated debates you
+                  can join in real time, with registration one click away.
                 </p>
               </div>
               <Link href="/events" className="linkline">
                 Full event calendar <span className="arr">-&gt;</span>
               </Link>
             </div>
-          </Reveal>
+          </FadeUp>
 
-          <div className="mt-12 grid gap-7 md:grid-cols-2">
-            {upcomingPanels.map((panel, index) => (
-              <Reveal key={panel.slug} delay={(index % 2) * 80} className="h-full">
+          <Stagger className="mt-12 grid gap-7 md:grid-cols-2">
+            {upcomingPanels.map((panel) => (
+              <StaggerItem key={panel.slug} className="h-full">
                 <UpcomingPanel panel={panel} />
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       <section id="series" className="scroll-mt-24 py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div className="max-w-[720px]">
                 <span className="kicker">Panel Replay Archive</span>
-                <h2 className="display mt-5 text-[clamp(30px,4vw,50px)] text-navy">
+                <h2 className="display mt-5 text-[clamp(26px,3.3vw,38px)] text-navy">
                   Replays with <em>their own pages</em>.
                 </h2>
                 <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
-                  Filter the panel replay database by category, then open the
-                  detail page for video, transcript, and supporting document
-                  links.
+                  Filter the replay library by category, then open any session
+                  for the full video, transcript, and supporting materials.
                 </p>
               </div>
               <span className="chip">{panelReplays.length} Replays</span>
             </div>
-          </Reveal>
+          </FadeUp>
           <div className="mt-10">
             <PanelExplorer replays={panelReplays} />
           </div>
@@ -224,32 +229,32 @@ export default async function PanelsPage() {
       </section>
 
       <section className="dark-canvas on-dark relative overflow-hidden py-24 lg:py-28">
-        <div className="ghost-word bottom-[-3%] right-[-2%] text-[clamp(100px,13vw,200px)]">
+        <Parallax speed={0.15} className="ghost-word bottom-[-3%] right-[-2%] text-[clamp(100px,13vw,200px)]">
           candid
-        </div>
+        </Parallax>
         <div className="relative mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[720px]">
               <span className="kicker">Why BOA Panels Are Different</span>
-              <h2 className="display mt-5 text-[clamp(28px,3.8vw,46px)] text-white">
+              <h2 className="display mt-5 text-[clamp(24px,3.1vw,35px)] text-white">
                 Most webinars are content.{" "}
                 <em>Ours are conversations that move practices.</em>
               </h2>
             </div>
-          </Reveal>
+          </FadeUp>
 
-          <Reveal delay={100}>
+          <FadeUp delay={0.1}>
             <div className="scroll-x mt-12">
               <table className="w-full min-w-[720px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-white/15 text-[10.5px] uppercase tracking-[0.22em]">
-                    <th className="py-4 pr-6 font-extrabold text-white/50">
+                    <th className="py-4 pr-6 font-semibold text-white/50">
                       What Matters
                     </th>
-                    <th className="py-4 pr-6 font-extrabold text-white/50">
+                    <th className="py-4 pr-6 font-semibold text-white/50">
                       Typical Webinars
                     </th>
-                    <th className="py-4 font-extrabold text-teal">
+                    <th className="py-4 font-semibold text-teal">
                       BOA Expert Panels
                     </th>
                   </tr>
@@ -257,7 +262,7 @@ export default async function PanelsPage() {
                 <tbody>
                   {comparison.map((row) => (
                     <tr key={row.matter} className="border-b border-white/8">
-                      <td className="py-5 pr-6 text-[13.5px] font-extrabold text-white">
+                      <td className="py-5 pr-6 text-[13.5px] font-semibold text-white">
                         {row.matter}
                       </td>
                       <td className="py-5 pr-6 text-[13.5px] text-white/55">
@@ -271,7 +276,7 @@ export default async function PanelsPage() {
                 </tbody>
               </table>
             </div>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 

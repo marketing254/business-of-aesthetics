@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
+import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
+import WordReveal from "@/components/motion/WordReveal";
+import TiltCard from "@/components/motion/TiltCard";
 
 export const metadata: Metadata = {
   title: "Coaching Services (CSM)",
@@ -14,37 +15,31 @@ export const metadata: Metadata = {
 const pillarCards = [
   {
     badge: "Pillar 1",
-    image: "/assets/stock-leadership.jpg",
     title: "Leadership & Mindset",
     copy: "Become the calm, confident owner your team needs. From burnout recovery to bold decision-making.",
   },
   {
     badge: "Pillar 2",
-    image: "/assets/stock-team.jpg",
     title: "Team & Culture",
     copy: "Hire better, retain longer. Build a team that protects and elevates your brand.",
   },
   {
     badge: "Pillar 3",
-    image: "/assets/stock-pricing.jpg",
     title: "Pricing & Profit",
     copy: "Set prices that respect your craft. Build margins that fund growth instead of stress.",
   },
   {
     badge: "Pillar 4",
-    image: "/assets/stock-scaling.jpg",
     title: "Growth & Systems",
     copy: "From your first associate to a multi-location group — the systems that make scaling sustainable.",
   },
   {
     badge: "Pillar 5",
-    image: "/assets/stock-patient.jpg",
     title: "Patient Experience",
     copy: "Turn every consult into a long-term patient relationship — and a stream of word-of-mouth referrals.",
   },
   {
     badge: "Pillar 6",
-    image: "/assets/stock-mindset.jpg",
     title: "Owner Wellbeing",
     copy: "Build a practice that gives you energy instead of taking it. The business side of feeling great about your work.",
   },
@@ -89,12 +84,12 @@ export default function CsmPage() {
           coach
         </div>
         <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-20 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:pt-20">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">Coaching Services · CSM</span>
-            <h1 className="display mt-6 text-[clamp(38px,5vw,64px)] text-navy">
-              1:1 coaching with <em>Gary Bird</em> for aesthetic practice
-              owners.
-            </h1>
+            <WordReveal
+              text="1:1 coaching with *Gary Bird* for aesthetic practice owners."
+              className="display mt-6 text-[clamp(32px,4.1vw,49px)] text-navy"
+            />
             <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-muted">
               Personalized coaching that helps you scale your practice without
               sacrificing your sanity. 19+ years of industry experience,
@@ -109,19 +104,27 @@ export default function CsmPage() {
                 Listen to the Podcast
               </Link>
             </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="offset-frame tone-img relative mx-auto aspect-[4/5] max-w-[460px] overflow-hidden rounded-[3px]">
-              <Image
-                src="/assets/csm-hero.jpg"
-                alt="1:1 coaching for aesthetic practice owners"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 460px"
-                className="object-cover"
-              />
-            </div>
-          </Reveal>
+          </FadeUp>
+          <FadeUp delay={0.12}>
+            <TiltCard maxTilt={5} className="offset-frame card-frame relative mx-auto max-w-[460px] bg-sand p-9">
+              <span className="kicker">Coaching Pillars</span>
+              <ul className="mt-8 space-y-5">
+                {pillarCards.map((p, i) => (
+                  <li
+                    key={p.title}
+                    className="flex items-baseline gap-5 border-b border-line pb-5 last:border-0 last:pb-0"
+                  >
+                    <span className="display text-[14px] text-teal-deep">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="display text-[19px] text-navy">
+                      {p.title}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </TiltCard>
+          </FadeUp>
         </div>
       </section>
 
@@ -130,10 +133,10 @@ export default function CsmPage() {
       {/* pillars */}
       <section className="bg-paper py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[680px]">
               <span className="kicker">Coaching Pillars</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 What we work on <em>together</em>
               </h2>
               <p className="mt-4 text-[15.5px] text-muted">
@@ -141,94 +144,89 @@ export default function CsmPage() {
                 in these areas.
               </p>
             </div>
-          </Reveal>
-          <div className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          </FadeUp>
+          <Stagger className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {pillarCards.map((p, i) => (
-              <Reveal key={p.title} delay={(i % 3) * 80} className="h-full">
-                <div className="card-frame group flex h-full flex-col overflow-hidden">
-                  <div className="tone-img relative aspect-[16/10]">
-                    <Image
-                      src={p.image}
-                      alt={p.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover"
-                    />
-                    <span className="chip solid absolute left-4 top-4">
-                      {p.badge}
+              <StaggerItem key={p.title} className="h-full">
+                <div className="card-frame group flex h-full flex-col p-8">
+                  <div className="flex items-center justify-between">
+                    <span className="chip">{p.badge}</span>
+                    <span className="display text-[34px] text-teal-deep/25 transition-all duration-300 group-hover:scale-110 group-hover:text-teal">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <div className="flex flex-1 flex-col p-7">
-                    <h3 className="display text-[21px] text-navy transition-colors group-hover:text-teal-deep">
-                      {p.title}
-                    </h3>
-                    <p className="mt-2.5 text-[13.5px] leading-relaxed text-muted">
-                      {p.copy}
-                    </p>
-                  </div>
+                  <h3 className="display mt-6 text-[21px] text-navy transition-colors group-hover:text-teal-deep">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2.5 text-[13.5px] leading-relaxed text-muted">
+                    {p.copy}
+                  </p>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       {/* steps */}
       <section className="py-24 lg:py-28">
         <div className="mx-auto max-w-[1280px] px-5">
-          <Reveal>
+          <FadeUp>
             <div className="max-w-[680px]">
               <span className="kicker">How It Works</span>
-              <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-navy">
+              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
                 A coaching program that <em>fits your life</em>
               </h2>
             </div>
-          </Reveal>
-          <div className="mt-14 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s, i) => (
-              <Reveal key={s.no} delay={i * 80} className="h-full">
-                <div className="h-full bg-paper p-8">
-                  <span className="display text-[40px] italic text-teal-deep/30">
-                    {s.no}
-                  </span>
-                  <h3 className="display mt-3 text-[20px] text-navy">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2.5 text-[13.5px] leading-relaxed text-muted">
-                    {s.copy}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
+          </FadeUp>
+          <div className="relative mt-14">
+            <DrawLine className="absolute left-0 right-0 top-0 hidden h-px bg-line sm:block" />
+            <Stagger className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+              {steps.map((s) => (
+                <StaggerItem key={s.no} className="h-full">
+                  <div className="h-full bg-paper p-8">
+                    <span className="display text-[30px] text-teal-deep/30">
+                      {s.no}
+                    </span>
+                    <h3 className="display mt-3 text-[20px] text-navy">
+                      {s.title}
+                    </h3>
+                    <p className="mt-2.5 text-[13.5px] leading-relaxed text-muted">
+                      {s.copy}
+                    </p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </Stagger>
           </div>
 
           {/* trust badges */}
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {trust.map((t, i) => (
-              <Reveal key={t.title} delay={i * 60}>
+          <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {trust.map((t) => (
+              <StaggerItem key={t.title}>
                 <div className="flex items-center gap-4 border border-line bg-paper p-5">
                   <span className="grid h-10 w-10 shrink-0 place-items-center bg-teal-soft text-teal-deep">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                   </span>
                   <div>
-                    <div className="text-[13.5px] font-extrabold text-navy">
+                    <div className="text-[13.5px] font-semibold text-navy">
                       {t.title}
                     </div>
                     <div className="text-[11.5px] text-muted">{t.copy}</div>
                   </div>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       {/* CTA */}
       <section className="dark-canvas on-dark py-24 text-center">
         <div className="mx-auto max-w-[680px] px-5">
-          <Reveal>
+          <FadeUp>
             <span className="kicker center justify-center">Ready to Start?</span>
-            <h2 className="display mt-5 text-[clamp(30px,4vw,48px)] text-white">
+            <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-white">
               Your first coaching call is <em>on us.</em>
             </h2>
             <p className="mx-auto mt-4 max-w-[520px] text-[15.5px] leading-relaxed text-white/75">
@@ -238,7 +236,7 @@ export default function CsmPage() {
             <Link href="/msm" className="btn btn-teal mt-9">
               Book Your Free Call <span className="arr">→</span>
             </Link>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 

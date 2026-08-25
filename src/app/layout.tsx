@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollProgress from "@/components/motion/ScrollProgress";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const heading = Bricolage_Grotesque({
+  variable: "--font-heading",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["opsz", "SOFT", "WONK"],
 });
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const body = Figtree({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
@@ -26,13 +25,21 @@ export const metadata: Metadata = {
   icons: { icon: "/assets/logo.png" },
 };
 
+/* Applies the saved (or system) theme before first paint — no flash. */
+const themeScript = `(function(){try{var t=localStorage.getItem("boa-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${heading.variable} ${body.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="flex min-h-full flex-col">
+        <ScrollProgress />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

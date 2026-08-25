@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Reveal from "@/components/Reveal";
 import CtaBand from "@/components/CtaBand";
+import { FadeUp, DrawLine } from "@/components/motion/Animate";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -55,24 +55,27 @@ export default function TermsPage() {
     <>
       <section className="relative overflow-hidden border-b border-line">
         <div className="mx-auto max-w-[880px] px-5 pb-16 pt-16 lg:pt-20">
-          <Reveal>
+          <FadeUp>
             <span className="kicker">Legal</span>
-            <h1 className="display mt-6 text-[clamp(36px,5vw,60px)] text-navy">
+            <h1 className="display mt-6 text-[clamp(31px,4.1vw,46px)] text-navy">
               Terms of <em>Service</em>
             </h1>
             <p className="mt-5 text-[15.5px] leading-relaxed text-muted">
               Last updated: March 26, 2026. By using this website, you agree to
               the terms outlined below.
             </p>
-          </Reveal>
+          </FadeUp>
         </div>
       </section>
 
       <section className="bg-paper py-20">
         <div className="mx-auto max-w-[880px] px-5">
           {sections.map((s, i) => (
-            <Reveal key={s.title} delay={Math.min(i * 40, 160)}>
-              <div className="grid gap-4 border-b border-line py-9 last:border-b-0 sm:grid-cols-[56px_1fr] sm:gap-8">
+            <FadeUp key={s.title} delay={Math.min(i * 0.05, 0.2)}>
+              <div className="relative grid gap-4 py-9 sm:grid-cols-[56px_1fr] sm:gap-8">
+                {i < sections.length - 1 && (
+                  <DrawLine className="absolute bottom-0 left-0 h-px w-full bg-line" />
+                )}
                 <span className="index-no text-[16px]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -83,7 +86,7 @@ export default function TermsPage() {
                   </p>
                 </div>
               </div>
-            </Reveal>
+            </FadeUp>
           ))}
         </div>
       </section>
