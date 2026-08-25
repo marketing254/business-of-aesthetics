@@ -20,6 +20,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # required — add under Settings → Secrets and variables → Actions
+      BOA_SHEET_ID: ${{ secrets.BOA_SHEET_ID }}
     steps:
       - uses: actions/checkout@v4
 

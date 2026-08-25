@@ -10,6 +10,20 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 
+if (!process.env.BOA_SHEET_ID) {
+  console.error(
+    [
+      "ERROR: BOA_SHEET_ID is not set. The static export needs the Google",
+      "Sheet ID at build time (every [slug] page is generated from it).",
+      "",
+      "Fix: GitHub repo -> Settings -> Secrets and variables -> Actions ->",
+      "New repository secret. Name: BOA_SHEET_ID, Value: the long ID from",
+      "the spreadsheet URL.",
+    ].join("\n")
+  );
+  process.exit(1);
+}
+
 const routes = [
   ["src/app/podcast/[slug]/page.tsx", "fetchPodcasts"],
   ["src/app/events/[slug]/page.tsx", "fetchEvents"],
@@ -29,7 +43,8 @@ for (const [path, fetcher] of routes) {
   if (!new RegExp(`\\b${fetcher}\\b`).test(src)) {
     src = src.replace(
       /import \{([^}]*)\} from "@\/lib\/sheet";/,
-      (m, inner) => `import {${inner.trimEnd().replace(/,\s*$/, "")}, ${fetcher} } from "@/lib/sheet";`
+      (m, inner) =>
+        `import {${inner.trimEnd().replace(/,\s*$/, "")}, ${fetcher} } from "@/lib/sheet";`
     );
   }
 
@@ -48,7 +63,9 @@ export async function generateStaticParams() {
 {
   const apiPath = "src/app/api/speakers/route.ts";
   let api = readFileSync(apiPath, "utf8");
-  if (!api.includes('force-static')) {
+  // defensively strip any per-request marker, then mark static
+  api = api.replace(/export const dynamic = "force-dynamic";[ \t]*\r?\n?/g, "");
+  if (!api.includes("force-static")) {
     api = `export const dynamic = "force-static";\n\n` + api;
     writeFileSync(apiPath, api);
     console.log(`force-static added: ${apiPath}`);

@@ -28,7 +28,9 @@ export const metadata: Metadata = {
 /* Applies the saved (or system) theme before first paint — no flash. */
 const themeScript = `(function(){try{var t=localStorage.getItem("boa-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
