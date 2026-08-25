@@ -6,8 +6,6 @@ import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Anim
 import TiltCard from "@/components/motion/TiltCard";
 import { fetchPanelReplays, videoEmbedUrl } from "@/lib/sheet";
 
-export const dynamic = "force-dynamic";
-
 type PanelReplayProps = {
   params: Promise<{ slug: string }>;
 };

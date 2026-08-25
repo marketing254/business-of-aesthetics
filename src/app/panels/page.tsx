@@ -13,8 +13,6 @@ import {
   type SheetEvent,
 } from "@/lib/sheet";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Expert Panels",
   description:

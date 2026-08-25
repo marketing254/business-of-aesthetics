@@ -16,9 +16,6 @@ export const metadata: Metadata = {
     "Share your expertise with 3,700+ aesthetic practitioners. Apply to be a guest on the Business of Aesthetics Podcast or Expert Panels.",
 };
 
-/* Speaker directory reads the Google Sheet live on every request */
-export const dynamic = "force-dynamic";
-
 const proof = [
   { n: 3700, s: "+", label: "Monthly Listeners" },
   { n: 284, s: "+", label: "Published Episodes" },

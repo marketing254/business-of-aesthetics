@@ -27,19 +27,20 @@ git remote add origin https://github.com/<your-username>/<repo-name>.git
 git push -u origin main
 ```
 
-### Hosting a live preview for the team
+### Hosting on GitHub Pages
 
-GitHub itself can't run this site — GitHub Pages only serves static files,
-and the live Google-Sheet pages (podcast/events/panels/speakers) need a
-server. The 2-minute path that works from your GitHub repo:
+`.github/workflows/pages.yml` builds a static export and deploys it to
+GitHub Pages on every push (plus every 6 hours so sheet edits get picked up).
+After pushing, do two things once in the repo settings:
 
-1. Go to https://vercel.com/new and import the GitHub repo (free Hobby plan).
-2. When prompted for environment variables, add `BOA_SHEET_ID` (the long ID
-   from the spreadsheet URL). Optionally `NEXT_PUBLIC_YCBM_URL` later.
-3. Deploy — you get a shareable `https://<project>.vercel.app` URL, and every
-   future `git push` redeploys automatically.
+1. Settings -> Pages -> Source: **GitHub Actions**
+2. Settings -> Secrets and variables -> Actions -> add secret
+   `BOA_SHEET_ID` (the long ID from the spreadsheet URL)
 
-(Netlify or any Node host works the same way; only GitHub Pages does not.)
+The site then lives at `https://<username>.github.io/<repo-name>/`.
+Note: on Pages the sheet data is baked in at build time — edits appear on
+the next rebuild (push/schedule/manual run), not instantly. For instant
+updates, import the repo on Vercel (free) with the same `BOA_SHEET_ID` env.
 
 ## Configuration (.env.local)
 

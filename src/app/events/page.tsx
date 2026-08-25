@@ -14,8 +14,6 @@ import {
   type SheetReplay,
 } from "@/lib/sheet";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Events",
   description:

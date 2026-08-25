@@ -6,8 +6,6 @@ import TranscriptView from "@/components/TranscriptView";
 import { fetchPodcasts, fetchTranscript } from "@/lib/sheet";
 import { platforms } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
-
 type PodcastDetailProps = {
   params: Promise<{ slug: string }>;
 };

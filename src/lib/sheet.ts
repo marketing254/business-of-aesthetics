@@ -13,6 +13,10 @@
  */
 const SHEET_ID = process.env.BOA_SHEET_ID ?? "";
 
+/** Static-export builds bake sheet data in at build time. */
+const STATIC_BUILD = process.env.STATIC_EXPORT === "1";
+
+
 export const SHEET_GIDS = {
   podcasts: "466360483",
   events: "1881150164",
@@ -305,7 +309,7 @@ export async function fetchTranscript(url: string): Promise<TranscriptBlock[]> {
   try {
     const res = await fetch(
       `https://docs.google.com/document/d/${m[1]}/export?format=txt`,
-      { next: { revalidate: 3600 } }
+      STATIC_BUILD ? { cache: "force-cache" } : { next: { revalidate: 3600 } }
     );
     if (!res.ok) return [];
     const text = await res.text();
@@ -361,7 +365,8 @@ async function fetchSheetRows(gid: string): Promise<SheetRow[]> {
   }
   try {
     const res = await fetch(csvUrl(gid), {
-      cache: "no-store",
+      // per-request on servers; cached into the build for static export
+      cache: STATIC_BUILD ? "force-cache" : "no-store",
       redirect: "follow",
     });
     if (!res.ok) return [];

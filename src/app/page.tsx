@@ -22,8 +22,6 @@ import {
   fetchPodcasts,
 } from "@/lib/sheet";
 
-export const dynamic = "force-dynamic";
-
 const authority = [
   {
     no: "01",

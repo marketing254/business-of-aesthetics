@@ -9,8 +9,6 @@ import Aurora from "@/components/motion/Aurora";
 import { hosts, platforms } from "@/lib/data";
 import { fetchPodcasts } from "@/lib/sheet";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Podcast - Business Lessons for Aesthetic Practices",
   description:
