@@ -7,11 +7,13 @@
  */
 
 /**
- * Server-only configuration. Set BOA_SHEET_ID in .env.local (see .env.example).
- * Deliberately NOT prefixed with NEXT_PUBLIC_ so the spreadsheet ID never
- * reaches the client bundle.
+ * The spreadsheet is shared publicly (that is how the CSV export is
+ * readable), and everything in it is displayed on the site — so its ID
+ * is not a secret. A BOA_SHEET_ID env var still overrides it, e.g. to
+ * point a fork at a different sheet.
  */
-const SHEET_ID = process.env.BOA_SHEET_ID ?? "";
+const DEFAULT_SHEET_ID = "1RUbqWwqnIacOiUmuXpnV_hK88LEgMNORBIyb80tSRas";
+const SHEET_ID = process.env.BOA_SHEET_ID || DEFAULT_SHEET_ID;
 
 /** Static-export builds bake sheet data in at build time. */
 const STATIC_BUILD = process.env.STATIC_EXPORT === "1";

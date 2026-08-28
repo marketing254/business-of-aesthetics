@@ -21,7 +21,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # required — add under Settings → Secrets and variables → Actions
+      # optional override — the public sheet ID is built in
       BOA_SHEET_ID: ${{ secrets.BOA_SHEET_ID }}
     steps:
       - uses: actions/checkout@v4

@@ -10,20 +10,6 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 
-if (!process.env.BOA_SHEET_ID) {
-  console.error(
-    [
-      "ERROR: BOA_SHEET_ID is not set. The static export needs the Google",
-      "Sheet ID at build time (every [slug] page is generated from it).",
-      "",
-      "Fix: GitHub repo -> Settings -> Secrets and variables -> Actions ->",
-      "New repository secret. Name: BOA_SHEET_ID, Value: the long ID from",
-      "the spreadsheet URL.",
-    ].join("\n")
-  );
-  process.exit(1);
-}
-
 const routes = [
   ["src/app/podcast/[slug]/page.tsx", "fetchPodcasts"],
   ["src/app/events/[slug]/page.tsx", "fetchEvents"],
