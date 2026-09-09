@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import Counter from "@/components/Counter";
 import CtaBand from "@/components/CtaBand";
+import PageHero from "@/components/PageHero";
+import SectionHead from "@/components/SectionHead";
 import SpeakerForm from "@/components/SpeakerForm";
 import LiveSpeakers from "@/components/LiveSpeakers";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
-import WordReveal from "@/components/motion/WordReveal";
-import TiltCard from "@/components/motion/TiltCard";
 import { fetchSpeakers } from "@/lib/sheet";
 
 export const metadata: Metadata = {
@@ -89,95 +88,51 @@ export default async function SpeakersPage() {
 
   return (
     <>
-      {/* hero */}
-      <section className="dark-canvas on-dark relative overflow-hidden">
-        <div className="ghost-word right-[-3%] top-[52%] text-[clamp(110px,15vw,230px)]">
-          speak
-        </div>
-        <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-20 pt-16 lg:grid-cols-[1.1fr_0.9fr] lg:pb-24 lg:pt-24">
-          <div>
-            <FadeUp>
-              <span className="kicker">Become A Guest Speaker</span>
-            </FadeUp>
-            <WordReveal
-              text="Share your expertise. Reach *3,700+ practitioners.*"
-              className="display mt-6 text-[clamp(31px,3.9vw,47px)] text-white"
-            />
-            <FadeUp delay={0.35}>
-              <p className="mt-6 max-w-[560px] text-[16.5px] leading-relaxed text-white/75">
-                The Business of Aesthetics Podcast is the leading voice for
-                aesthetic medicine professionals. We&apos;re looking for
-                passionate leaders with real stories, bold ideas, and actionable
-                insights to share.
-              </p>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href="#apply" className="btn btn-teal">
-                  Apply Now — Open Spots Available <span className="arr">→</span>
-                </a>
-                <Link href="/podcast" className="btn btn-ghost-light">
-                  Listen First
-                </Link>
-              </div>
-            </FadeUp>
-          </div>
-          <FadeUp delay={0.15}>
-            <TiltCard
-              maxTilt={6}
-              className="offset-frame tone-img relative mx-auto aspect-[4/5] max-w-[420px] overflow-hidden rounded-2xl"
-            >
-              <Image
-                src="/assets/naren-arulrajah.jpg"
-                alt="Naren Arulrajah — Host, Business of Aesthetics Podcast"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 420px"
-                className="object-cover object-top"
-              />
-              <span className="chip teal absolute bottom-5 left-5">
-                Naren Arulrajah — Founder &amp; Host
-              </span>
-            </TiltCard>
-          </FadeUp>
-        </div>
+      <PageHero
+        kicker="Become A Guest Speaker"
+        title={
+          <>
+            Share your expertise. Reach <em>3,700+ practitioners.</em>
+          </>
+        }
+        lede="The Business of Aesthetics Podcast is the leading voice for aesthetic medicine professionals. We're looking for passionate leaders with real stories, bold ideas, and actionable insights to share."
+      >
+        <a href="#apply" className="btn btn-navy">
+          Apply Now <span className="arr">→</span>
+        </a>
+        <Link href="/podcast" className="btn btn-outline">
+          Listen First
+        </Link>
+      </PageHero>
 
-        {/* proof bar */}
-        <div className="relative border-t border-white/10">
-          <Stagger className="mx-auto grid max-w-[1280px] grid-cols-2 gap-y-8 px-5 py-10 lg:grid-cols-4">
-            {proof.map((s) => (
-              <StaggerItem key={s.label} className="stat-rule">
-                <div className="display text-[34px] text-white">
-                  <Counter target={s.n} suffix={s.s} />
-                </div>
-                <div className="mt-1.5 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal">
-                  {s.label}
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
+      {/* proof bar */}
+      <section className="dark-canvas on-dark py-12">
+        <Stagger className="mx-auto grid max-w-[980px] grid-cols-2 gap-y-8 px-5 text-center lg:grid-cols-4">
+          {proof.map((s) => (
+            <StaggerItem key={s.label}>
+              <div className="display text-[clamp(28px,3.2vw,38px)] leading-none text-white">
+                <Counter target={s.n} suffix={s.s} />
+              </div>
+              <div className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal">
+                {s.label}
+              </div>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
       {/* LIVE speaker directory from the Google Sheet */}
-      <section className="border-b border-line bg-paper py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div className="max-w-[680px]">
-                <span className="kicker">Speaker Directory · Live</span>
-                <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
-                  Meet our <em>featured speakers</em>
-                </h2>
-                <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
-                  The experts joining BOA events and panels. This directory
-                  updates automatically the moment our team confirms a new
-                  speaker.
-                </p>
-              </div>
-              <span className="chip">
-                <span className="live-dot" /> Auto-updating
-              </span>
-            </div>
-          </FadeUp>
+      <section className="border-b border-line bg-paper py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Speaker Directory · Live"
+            title={
+              <>
+                Meet our <em>featured speakers</em>
+              </>
+            }
+            lede="The experts joining BOA events and panels. This directory updates automatically the moment our team confirms a new speaker."
+          />
           <div className="mt-12">
             <LiveSpeakers initial={sheetSpeakers} />
           </div>
@@ -185,24 +140,24 @@ export default async function SpeakersPage() {
       </section>
 
       {/* benefits */}
-      <section className="py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="max-w-[680px]">
-              <span className="kicker">Why Apply</span>
-              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Why Apply"
+            title={
+              <>
                 Why aesthetic leaders <em>love being on the show</em>
-              </h2>
-            </div>
-          </FadeUp>
-          <Stagger className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+              </>
+            }
+          />
+          <Stagger className="mx-auto mt-12 grid max-w-[980px] gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
             {benefits.map((b) => (
               <StaggerItem key={b.no} className="h-full">
                 <div className="h-full bg-paper p-9">
-                  <span className="display text-[30px] text-teal-deep/30">
+                  <span className="display text-[28px] text-teal-deep/30">
                     {b.no}
                   </span>
-                  <h3 className="display mt-4 text-[22px] text-navy">
+                  <h3 className="display mt-4 text-[20px] text-navy">
                     {b.title}
                   </h3>
                   <p className="mt-3 text-[14px] leading-relaxed text-muted">
@@ -216,21 +171,18 @@ export default async function SpeakersPage() {
       </section>
 
       {/* topics */}
-      <section className="border-y border-line bg-sand py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="max-w-[680px]">
-              <span className="kicker">What We Cover</span>
-              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
+      <section className="border-y border-line bg-sand py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="What We Cover"
+            title={
+              <>
                 Episode topics we&apos;re <em>looking for</em>
-              </h2>
-              <p className="mt-4 text-[15.5px] text-muted">
-                We cover the full spectrum of running and growing an aesthetic
-                medicine practice.
-              </p>
-            </div>
-          </FadeUp>
-          <Stagger className="mt-10 flex flex-wrap gap-3">
+              </>
+            }
+            lede="We cover the full spectrum of running and growing an aesthetic medicine practice."
+          />
+          <Stagger className="mx-auto mt-10 flex max-w-[880px] flex-wrap justify-center gap-3">
             {topics.map((t) => (
               <StaggerItem key={t}>
                 <span className="chip !py-3 !text-[11px] transition-all hover:border-teal hover:text-teal-deep">
@@ -243,26 +195,23 @@ export default async function SpeakersPage() {
       </section>
 
       {/* ideal guests */}
-      <section className="py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="max-w-[680px]">
-              <span className="kicker">Who Should Apply</span>
-              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Who Should Apply"
+            title={
+              <>
                 We&apos;re looking for <em>these types of guests</em>
-              </h2>
-              <p className="mt-4 text-[15.5px] text-muted">
-                If you fit one of these profiles, we&apos;d love to hear from
-                you.
-              </p>
-            </div>
-          </FadeUp>
-          <Stagger className="mt-14 grid gap-7 sm:grid-cols-2">
+              </>
+            }
+            lede="If you fit one of these profiles, we'd love to hear from you."
+          />
+          <Stagger className="mx-auto mt-12 grid max-w-[980px] gap-6 sm:grid-cols-2">
             {idealGuests.map((g) => (
               <StaggerItem key={g.no} className="h-full">
                 <div className="card-frame h-full p-8">
                   <span className="index-no text-[16px]">{g.no}</span>
-                  <h3 className="display mt-3 text-[22px] text-navy">
+                  <h3 className="display mt-3 text-[20px] text-navy">
                     {g.title}
                   </h3>
                   <p className="mt-3 text-[14px] leading-relaxed text-muted">
@@ -278,23 +227,19 @@ export default async function SpeakersPage() {
       {/* application form */}
       <section
         id="apply"
-        className="dark-canvas on-dark relative scroll-mt-24 overflow-hidden py-24 lg:py-28"
+        className="dark-canvas on-dark scroll-mt-24 py-20 lg:py-24"
       >
-        <div className="ghost-word bottom-[-3%] right-[-2%] text-[clamp(100px,13vw,200px)]">
-          apply
-        </div>
-        <div className="relative mx-auto max-w-[880px] px-5">
-          <FadeUp>
-            <div className="text-center">
-              <h2 className="display text-[clamp(26px,3.3vw,36px)] text-white">
+        <div className="mx-auto max-w-[880px] px-5">
+          <SectionHead
+            dark
+            kicker="Applications Open"
+            title={
+              <>
                 Apply to be a <em>Guest Speaker</em>
-              </h2>
-              <p className="mx-auto mt-4 max-w-[520px] text-[15.5px] text-white/75">
-                Fill out the form below and our team will review your
-                application within 3 business days.
-              </p>
-            </div>
-          </FadeUp>
+              </>
+            }
+            lede="Fill out the form below and our team will review your application within 3 business days."
+          />
           <FadeUp delay={0.1}>
             <div className="mt-12">
               <SpeakerForm />
@@ -306,7 +251,7 @@ export default async function SpeakersPage() {
       <CtaBand
         eyebrow="Ready to Share Your Story?"
         copy="Apply to be a guest speaker and share your expertise with the most engaged community of aesthetic practitioners in North America."
-        primary={{ href: "#apply", label: "Apply Now" }}
+        primary={{ href: "/speakers#apply", label: "Apply Now" }}
         secondary={{ href: "/podcast", label: "Listen to the Podcast" }}
       />
     </>

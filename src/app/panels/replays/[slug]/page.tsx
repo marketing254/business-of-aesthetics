@@ -2,9 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
-import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
-import TiltCard from "@/components/motion/TiltCard";
-import { fetchPanelReplays, videoEmbedUrl } from "@/lib/sheet";
+import LeadGate from "@/components/LeadGate";
+import ShareBar from "@/components/ShareBar";
+import ReplayNotes from "@/components/ReplayNotes";
+import TranscriptView from "@/components/TranscriptView";
+import { FadeUp } from "@/components/motion/Animate";
+import {
+  driveFileId,
+  fetchDocText,
+  fetchDriveTranscript,
+  fetchPanelReplays,
+  fetchTranscript,
+  structureNotes,
+  videoEmbedUrl,
+  type TranscriptBlock,
+} from "@/lib/sheet";
 
 type PanelReplayProps = {
   params: Promise<{ slug: string }>;
@@ -41,145 +53,168 @@ export default async function PanelReplayPage({ params }: PanelReplayProps) {
   if (!replay) notFound();
 
   const embed = videoEmbedUrl(replay.videoUrl);
+  // when the sheet's description cell is a Google Doc link, pull its content
+  // onto the page and structure it (meta grid + sections)
+  const noteLines = replay.descriptionIsLink
+    ? await fetchDocText(replay.description)
+    : blocks(replay.description || "");
+  const notes = structureNotes(noteLines);
+  const summaryLines = blocks(replay.summary || "");
+
+  // transcript: Google Doc or Drive file (WebVTT / plain text)
+  let transcript: TranscriptBlock[] = [];
+  let transcriptFileId = "";
+  if (replay.transcript) {
+    if (/docs\.google\.com\/document/i.test(replay.transcript)) {
+      transcript = await fetchTranscript(replay.transcript);
+    } else if (driveFileId(replay.transcript)) {
+      transcript = await fetchDriveTranscript(replay.transcript);
+      if (!transcript.length) transcriptFileId = driveFileId(replay.transcript);
+    }
+  }
 
   return (
     <>
-      <section className="dark-canvas on-dark relative overflow-hidden">
-        <div className="ghost-word right-[-4%] top-[50%] text-[clamp(110px,15vw,230px)]">
-          replay
-        </div>
-        <div className="relative mx-auto max-w-[1280px] px-5 pb-20 pt-14 lg:pb-24 lg:pt-20">
-          <Link href="/panels#series" className="linkline !text-teal">
-            <span className="arr">&lt;-</span> Back to panel replays
-          </Link>
+      {/* centered header */}
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-[1180px] px-5 pb-12 pt-12 lg:pt-16">
+          <FadeUp>
+            <Link href="/panels#series" className="linkline">
+              <span className="arr">&lt;-</span> Back to panel replays
+            </Link>
 
-          <div className="mt-10 grid gap-12 lg:grid-cols-[0.68fr_0.32fr]">
-            <FadeUp>
-              <span className="kicker">Panel Replay</span>
-              <h1 className="display mt-6 text-[clamp(29px,4.1vw,50px)] text-white">
+            <div className="mx-auto mt-8 max-w-[820px] text-center">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <span className="kicker center justify-center">
+                  Panel Replay
+                </span>
+                {replay.category && (
+                  <span className="chip teal">{replay.category}</span>
+                )}
+              </div>
+              <h1 className="display mx-auto mt-5 text-[clamp(27px,3.7vw,42px)] text-navy">
                 {replay.title}
               </h1>
-              <Stagger className="mt-6 flex flex-wrap gap-3 text-[12px] font-semibold uppercase tracking-[0.18em] text-white/55">
-                <StaggerItem>
-                  <span>{replay.date}</span>
-                </StaggerItem>
-                <StaggerItem>
-                  <span>{replay.duration}</span>
-                </StaggerItem>
-                <StaggerItem>
-                  <span>{replay.category}</span>
-                </StaggerItem>
-              </Stagger>
-            </FadeUp>
-
-            <FadeUp delay={0.12}>
-              <aside className="signal-panel border border-white/12 bg-white/[0.04] p-7">
-                <span className="chip teal">Replay</span>
-                <p className="mt-5 text-[14px] leading-relaxed text-white/70">
-                  Watch the panel and keep the source documents close for team
-                  review, training, or follow-up planning.
-                </p>
-                <Stagger className="mt-7 space-y-3">
-                  {replay.videoUrl && (
-                    <StaggerItem>
-                      <a
-                        href={replay.videoUrl}
-                        target="_blank"
-                        rel="noopener"
-                        className="btn btn-teal w-full"
-                      >
-                        Watch Source <span className="arr">-&gt;</span>
-                      </a>
-                    </StaggerItem>
-                  )}
-                  {replay.descriptionIsLink && (
-                    <StaggerItem>
-                      <a
-                        href={replay.description}
-                        target="_blank"
-                        rel="noopener"
-                        className="btn btn-ghost-light w-full"
-                      >
-                        Description Doc
-                      </a>
-                    </StaggerItem>
-                  )}
-                  {replay.transcript && (
-                    <StaggerItem>
-                      <a
-                        href={replay.transcript}
-                        target="_blank"
-                        rel="noopener"
-                        className="btn btn-ghost-light w-full"
-                      >
-                        Transcript
-                      </a>
-                    </StaggerItem>
-                  )}
-                </Stagger>
-              </aside>
-            </FadeUp>
-          </div>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
+                {replay.date && <span>Recorded {replay.date}</span>}
+                {replay.duration && (
+                  <>
+                    <span className="text-line">·</span>
+                    <span>{replay.duration}</span>
+                  </>
+                )}
+              </div>
+              <div className="mt-5 flex justify-center">
+                <ShareBar title={replay.title} />
+              </div>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
+      {/* video */}
+      <section className="py-14 lg:py-16">
+        <div className="mx-auto max-w-[980px] px-5">
           {embed ? (
             <FadeUp>
-              <TiltCard maxTilt={5} className="overflow-hidden border border-line bg-navy-ink">
-                <iframe
-                  src={embed}
-                  title={replay.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="aspect-video w-full"
-                />
-              </TiltCard>
+              <LeadGate label="this replay" variant="panel">
+                <div className="overflow-hidden rounded-2xl border border-line bg-navy-ink">
+                  <iframe
+                    src={embed}
+                    title={replay.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="aspect-video w-full"
+                  />
+                </div>
+              </LeadGate>
+            </FadeUp>
+          ) : replay.videoUrl ? (
+            <FadeUp>
+              <LeadGate label="this replay" variant="panel">
+                <div className="grid aspect-video place-items-center rounded-2xl border border-line bg-sand">
+                  <a
+                    href={replay.videoUrl}
+                    target="_blank"
+                    rel="noopener"
+                    className="btn btn-navy"
+                  >
+                    Watch the Replay <span className="arr">→</span>
+                  </a>
+                </div>
+              </LeadGate>
             </FadeUp>
           ) : (
             <FadeUp>
-              <div className="signal-panel flex flex-col items-center justify-center gap-4 border border-line bg-sand px-8 py-20 text-center">
+              <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-line bg-sand px-8 py-20 text-center">
                 <span className="chip teal">{replay.category || "Replay"}</span>
-                <p className="display text-[clamp(24px,3vw,34px)] text-navy">
-                  {replay.videoUrl
-                    ? "Watch this session via the source link above."
-                    : "Video coming to this replay soon."}
+                <p className="display text-[clamp(24px,3vw,32px)] text-navy">
+                  Video coming to this replay soon.
                 </p>
                 <p className="max-w-[440px] text-[14px] leading-relaxed text-muted">
-                  In the meantime, the notes below cover the full panel.
+                  In the meantime, the notes below cover the full session.
                 </p>
               </div>
             </FadeUp>
           )}
+        </div>
+      </section>
 
-          <DrawLine className="mt-14 h-px w-full bg-line" />
+      {/* notes */}
+      <section className="border-t border-line bg-paper py-18 lg:py-20">
+        <div className="mx-auto max-w-[780px] px-5">
+          <FadeUp>
+            <div className="text-center">
+              <span className="kicker center justify-center">Panel Notes</span>
+              <h2 className="display mt-4 text-[clamp(23px,2.8vw,30px)] text-navy">
+                What to revisit.
+              </h2>
+            </div>
+          </FadeUp>
+          <FadeUp delay={0.08}>
+            <div className="mt-10">
+              {summaryLines.length > 0 && (
+                <div className="mb-8 space-y-4 text-[15px] leading-[1.85] text-ink/85">
+                  {summaryLines.map((line, i) => (
+                    <p key={i}>{line}</p>
+                  ))}
+                </div>
+              )}
+              <ReplayNotes notes={notes} />
+            </div>
+          </FadeUp>
+        </div>
+      </section>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[0.32fr_0.68fr]">
+      {/* transcript */}
+      {(transcript.length > 0 || transcriptFileId) && (
+        <section className="border-t border-line py-18 lg:py-20">
+          <div className="mx-auto max-w-[880px] px-5">
             <FadeUp>
-              <div>
-                <span className="kicker">Panel Notes</span>
-                <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
-                  What to revisit.
+              <div className="text-center">
+                <span className="kicker center justify-center">Transcript</span>
+                <h2 className="display mt-4 text-[clamp(23px,2.8vw,30px)] text-navy">
+                  Read the full conversation.
                 </h2>
               </div>
             </FadeUp>
-            <Stagger className="space-y-5 text-[15.5px] leading-relaxed text-muted">
-              {blocks(replay.summary || "").map((line) => (
-                <StaggerItem key={line}>
-                  <p>{line}</p>
-                </StaggerItem>
-              ))}
-              {!replay.descriptionIsLink &&
-                blocks(replay.description || "").map((line) => (
-                  <StaggerItem key={line}>
-                    <p>{line}</p>
-                  </StaggerItem>
-                ))}
-            </Stagger>
+            <div className="mt-9">
+              {transcript.length > 0 ? (
+                <TranscriptView blocks={transcript} />
+              ) : (
+                <div className="card-frame overflow-hidden">
+                  <iframe
+                    src={`https://drive.google.com/file/d/${transcriptFileId}/preview`}
+                    title={`Transcript - ${replay.title}`}
+                    loading="lazy"
+                    className="h-[640px] w-full border-0"
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <CtaBand
         eyebrow="Panel Archive"

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
-import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
-import TiltCard from "@/components/motion/TiltCard";
+import ShareBar from "@/components/ShareBar";
+import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import { fetchEventPanels } from "@/lib/sheet";
 
 type PanelDetailProps = {
@@ -35,101 +35,103 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
 
   return (
     <>
-      <section className="dark-canvas on-dark relative overflow-hidden">
-        <div className="ghost-word right-[-4%] top-[50%] text-[clamp(110px,15vw,230px)]">
-          live
-        </div>
-        <div className="relative mx-auto max-w-[1280px] px-5 pb-20 pt-14 lg:pb-24 lg:pt-20">
-          <Link href="/panels#upcoming" className="linkline !text-teal">
-            <span className="arr">&lt;-</span> Back to panels
-          </Link>
+      {/* centered header */}
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-[1180px] px-5 pb-14 pt-12 lg:pt-16">
+          <FadeUp>
+            <Link href="/panels#upcoming" className="linkline">
+              <span className="arr">&lt;-</span> Back to panels
+            </Link>
 
-          <div className="mt-10 grid gap-12 lg:grid-cols-[0.7fr_0.3fr]">
-            <FadeUp>
-              <span className="kicker">{panel.monthYear || "Live Panel"}</span>
-              <h1 className="display mt-6 text-[clamp(29px,4.1vw,50px)] text-white">
+            <div className="mx-auto mt-8 max-w-[820px] text-center">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <span className="kicker center justify-center">
+                  {panel.monthYear || "Live Panel"}
+                </span>
+                <span className="chip teal">Live Panel</span>
+              </div>
+              <h1 className="display mx-auto mt-5 text-[clamp(27px,3.7vw,42px)] text-navy">
                 {panel.title}
               </h1>
-              <p className="mt-6 max-w-[760px] text-[17px] leading-relaxed text-white/75">
-                {panel.description}
-              </p>
-            </FadeUp>
-
-            <FadeUp delay={0.12}>
-              <TiltCard maxTilt={6} className="signal-panel border border-white/12 bg-white/[0.04] p-7">
-                <span className="chip teal">Live Panel</span>
-                <dl className="mt-6 space-y-5 text-[13px]">
-                  <div>
-                    <dt className="font-semibold uppercase tracking-[0.18em] text-white/50">
-                      Date
-                    </dt>
-                    <dd className="mt-1 font-bold text-white">
-                      {panel.dateLabel || panel.monthYear}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold uppercase tracking-[0.18em] text-white/50">
-                      Time
-                    </dt>
-                    <dd className="mt-1 font-bold text-white">
-                      {panel.time || "8:00 PM ET"}
-                    </dd>
-                  </div>
-                </dl>
-                <div className="mt-7 border-t border-white/10 pt-6">
-                  {panel.registerUrl ? (
-                    <a
-                      href={panel.registerUrl}
-                      target="_blank"
-                      rel="noopener"
-                      className="btn btn-teal w-full"
-                    >
-                      Register <span className="arr">-&gt;</span>
-                    </a>
-                  ) : (
-                    <Link href="/contact" className="btn btn-ghost-light w-full">
-                      Ask About This Panel
-                    </Link>
-                  )}
-                </div>
-              </TiltCard>
-            </FadeUp>
-          </div>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13.5px] font-semibold text-muted">
+                <span>{panel.dateLabel || panel.monthYear}</span>
+                <span className="text-line">·</span>
+                <span>{panel.time || "8:00 PM ET"}</span>
+              </div>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+                {panel.registerUrl ? (
+                  <a
+                    href={panel.registerUrl}
+                    target="_blank"
+                    rel="noopener"
+                    className="btn btn-navy"
+                  >
+                    Register for This Panel <span className="arr">→</span>
+                  </a>
+                ) : (
+                  <Link href="/contact" className="btn btn-outline">
+                    Ask About This Panel
+                  </Link>
+                )}
+              </div>
+              <div className="mt-6 flex justify-center">
+                <ShareBar title={panel.title} />
+              </div>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
-      <section className="border-y border-line bg-paper py-20">
-        <div className="mx-auto max-w-[1280px] px-5">
+      {/* about */}
+      {panel.description && (
+        <section className="py-16 lg:py-18">
+          <div className="mx-auto max-w-[780px] px-5">
+            <FadeUp>
+              <div className="text-center">
+                <span className="kicker center justify-center">
+                  About This Panel
+                </span>
+              </div>
+              <p className="mt-6 text-[16px] leading-[1.8] text-muted">
+                {panel.description}
+              </p>
+            </FadeUp>
+          </div>
+        </section>
+      )}
+
+      {/* panelists */}
+      <section className="border-t border-line bg-paper py-18 lg:py-20">
+        <div className="mx-auto max-w-[1020px] px-5">
           <FadeUp>
-            <div className="max-w-[680px]">
-              <span className="kicker">Panelists</span>
-              <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
+            <div className="text-center">
+              <span className="kicker center justify-center">Panelists</span>
+              <h2 className="display mt-4 text-[clamp(23px,2.8vw,30px)] text-navy">
                 The voices in the room.
               </h2>
             </div>
           </FadeUp>
-          <DrawLine className="mt-8 h-px w-full bg-line" />
           <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {panel.panelists.map((person) => (
               <StaggerItem key={person.name} className="h-full">
-                <div className="card-frame flex h-full items-center gap-5 p-6">
+                <div className="card-frame flex h-full flex-col items-center gap-4 p-7 text-center">
                   {person.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={person.imageUrl}
                       alt={person.name}
                       referrerPolicy="no-referrer"
-                      className="h-20 w-20 shrink-0 rounded-full border border-line object-cover object-top"
+                      className="h-24 w-24 shrink-0 rounded-full border border-line object-cover object-top"
                     />
                   ) : (
-                    <span className="dark-canvas grid h-20 w-20 shrink-0 place-items-center rounded-full">
-                      <span className="display text-[24px] text-teal">
+                    <span className="dark-canvas grid h-24 w-24 shrink-0 place-items-center rounded-full">
+                      <span className="display text-[26px] text-teal">
                         {person.initials}
                       </span>
                     </span>
                   )}
                   <div>
-                    <h3 className="display text-[22px] text-navy">
+                    <h3 className="display text-[20px] text-navy">
                       {person.name}
                     </h3>
                     <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">

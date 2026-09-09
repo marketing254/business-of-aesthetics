@@ -115,7 +115,7 @@ export function StaggerItem({
   );
 }
 
-/** Hairline that draws itself in — for section dividers / timelines. */
+/** Hairline that draws itself in - for section dividers / timelines. */
 export function DrawLine({
   className,
   vertical = false,

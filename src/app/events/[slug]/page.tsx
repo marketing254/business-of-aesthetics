@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
-import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
-import TiltCard from "@/components/motion/TiltCard";
+import ShareBar from "@/components/ShareBar";
+import { FadeUp } from "@/components/motion/Animate";
 import { fetchEvents } from "@/lib/sheet";
 
 type EventDetailProps = {
@@ -42,124 +42,108 @@ export default async function EventDetailPage({ params }: EventDetailProps) {
 
   return (
     <>
-      <section className="relative overflow-hidden">
-        <div className="ghost-word right-[-3%] top-[52%] text-[clamp(110px,15vw,230px)]">
-          event
-        </div>
-        <div className="relative mx-auto max-w-[1280px] px-5 pb-20 pt-14 lg:pb-24 lg:pt-20">
-          <Link href="/events#calendar" className="linkline">
-            <span className="arr">&lt;-</span> Back to events
-          </Link>
+      {/* centered header */}
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-[1180px] px-5 pb-14 pt-12 lg:pt-16">
+          <FadeUp>
+            <Link href="/events#calendar" className="linkline">
+              <span className="arr">&lt;-</span> Back to events
+            </Link>
 
-          <div className="mt-10 grid gap-12 lg:grid-cols-[0.72fr_0.28fr]">
-            <div>
-              <FadeUp>
-                <span className="kicker">{event.monthYear || "BOA Event"}</span>
-              </FadeUp>
-              <FadeUp delay={0.1}>
-                <h1 className="display mt-6 text-[clamp(31px,4.1vw,52px)] text-navy">
-                  {event.title}
-                </h1>
-              </FadeUp>
-              <FadeUp delay={0.2}>
-                <p className="mt-6 max-w-[760px] text-[17px] leading-relaxed text-muted">
-                  {blocks(event.description)[0]}
-                </p>
-              </FadeUp>
+            <div className="mx-auto mt-8 max-w-[820px] text-center">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <span className="kicker center justify-center">
+                  {event.monthYear || "BOA Event"}
+                </span>
+                <span className="chip teal">Event</span>
+              </div>
+              <h1 className="display mx-auto mt-5 text-[clamp(28px,3.8vw,44px)] text-navy">
+                {event.title}
+              </h1>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13.5px] font-semibold text-muted">
+                <span>{event.dateLabel || event.monthYear}</span>
+                <span className="text-line">·</span>
+                <span>{event.time || "Time TBA"}</span>
+              </div>
+              <p className="lede mx-auto mt-5 max-w-[640px]">
+                {blocks(event.description)[0]}
+              </p>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+                {event.registerUrl ? (
+                  <a
+                    href={event.registerUrl}
+                    target="_blank"
+                    rel="noopener"
+                    className="btn btn-navy"
+                  >
+                    Register for This Event <span className="arr">→</span>
+                  </a>
+                ) : (
+                  <Link href="/contact" className="btn btn-outline">
+                    Ask About This Event
+                  </Link>
+                )}
+              </div>
+              <div className="mt-6 flex justify-center">
+                <ShareBar title={event.title} />
+              </div>
             </div>
-
-            <FadeUp delay={0.15}>
-              <TiltCard maxTilt={6}>
-                <aside className="signal-panel border border-line bg-paper p-7">
-                  <span className="chip teal">Event</span>
-                  <dl className="mt-6 space-y-5 text-[13px]">
-                    <div>
-                      <dt className="font-semibold uppercase tracking-[0.18em] text-muted">
-                        Date
-                      </dt>
-                      <dd className="mt-1 font-bold text-ink">
-                        {event.dateLabel || event.monthYear}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="font-semibold uppercase tracking-[0.18em] text-muted">
-                        Time
-                      </dt>
-                      <dd className="mt-1 font-bold text-ink">
-                        {event.time || "Time TBA"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="font-semibold uppercase tracking-[0.18em] text-muted">
-                        Panelists
-                      </dt>
-                      <dd className="mt-2 space-y-2">
-                        {event.panelists.length ? (
-                          <Stagger className="space-y-2">
-                            {event.panelists.map((person) => (
-                              <StaggerItem key={person.name}>
-                                <span className="flex items-center gap-2 font-bold text-ink">
-                                  {person.imageUrl ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                      src={person.imageUrl}
-                                      alt=""
-                                      referrerPolicy="no-referrer"
-                                      className="h-8 w-8 rounded-full object-cover object-top"
-                                    />
-                                  ) : (
-                                    <span className="grid h-8 w-8 place-items-center rounded-full bg-navy-ink text-[10px] text-teal">
-                                      {person.initials}
-                                    </span>
-                                  )}
-                                  {person.name}
-                                </span>
-                              </StaggerItem>
-                            ))}
-                          </Stagger>
-                        ) : (
-                          "To be announced"
-                        )}
-                      </dd>
-                    </div>
-                  </dl>
-
-                  <div className="mt-7 border-t border-line pt-6">
-                    {event.registerUrl ? (
-                      <a
-                        href={event.registerUrl}
-                        target="_blank"
-                        rel="noopener"
-                        className="btn btn-navy w-full"
-                      >
-                        Register <span className="arr">-&gt;</span>
-                      </a>
-                    ) : (
-                      <Link href="/contact" className="btn btn-outline w-full">
-                        Ask About This Event
-                      </Link>
-                    )}
-                  </div>
-                </aside>
-              </TiltCard>
-            </FadeUp>
-          </div>
+          </FadeUp>
         </div>
       </section>
 
-      <section className="bg-paper py-20">
-        <DrawLine className="mx-auto h-px max-w-[1280px] bg-line" />
-        <div className="mx-auto grid max-w-[1280px] gap-10 px-5 pt-16 lg:grid-cols-[0.28fr_0.72fr]">
+      {/* panelists */}
+      {event.panelists.length > 0 && (
+        <section className="border-b border-line bg-paper py-14">
+          <div className="mx-auto max-w-[880px] px-5 text-center">
+            <FadeUp>
+              <span className="kicker center justify-center">
+                Featured Voices
+              </span>
+              <div className="mt-7 flex flex-wrap items-start justify-center gap-x-10 gap-y-8">
+                {event.panelists.map((person) => (
+                  <div key={person.name} className="w-[130px]">
+                    {person.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={person.imageUrl}
+                        alt={person.name}
+                        referrerPolicy="no-referrer"
+                        className="mx-auto h-20 w-20 rounded-full border border-line object-cover object-top"
+                      />
+                    ) : (
+                      <span className="dark-canvas mx-auto grid h-20 w-20 place-items-center rounded-full">
+                        <span className="display text-[20px] text-teal">
+                          {person.initials}
+                        </span>
+                      </span>
+                    )}
+                    <div className="mt-3 text-[13.5px] font-semibold leading-snug text-navy">
+                      {person.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeUp>
+          </div>
+        </section>
+      )}
+
+      {/* description */}
+      <section className="py-18 lg:py-20">
+        <div className="mx-auto max-w-[820px] px-5">
           <FadeUp>
-            <div>
-              <span className="kicker">What You Will Learn</span>
-              <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
+            <div className="text-center">
+              <span className="kicker center justify-center">
+                What You Will Learn
+              </span>
+              <h2 className="display mt-4 text-[clamp(23px,2.8vw,31px)] text-navy">
                 The working brief.
               </h2>
             </div>
           </FadeUp>
-          <FadeUp delay={0.1}>
-            <ul className="space-y-0">
+          <FadeUp delay={0.08}>
+            <ul className="mt-10">
               {blocks(event.description).map((line, i) => (
                 <li
                   key={line}
@@ -174,7 +158,6 @@ export default async function EventDetailPage({ params }: EventDetailProps) {
             </ul>
           </FadeUp>
         </div>
-        <DrawLine className="mx-auto mt-16 h-px max-w-[1280px] bg-line" />
       </section>
 
       <CtaBand
@@ -184,7 +167,7 @@ export default async function EventDetailPage({ params }: EventDetailProps) {
             Browse the rest of the <em>event system.</em>
           </>
         }
-        copy="The calendar, panel schedule, and replay archive are always current — check back for the next live session."
+        copy="The calendar, panel schedule, and replay archive are always current - check back for the next live session."
         primary={{ href: "/events", label: "All Events" }}
         secondary={{ href: "/events#replays", label: "Event Replays" }}
       />

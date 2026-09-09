@@ -44,14 +44,16 @@ export async function generateStaticParams() {
   console.log(`generateStaticParams added: ${path}`);
 }
 
-// the speakers API route must be force-static for `output: export`
-// (it becomes a JSON snapshot baked at build time; on servers it stays live)
-{
-  const apiPath = "src/app/api/speakers/route.ts";
+// API routes must be force-static for `output: export`
+// (they become JSON snapshots baked at build time; on servers they stay live)
+for (const apiPath of [
+  "src/app/api/speakers/route.ts",
+  "src/app/api/search/route.ts",
+]) {
   let api = readFileSync(apiPath, "utf8");
   // defensively strip any per-request marker, then mark static
   api = api.replace(/export const dynamic = "force-dynamic";[ \t]*\r?\n?/g, "");
-  if (!api.includes("force-static")) {
+  if (!api.includes(`export const dynamic = "force-static"`)) {
     api = `export const dynamic = "force-static";\n\n` + api;
     writeFileSync(apiPath, api);
     console.log(`force-static added: ${apiPath}`);

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { asset } from "@/lib/asset";
 import Image from "next/image";
 import { site } from "@/lib/data";
 
@@ -7,15 +8,24 @@ const explore = [
   { href: "/podcast", label: "Podcast" },
   { href: "/events", label: "Events" },
   { href: "/panels", label: "Panels" },
+  { href: "/blog", label: "Blog" },
   { href: "/resources", label: "Resources" },
   { href: "/speakers", label: "Speakers" },
 ];
 
-const servicesCol = [
+const servicesCol: { href: string; label: string; external?: boolean }[] = [
   { href: "/marketing", label: "Marketing (MSM)" },
-  { href: "/case-studies", label: "Case Studies" },
-  { href: "/csm", label: "Coaching (CSM)" },
-  { href: "/msm", label: "Strategy Meeting" },
+  { href: "/marketing#book", label: "Free Strategy Meeting" },
+  {
+    href: "https://www.businessofaesthetics.org/industry-directory/",
+    label: "Industry Directory",
+    external: true,
+  },
+  {
+    href: "https://www.businessofaesthetics.org/buying-service/",
+    label: "BOA Buying Service",
+    external: true,
+  },
   { href: "/contact", label: "Contact Us" },
 ];
 
@@ -28,7 +38,7 @@ export default function Footer() {
           <h2 className="display max-w-xl text-[clamp(26px,3.6vw,40px)] text-white">
             Your success <em>matters</em>. Let&apos;s prove it together.
           </h2>
-          <Link href="/msm" className="btn btn-teal shrink-0">
+          <Link href="/marketing#book" className="btn btn-teal shrink-0">
             Book a Free Strategy Meeting <span className="arr">→</span>
           </Link>
         </div>
@@ -36,7 +46,7 @@ export default function Footer() {
         <div className="grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
             <Image
-              src="/assets/logo.png"
+              src={asset("/assets/logo.png")}
               alt="Business of Aesthetics"
               width={196}
               height={57}
@@ -110,12 +120,23 @@ export default function Footer() {
             <ul className="mt-5 space-y-2.5">
               {servicesCol.map((l) => (
                 <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="text-[14px] text-white/70 transition-colors hover:text-teal"
-                  >
-                    {l.label}
-                  </Link>
+                  {l.external ? (
+                    <a
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener"
+                      className="text-[14px] text-white/70 transition-colors hover:text-teal"
+                    >
+                      {l.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={l.href}
+                      className="text-[14px] text-white/70 transition-colors hover:text-teal"
+                    >
+                      {l.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

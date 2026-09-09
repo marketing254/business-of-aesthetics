@@ -17,9 +17,9 @@ export const site = {
   },
   ekwa: "https://www.ekwa.com/",
   latestEpisode: {
-    number: 284,
-    guest: "Tracey A. Hotta",
-    title: "The Future of Clinical Integrity",
+    number: 297,
+    guest: "Melissa Delfino",
+    title: "The 30-Day Owner Absence Test",
   },
 };
 
@@ -184,11 +184,30 @@ export const hosts = [
 ];
 
 export const platforms = [
-  { name: "Apple Podcasts", href: "https://podcasts.apple.com" },
-  { name: "Spotify", href: "https://open.spotify.com" },
-  { name: "YouTube", href: "https://youtube.com" },
-  { name: "Amazon Music", href: "https://music.amazon.com" },
-  { name: "Android", href: "https://podcasts.google.com" },
+  {
+    name: "Apple Podcasts",
+    href: "https://podcasts.apple.com/podcast/business-of-aesthetics-podcast-show/id1523244879",
+  },
+  {
+    name: "Spotify",
+    href: "https://open.spotify.com/show/15rz3RUpQvVYRS7uFM2knz",
+  },
+  {
+    name: "YouTube",
+    href: "https://www.youtube.com/watch?v=Sq8UV78JNrs&list=PL9LKxAt7YDRQmSWdLkDFAaPb28JKfgNpz",
+  },
+  {
+    name: "Amazon Music",
+    href: "https://music.amazon.com/podcasts/cb85ae9f-f1bf-42b8-ad24-0d1044c3e633/Business-of-Aesthetics-Podcast-Show",
+  },
+  {
+    name: "Android",
+    href: "https://www.subscribeonandroid.com/businessofaestheticsorg.libsyn.com/rss",
+  },
+  {
+    name: "TuneIn",
+    href: "https://tunein.com/podcasts/Health--Wellness-Podcasts/Business-of-Aesthetics-Podcast-Show-p1497709/",
+  },
 ];
 
 /* ---------------- Events ---------------- */
@@ -209,7 +228,7 @@ export const featuredEvent: EventItem = {
   date: "May 20, 2026",
   year: 2026,
   badge: "Business Strategy",
-  desc: "Join five industry leaders as they break down the critical decisions that will define your practice's trajectory over the next year and a half — from market positioning to operational resilience.",
+  desc: "Join five industry leaders as they break down the critical decisions that will define your practice's trajectory over the next year and a half - from market positioning to operational resilience.",
   image: "https://www.businessofaesthetics.org/wp-content/uploads/2026/05/may20.jpg",
   link: "https://www.businessofaesthetics.org/webinar/future-proofing-your-aesthetic-practice-decisions-you-must-get-right-in-the-next-18-months/",
 };
@@ -275,7 +294,7 @@ export const events: EventItem[] = [
     date: "Oct 22, 2025",
     year: 2025,
     badge: "Clinical",
-    desc: "Injectables, devices and team training — the full growth stack.",
+    desc: "Injectables, devices and team training - the full growth stack.",
     image:
       "https://www.businessofaesthetics.org/wp-content/uploads/2025/10/Webinar-1022.jpg",
     link: "https://www.businessofaesthetics.org/webinar/maximizing-practice-growth-with-next-gen-injectables-devices-team-training/",
@@ -307,7 +326,7 @@ export const events: EventItem[] = [
     date: "Sep 18, 2025",
     year: 2025,
     badge: "Clinical",
-    desc: "Tailoring care for every patient age group — from Gen Z to boomers.",
+    desc: "Tailoring care for every patient age group - from Gen Z to boomers.",
     image:
       "https://www.businessofaesthetics.org/wp-content/uploads/2025/09/Webinar-set18.jpg",
     link: "https://www.businessofaesthetics.org/webinar/targeted-treatments-for-every-generation-from-botox-to-facelifts/",
@@ -317,7 +336,7 @@ export const events: EventItem[] = [
     date: "Aug 20, 2025",
     year: 2025,
     badge: "Plastic Surgery",
-    desc: "Business, branding, and beyond — a complete owner's roadmap.",
+    desc: "Business, branding, and beyond - a complete owner's roadmap.",
     image:
       "https://www.businessofaesthetics.org/wp-content/uploads/2025/08/aug20-25.jpg",
     link: "https://www.businessofaesthetics.org/webinar/scaling-the-modern-plastic-surgery-practice-business-branding-and-beyond/",
@@ -489,7 +508,7 @@ export const events: EventItem[] = [
     date: "Jul 27, 2024",
     year: 2024,
     badge: "Summit",
-    desc: "Strategies for 2024 and beyond — the smart way to grow.",
+    desc: "Strategies for 2024 and beyond - the smart way to grow.",
     image:
       "https://www.businessofaesthetics.org/wp-content/uploads/2024/07/Webinar-Replay-jul-27.jpg",
     link: "https://www.businessofaesthetics.org/webinar/aesthetics-summit-2024/",
@@ -825,7 +844,7 @@ export const caseStudies = [
     image: "/assets/stock-medspa.jpg",
     title: "From 1 to 4 locations in 24 months",
     metrics: ["+312% revenue", "3× new patients"],
-    body: "An owner-operated med spa in Houston used Gary's coaching to systematize hiring, then leveraged Ekwa marketing to fill four new locations.",
+    body: "An owner-operated med spa in Houston used BOA panel playbooks to systematize hiring, then leveraged Ekwa marketing to fill four new locations.",
   },
   {
     badge: "Dermatology · NY",
@@ -839,21 +858,21 @@ export const caseStudies = [
     image: "/assets/stock-aesthetic.jpg",
     title: "Doubled associate productivity in 6 months",
     metrics: ["+103% per-provider revenue"],
-    body: "A plastic surgery group in California closed the associate competency gap using BOA's leadership panel insights and CSM coaching.",
+    body: "A plastic surgery group in California closed the associate competency gap using BOA's leadership panel insights and expert community.",
   },
   {
     badge: "Skin Clinic · WA",
     image: "/assets/stock-skincare.jpg",
     title: "50% margin improvement after pricing reset",
     metrics: ["+50% gross margin"],
-    body: "A Washington skin clinic used the BOA Pricing Power workshop to confidently raise prices — and didn't lose a single patient.",
+    body: "A Washington skin clinic used the BOA Pricing Power workshop to confidently raise prices - and didn't lose a single patient.",
   },
   {
     badge: "Aesthetics · FL",
     image: "/assets/stock-clinical.jpg",
     title: "From burnout to $1M monthly revenue",
     metrics: ["$1M+ MRR", "−60% owner hours"],
-    body: "A Florida aesthetics owner went from 70-hour weeks to a calm, profitable practice using Gary's coaching framework.",
+    body: "A Florida aesthetics owner went from 70-hour weeks to a calm, profitable practice using the systems shared in BOA's leadership panels.",
   },
   {
     badge: "Multi-location · Canada",
@@ -866,75 +885,11 @@ export const caseStudies = [
 
 /* ---------------- Resources ---------------- */
 
-export const featuredArticle = {
-  tag: "Featured · Growth",
-  image: "/assets/blog-featured-growth.jpg",
-  title:
-    "The 7 signals a thriving aesthetic practice is about to plateau — and what to do before it happens.",
-  desc: "Most practices don't fail from bad work. They fail from invisible friction that quietly kills new patient growth. Here's the early-warning checklist we walk every MSM client through.",
-  date: "April 8, 2026",
-  read: "11 min read",
-  author: "Naren Arulrajah",
-};
-
-export const articles = [
-  {
-    category: "Marketing",
-    image: "/assets/blog-seo-marketing.jpg",
-    title:
-      "Why generic SEO agencies quietly fail aesthetic practices — and what to demand instead.",
-    desc: "If your SEO partner can't name the top three search intents of a cosmetic patient, they're marketing you the wrong way.",
-    date: "Mar 31, 2026",
-    read: "7 min",
-  },
-  {
-    category: "Leadership",
-    image: "/assets/blog-leadership.jpg",
-    title: "The Owner's Mindset: what separates the top 5% of aesthetic practice owners.",
-    desc: "Twelve habits we've observed across the country's most profitable independent practices — and none of them are about injecting more patients.",
-    date: "Mar 24, 2026",
-    read: "9 min",
-  },
-  {
-    category: "Patient Experience",
-    image: "/assets/blog-patient-experience.jpg",
-    title: "The hidden moments that make patients refer — a behavioral walk-through.",
-    desc: "Referrals don't come from a great result. They come from a great feeling. Here's where that feeling is actually built inside your practice.",
-    date: "Mar 17, 2026",
-    read: "6 min",
-  },
-  {
-    category: "Social",
-    image: "/assets/blog-social-media.jpg",
-    title: "Instagram for aesthetic practices in 2026: what's working, what's dead.",
-    desc: "A short, opinionated breakdown of the formats and themes driving new patient calls this quarter.",
-    date: "Mar 10, 2026",
-    read: "8 min",
-  },
-  {
-    category: "Reputation",
-    image: "/assets/blog-reputation.jpg",
-    title: "Turning online reviews into your #1 marketing asset.",
-    desc: "Reviews aren't a report card — they're the most persuasive copy you'll ever publish. Here's how to earn them and use them.",
-    date: "Mar 3, 2026",
-    read: "7 min",
-  },
-  {
-    category: "Team",
-    image: "/assets/blog-team-hiring.jpg",
-    title:
-      "Hiring for a culture of clinical excellence — the interview questions we actually use.",
-    desc: "The team you hire is the practice the patient experiences. A practical hiring framework you can use this week.",
-    date: "Feb 24, 2026",
-    read: "10 min",
-  },
-];
-
 export const tools = [
   {
     tag: "Calculator",
     title: "Patient Lifetime Value Calculator",
-    desc: "Plug in your average ticket, visit frequency and retention rate — see what a single patient is really worth to your practice over five years.",
+    desc: "Plug in your average ticket, visit frequency and retention rate - see what a single patient is really worth to your practice over five years.",
     cta: "Open the tool",
   },
   {
@@ -958,13 +913,13 @@ export const tools = [
   {
     tag: "Planner",
     title: "90-Day Content Planner",
-    desc: "A structured template for building a high-converting social and blog content plan for an aesthetic practice — themes, formats and cadence.",
+    desc: "A structured template for building a high-converting social and blog content plan for an aesthetic practice - themes, formats and cadence.",
     cta: "Get the template",
   },
   {
     tag: "Checklist",
     title: "Website Audit Checklist",
-    desc: "The 40-point checklist our web team runs on every aesthetic practice website — SEO, speed, conversion, trust, accessibility.",
+    desc: "The 40-point checklist our web team runs on every aesthetic practice website - SEO, speed, conversion, trust, accessibility.",
     cta: "Download (PDF)",
   },
   {
@@ -976,7 +931,7 @@ export const tools = [
   {
     tag: "Worksheet",
     title: "Core Services Positioning Canvas",
-    desc: "A one-page exercise to clarify what your practice actually stands for — the foundation every marketing decision depends on.",
+    desc: "A one-page exercise to clarify what your practice actually stands for - the foundation every marketing decision depends on.",
     cta: "Download (PDF)",
   },
   {
@@ -1001,12 +956,12 @@ export const kbFaqs = [
   {
     cat: "general",
     q: "What is Business of Aesthetics, exactly?",
-    a: "Business of Aesthetics is a modern platform that brings together leaders in Dermatology, Plastic Surgery and Aesthetics. It combines a weekly podcast, live expert panels, in-person events and a marketing services arm (MSM) so practitioners can learn, connect and grow — all in one place.",
+    a: "Business of Aesthetics is a modern platform that brings together leaders in Dermatology, Plastic Surgery and Aesthetics. It combines a weekly podcast, live expert panels, in-person events and a marketing services arm (MSM) so practitioners can learn, connect and grow - all in one place.",
   },
   {
     cat: "general",
     q: "Who is BOA built for?",
-    a: "Independent practice owners, partners and senior leaders in dermatology, plastic surgery and medical aesthetics who want candid business conversations — not sales pitches disguised as education.",
+    a: "Independent practice owners, partners and senior leaders in dermatology, plastic surgery and medical aesthetics who want candid business conversations - not sales pitches disguised as education.",
   },
   {
     cat: "general",
@@ -1036,17 +991,17 @@ export const kbFaqs = [
   {
     cat: "marketing",
     q: "What is a Marketing Strategy Meeting (MSM)?",
-    a: "A complimentary 60-minute video conversation with a senior advisor. You walk away with a clear, custom growth plan — covering SEO, social, reputation and web — built specifically for your market and specialty. No pressure, no pitch.",
+    a: "A complimentary 60-minute video conversation with a senior advisor. You walk away with a clear, custom growth plan - covering SEO, social, reputation and web - built specifically for your market and specialty. No pressure, no pitch.",
   },
   {
     cat: "marketing",
     q: "Do I have to be an Ekwa or MSM client to participate?",
-    a: "Not at all. The content, events and community are completely independent of our marketing services. Plenty of our audience will never become clients — and that's entirely the point.",
+    a: "Not at all. The content, events and community are completely independent of our marketing services. Plenty of our audience will never become clients - and that's entirely the point.",
   },
   {
     cat: "marketing",
     q: "What services does MSM actually cover?",
-    a: "Search engine optimization, paid search, social media management, web design and development, reputation management and strategic content — all tailored specifically to aesthetic and dermatology practices.",
+    a: "Search engine optimization, paid search, social media management, web design and development, reputation management and strategic content - all tailored specifically to aesthetic and dermatology practices.",
   },
   {
     cat: "billing",
@@ -1066,7 +1021,7 @@ export const kbFaqs = [
   {
     cat: "speakers",
     q: "Do you compensate podcast guests?",
-    a: "No. Our guests join for the exposure, the network and the conversation — and we make sure every appearance is produced, packaged and promoted at a high standard so it's genuinely valuable for them.",
+    a: "No. Our guests join for the exposure, the network and the conversation - and we make sure every appearance is produced, packaged and promoted at a high standard so it's genuinely valuable for them.",
   },
 ];
 
@@ -1104,7 +1059,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Great investment — cost zero dollars but is an excellent investment of time! It's called the Business of Aesthetics.",
+      "Great investment - cost zero dollars but is an excellent investment of time! It's called the Business of Aesthetics.",
     name: "Jennifer Peden",
     role: "BOA Community Member",
   },

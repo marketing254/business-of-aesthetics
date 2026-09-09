@@ -59,7 +59,7 @@ export default function ContactForm() {
         className={`btn mt-7 w-full ${sent ? "btn-teal" : "btn-navy"}`}
         disabled={sent}
       >
-        {sent ? "✓ Message Sent — We will be in touch!" : "Send Message"}
+        {sent ? "✓ Message Sent - We will be in touch!" : "Send Message"}
       </button>
     </form>
   );

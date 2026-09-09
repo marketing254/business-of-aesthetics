@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Page-enter transition — remounts on every route change, so each
+ * Page-enter transition - remounts on every route change, so each
  * navigation gets a soft rise-and-fade. Kept short so it never feels slow.
  */
 

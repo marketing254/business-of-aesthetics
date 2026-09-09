@@ -1,49 +1,17 @@
 import Link from "next/link";
-import Reveal from "@/components/Reveal";
 import Counter from "@/components/Counter";
-import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
+import HeroScene from "@/components/HeroScene";
+import SectionHead from "@/components/SectionHead";
+import NewsletterBand from "@/components/NewsletterBand";
 import TestimonialSlider from "@/components/TestimonialSlider";
-import {
-  FadeUp,
-  Stagger,
-  StaggerItem,
-  DrawLine,
-} from "@/components/motion/Animate";
-import WordReveal from "@/components/motion/WordReveal";
-import TiltCard from "@/components/motion/TiltCard";
-import Parallax from "@/components/motion/Parallax";
-import Magnetic from "@/components/motion/Magnetic";
-import Aurora from "@/components/motion/Aurora";
-import PillarRail from "@/components/motion/PillarRail";
+import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import {
   fetchEventPanels,
   fetchPanelReplays,
   fetchPodcasts,
+  isUpcoming,
 } from "@/lib/sheet";
-
-const authority = [
-  {
-    no: "01",
-    title: "19+ Years Leadership",
-    copy: "Built by Ekwa Marketing, trusted since 2007 by aesthetic specialists.",
-  },
-  {
-    no: "02",
-    title: "HIPAA-Aware",
-    copy: "Privacy-first practices baked into every recommendation we make.",
-  },
-  {
-    no: "03",
-    title: "4.9 / 5 Member Rating",
-    copy: "From the practitioners we have supported across North America.",
-  },
-  {
-    no: "04",
-    title: "200+ Practices Served",
-    copy: "Real clinics, real results, from solo to multi-location groups.",
-  },
-];
 
 const pillars = [
   {
@@ -76,6 +44,13 @@ const pillars = [
   },
 ];
 
+const authority = [
+  { title: "19+ Years Leadership", copy: "Built by Ekwa Marketing, trusted since 2007 by aesthetic specialists." },
+  { title: "HIPAA-Aware", copy: "Privacy-first practices baked into every recommendation we make." },
+  { title: "4.9 / 5 Member Rating", copy: "From the practitioners we have supported across North America." },
+  { title: "200+ Practices Served", copy: "Real clinics, real results, from solo to multi-location groups." },
+];
+
 const orgs = ["ASLMS", "AAD", "ASPS", "AmSpa", "IAPAM", "ASDS"];
 
 export default async function Home() {
@@ -87,134 +62,57 @@ export default async function Home() {
 
   const latestEpisode = podcasts[0];
   const latestReplays = panelReplays.slice(0, 3);
-  const nextPanel = upcomingPanels[0];
+  const nextPanel = upcomingPanels.filter(isUpcoming)[0];
 
   return (
     <>
+      {/* ============ hero — centered, with cinematic 3D orbit ============ */}
       <section className="relative overflow-hidden">
-        <Aurora intensity={0.55} />
-        <Parallax
-          speed={0.1}
-          className="ghost-word left-[-2%] top-[58%] text-[clamp(120px,16vw,260px)]"
-        >
-          aesthetics
-        </Parallax>
-        <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-16 pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-24">
-          <div>
-            <FadeUp>
-              <span className="kicker">Your Success Matters - Since 2007</span>
-            </FadeUp>
-            <WordReveal
-              as="h1"
-              className="display mt-6 max-w-[680px] text-[clamp(36px,4.6vw,58px)] text-navy"
-              text="The operating system for *aesthetic practice growth*."
-            />
-            <FadeUp delay={0.3}>
-              <p className="mt-6 max-w-[540px] text-[17px] leading-relaxed text-muted">
-                BOA is where dermatology, plastic surgery, and aesthetic leaders
-                turn conversations into decisions: podcasts, live panels,
-                replays, and strategy sessions that connect directly to growth.
-              </p>
-              <div className="mt-9 flex flex-wrap items-center gap-5">
-                <Magnetic>
-                  <Link href="/msm" className="btn btn-navy">
-                    Book Strategy Meeting <span className="arr">-&gt;</span>
-                  </Link>
-                </Magnetic>
-                <Link href="/podcast" className="linkline !text-[13px]">
-                  Explore the Archive <span className="arr">-&gt;</span>
-                </Link>
-              </div>
-              <div className="mt-10 flex flex-wrap gap-x-9 gap-y-3 border-t border-line pt-6 text-[13px] font-bold text-navy">
-                <span>
-                  <b className="text-teal-deep">60-min</b> 1-on-1 audit
-                </span>
-                <span>
-                  <b className="text-teal-deep">100% free</b>, no obligation
-                </span>
-                <span>
-                  <b className="text-teal-deep">4.9/5</b> from 200+ practices
-                </span>
-              </div>
-            </FadeUp>
-          </div>
-
-          <FadeUp delay={0.14}>
-            <div className="relative mx-auto w-full max-w-[480px]">
-              {latestEpisode ? (
-                <TiltCard
-                  maxTilt={4}
-                  className="signal-panel border border-line bg-sand p-7 sm:p-8"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
-                      <span className="live-dot" /> Latest Episode
-                    </span>
-                    <span className="chip teal">{latestEpisode.category}</span>
-                  </div>
-                  <div className="display mt-6 text-[clamp(30px,3vw,38px)] leading-none text-navy/80">
-                    {String(latestEpisode.episode).padStart(2, "0")}
-                  </div>
-                  <Link
-                    href={`/podcast/${latestEpisode.slug}`}
-                    className="group mt-4 block"
-                  >
-                    <h2 className="line-clamp-2 text-[16px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
-                      {latestEpisode.title}
-                    </h2>
-                    <p className="mt-2 text-[12px] font-medium uppercase tracking-[0.12em] text-muted">
-                      {latestEpisode.guestName}
-                    </p>
-                    <span className="linkline mt-5">
-                      Listen now <span className="arr">-&gt;</span>
-                    </span>
-                  </Link>
-                </TiltCard>
-              ) : (
-                <div className="signal-panel border border-line bg-sand p-8">
-                  <span className="kicker">The BOA Podcast</span>
-                  <h2 className="display mt-4 text-[26px] text-navy">
-                    New episodes drop every week.
-                  </h2>
-                </div>
-              )}
-
-              <div className="mt-5 grid grid-cols-3 gap-6 rounded-2xl border border-line bg-paper p-6">
-                <div className="stat-rule">
-                  <div className="display text-[26px] leading-none text-navy">
-                    <Counter target={podcasts.length || 294} suffix="+" />
-                  </div>
-                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
-                    Episodes
-                  </div>
-                </div>
-                <div className="stat-rule">
-                  <div className="display text-[26px] leading-none text-navy">
-                    <Counter target={panelReplays.length || 16} suffix="+" />
-                  </div>
-                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
-                    Replays
-                  </div>
-                </div>
-                <div className="stat-rule">
-                  <div className="display text-[26px] leading-none text-navy">
-                    <Counter target={19} suffix=" yrs" />
-                  </div>
-                  <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
-                    Experience
-                  </div>
-                </div>
-              </div>
+        <HeroScene />
+        <div className="relative mx-auto max-w-[900px] px-5 pb-14 pt-16 text-center lg:pb-16 lg:pt-24">
+          <FadeUp>
+            <span className="kicker center justify-center">
+              Your Success Matters - Since 2007
+            </span>
+            <h1 className="display mx-auto mt-6 max-w-[780px] text-[clamp(34px,4.6vw,56px)] text-navy">
+              The business education aesthetic leaders{" "}
+              <em>never got in training.</em>
+            </h1>
+            <p className="lede mx-auto mt-6 max-w-[620px] text-[17px]">
+              BOA brings dermatology, plastic surgery, and aesthetic leaders
+              together to turn conversations into decisions - a weekly podcast,
+              live expert panels, replays, and strategy sessions that connect
+              directly to growth.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+              <Link href="/marketing#book" className="btn btn-navy">
+                Book a Free Strategy Meeting <span className="arr">→</span>
+              </Link>
+              <Link href="/podcast" className="btn btn-outline">
+                Explore the Podcast
+              </Link>
+            </div>
+            <div className="mx-auto mt-11 flex max-w-[640px] flex-wrap items-center justify-center gap-x-9 gap-y-3 border-t border-line pt-6 text-[13px] font-bold text-navy">
+              <span>
+                <b className="text-teal-deep">60-min</b> 1-on-1 audit
+              </span>
+              <span>
+                <b className="text-teal-deep">100% free</b>, no obligation
+              </span>
+              <span>
+                <b className="text-teal-deep">4.9/5</b> from 200+ practices
+              </span>
             </div>
           </FadeUp>
         </div>
 
+        {/* next live panel strip */}
         {nextPanel && (
           <div className="border-t border-line bg-paper">
-            <div className="mx-auto max-w-[1280px] px-5">
+            <div className="mx-auto max-w-[1180px] px-5">
               <Link
                 href={`/panels/${nextPanel.slug}`}
-                className="group flex flex-wrap items-center gap-x-5 gap-y-1 py-4 text-[13px]"
+                className="group flex flex-wrap items-center justify-center gap-x-5 gap-y-1 py-4 text-center text-[13px]"
               >
                 <span className="flex items-center gap-2 font-semibold uppercase tracking-[0.18em] text-teal-deep">
                   <span className="live-dot" /> Next Live Panel
@@ -225,8 +123,8 @@ export default async function Home() {
                 <span className="font-bold uppercase tracking-[0.14em] text-muted">
                   {nextPanel.dateLabel || nextPanel.monthYear}
                 </span>
-                <span className="arr ml-auto text-teal-deep transition-transform group-hover:translate-x-1">
-                  -&gt;
+                <span className="arr text-teal-deep transition-transform group-hover:translate-x-1">
+                  →
                 </span>
               </Link>
             </div>
@@ -234,26 +132,29 @@ export default async function Home() {
         )}
       </section>
 
-      <Marquee />
-
-      <section className="bg-paper">
-        <Stagger className="mx-auto grid max-w-[1280px] gap-px overflow-hidden px-5 py-14 sm:grid-cols-2 lg:grid-cols-4">
-          {authority.map((a) => (
-            <StaggerItem key={a.no}>
-              <div className="stat-rule h-full pr-6">
-                <span className="index-no text-[14px]">{a.no}</span>
-                <h3 className="mt-2 text-[15.5px] font-semibold text-navy">
-                  {a.title}
-                </h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-                  {a.copy}
-                </p>
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
-        <div className="border-t border-line">
-          <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-12 gap-y-4 px-5 py-8">
+      {/* ============ stats band ============ */}
+      <section className="border-y border-line bg-paper py-14">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <Stagger className="grid grid-cols-2 gap-x-6 gap-y-10 text-center lg:grid-cols-4">
+            {[
+              { n: podcasts.length || 294, s: "+", label: "Podcast Episodes" },
+              { n: panelReplays.length || 16, s: "+", label: "Panel Replays" },
+              { n: 3700, s: "+", label: "Practitioners" },
+              { n: 19, s: " yrs", label: "Industry Experience" },
+            ].map((st) => (
+              <StaggerItem key={st.label}>
+                <div>
+                  <div className="display text-[clamp(32px,3.6vw,44px)] leading-none text-navy">
+                    <Counter target={st.n} suffix={st.s} />
+                  </div>
+                  <div className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                    {st.label}
+                  </div>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 border-t border-line pt-8">
             <span className="text-[10.5px] font-semibold uppercase tracking-[0.24em] text-muted">
               Trusted by leaders in aesthetic medicine
             </span>
@@ -269,100 +170,36 @@ export default async function Home() {
         </div>
       </section>
 
-      <PillarRail
-        kicker="What We Do"
-        heading="Four systems, one growth loop."
-        items={pillars}
-      />
-
-      <section className="dark-canvas on-dark relative overflow-hidden py-24 lg:py-32">
-        <Parallax speed={0.12} className="ghost-word right-[-4%] top-[8%] text-[clamp(120px,16vw,250px)]">
-          results
-        </Parallax>
-        <div className="relative mx-auto grid max-w-[1280px] items-center gap-16 px-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <FadeUp>
-            <span className="kicker">By the Numbers</span>
-            <WordReveal
-              as="h2"
-              className="display mt-5 text-[clamp(27px,3.4vw,41px)] text-white"
-              text="Growth that is measured, not *imagined*."
-            />
-            <p className="mt-6 max-w-[520px] text-[16px] leading-relaxed text-white/75">
-              Aesthetic practices do not grow on theory. They grow on
-              disciplined execution, peer insight, useful data, and consistent
-              patient acquisition systems.
-            </p>
-            <Magnetic className="mt-9 inline-block">
-              <Link href="/about" className="btn btn-teal">
-                Read Our Story <span className="arr">-&gt;</span>
-              </Link>
-            </Magnetic>
-          </FadeUp>
-          <Stagger className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10">
-            {[
-              { n: 3700, s: "+", label: "Practitioners" },
-              { n: podcasts.length || 294, s: "+", label: "Podcast Episodes" },
-              { n: panelReplays.length || 16, s: "+", label: "Panel Replays" },
-              { n: 19, s: " yrs", label: "Industry Experience" },
-            ].map((st) => (
-              <StaggerItem key={st.label}>
-                <div className="bg-navy-ink/70 p-7">
-                  <div className="display text-[clamp(32px,3.7vw,44px)] leading-none text-white">
-                    <Counter target={st.n} suffix={st.s} />
-                  </div>
-                  <div className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal">
-                    {st.label}
-                  </div>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-
-      <section className="border-b border-line bg-paper py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <span className="kicker">The BOA Podcast</span>
-                <WordReveal
-                  as="h2"
-                  className="display mt-4 text-[clamp(26px,3.3vw,36px)] text-navy"
-                  text="Latest *episodes*"
-                />
-              </div>
-              <Link href="/podcast" className="linkline">
-                All Episodes <span className="arr">-&gt;</span>
-              </Link>
-            </div>
-          </FadeUp>
-          <Stagger className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
-            {podcasts.slice(0, 3).map((episode) => (
-              <StaggerItem key={episode.slug}>
+      {/* ============ what we do ============ */}
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="What We Do"
+            title={
+              <>
+                Four systems, <em>one growth loop.</em>
+              </>
+            }
+            lede="Everything BOA publishes and builds serves the same goal: helping independent aesthetic practices make better business decisions."
+          />
+          <Stagger className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {pillars.map((p) => (
+              <StaggerItem key={p.no} className="h-full">
                 <Link
-                  href={`/podcast/${episode.slug}`}
-                  className="group grid gap-5 bg-paper p-6 transition-colors hover:bg-cream md:grid-cols-[130px_1fr_auto] md:items-center"
+                  href={p.href}
+                  className="card-frame group flex h-full flex-col p-7 text-left"
                 >
-                  <div>
-                    <span className="index-no text-[15px]">
-                      EP {episode.episode}
-                    </span>
-                    <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
-                      {episode.datePublished}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="chip">{episode.category}</span>
-                    <h3 className="display mt-3 text-[24px] leading-snug text-navy group-hover:text-teal-deep">
-                      {episode.title}
-                    </h3>
-                    <p className="mt-2 text-[13px] font-bold text-muted">
-                      {episode.guestName}
-                    </p>
-                  </div>
-                  <span className="linkline">
-                    Listen <span className="arr">-&gt;</span>
+                  <span className="display text-[30px] leading-none text-teal-deep/25 transition-colors duration-300 group-hover:text-teal-deep">
+                    {p.no}
+                  </span>
+                  <h3 className="display mt-5 text-[21px] text-navy transition-colors group-hover:text-teal-deep">
+                    {p.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-[13.5px] leading-relaxed text-muted">
+                    {p.copy}
+                  </p>
+                  <span className="linkline mt-6">
+                    {p.cta} <span className="arr">→</span>
                   </span>
                 </Link>
               </StaggerItem>
@@ -371,115 +208,148 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <span className="kicker">Expert Panels</span>
-                <WordReveal
-                  as="h2"
-                  className="display mt-4 text-[clamp(26px,3.3vw,36px)] text-navy"
-                  text="Recent *replay rooms*"
-                />
-              </div>
-              <Link href="/panels#series" className="linkline">
-                Panel Archive <span className="arr">-&gt;</span>
-              </Link>
+      {/* ============ latest episodes ============ */}
+      <section className="border-y border-line bg-paper py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="The BOA Podcast"
+            title={
+              <>
+                Latest <em>episodes</em>
+              </>
+            }
+            lede={
+              latestEpisode
+                ? `Episode ${latestEpisode.episode} just dropped - new conversations arrive every week.`
+                : "New conversations arrive every week."
+            }
+          />
+          <Stagger className="mx-auto mt-12 max-w-[920px] overflow-hidden rounded-2xl border border-line bg-line">
+            <div className="grid gap-px">
+              {podcasts.slice(0, 3).map((episode) => (
+                <StaggerItem key={episode.slug}>
+                  <Link
+                    href={`/podcast/${episode.slug}`}
+                    className="group grid gap-4 bg-paper p-6 transition-colors hover:bg-cream sm:grid-cols-[110px_1fr_auto] sm:items-center sm:p-7"
+                  >
+                    <div>
+                      <span className="index-no text-[15px]">
+                        EP {episode.episode}
+                      </span>
+                      <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+                        {episode.datePublished}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="chip">{episode.category}</span>
+                      <h3 className="mt-2.5 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
+                        {episode.title}
+                      </h3>
+                      <p className="mt-1.5 text-[12.5px] font-bold text-muted">
+                        {episode.guestName}
+                      </p>
+                    </div>
+                    <span className="linkline">
+                      Listen <span className="arr">→</span>
+                    </span>
+                  </Link>
+                </StaggerItem>
+              ))}
             </div>
+          </Stagger>
+          <FadeUp className="mt-10 text-center">
+            <Link href="/podcast" className="btn btn-outline">
+              Browse All Episodes <span className="arr">→</span>
+            </Link>
           </FadeUp>
-          <Stagger className="mt-12 grid gap-7 md:grid-cols-3">
-            {latestReplays.map((replay) => (
-              <StaggerItem key={replay.slug} className="h-full">
-                <TiltCard maxTilt={4} className="h-full">
+        </div>
+      </section>
+
+      {/* ============ recent replays ============ */}
+      {latestReplays.length > 0 && (
+        <section className="py-20 lg:py-24">
+          <div className="mx-auto max-w-[1180px] px-5">
+            <SectionHead
+              kicker="Expert Panels"
+              title={
+                <>
+                  Recent <em>replay rooms</em>
+                </>
+              }
+              lede="Moderated roundtables, recorded live - watch the full conversations on your schedule."
+            />
+            <Stagger className="mt-12 grid gap-6 md:grid-cols-3">
+              {latestReplays.map((replay) => (
+                <StaggerItem key={replay.slug} className="h-full">
                   <Link
                     href={`/panels/replays/${replay.slug}`}
                     className="card-frame group flex h-full flex-col p-7"
                   >
                     <span className="chip teal self-start">{replay.category}</span>
-                    <h3 className="display mt-5 flex-1 text-[23px] leading-snug text-navy group-hover:text-teal-deep">
+                    <h3 className="display mt-5 flex-1 text-[20px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
                       {replay.title}
                     </h3>
-                    <div className="mt-6 border-t border-line pt-4 text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
-                      {replay.date} - {replay.duration || "Replay"}
+                    <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-muted">
+                      <span>{replay.date}</span>
+                      <span className="linkline !text-[11px]">
+                        Watch <span className="arr">→</span>
+                      </span>
                     </div>
-                    <span className="linkline mt-5">
-                      Watch replay <span className="arr">-&gt;</span>
-                    </span>
                   </Link>
-                </TiltCard>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
+                </StaggerItem>
+              ))}
+            </Stagger>
+            <FadeUp className="mt-10 text-center">
+              <Link href="/panels#series" className="btn btn-outline">
+                Full Panel Archive <span className="arr">→</span>
+              </Link>
+            </FadeUp>
+          </div>
+        </section>
+      )}
 
-      <section className="border-y border-line bg-sand py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="mx-auto max-w-[720px] text-center">
-              <span className="kicker center justify-center">Real Results</span>
-              <WordReveal
-                as="h2"
-                className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy"
-                text="What happens when strategy meets *execution*."
-              />
-              <p className="mt-4 text-[16px] text-muted">
-                An independent dermatology practice, 14 months into a full BOA
-                and MSM engagement.
-              </p>
-            </div>
-          </FadeUp>
-
-          <FadeUp delay={0.12}>
-            <div className="mx-auto mt-14 max-w-[900px] overflow-hidden rounded-2xl border border-line bg-paper">
-              <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-line bg-cream text-[10.5px] font-semibold uppercase tracking-[0.2em]">
-                <div className="p-5 text-muted">Metric</div>
-                <div className="border-l border-line p-5 text-muted">
+      {/* ============ results ============ */}
+      <section className="dark-canvas on-dark py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            dark
+            kicker="Real Results"
+            title={
+              <>
+                What happens when strategy meets <em>execution.</em>
+              </>
+            }
+            lede="An independent dermatology practice, 14 months into a full BOA and MSM engagement."
+          />
+          <FadeUp delay={0.1}>
+            <div className="mx-auto mt-12 max-w-[860px] overflow-hidden rounded-2xl border border-white/12 bg-navy-deep/60">
+              <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-white/10 text-[10.5px] font-semibold uppercase tracking-[0.2em]">
+                <div className="p-5 text-white/50">Metric</div>
+                <div className="border-l border-white/10 p-5 text-white/50">
                   Before BOA
                 </div>
-                <div className="border-l border-line p-5 text-teal-deep">
+                <div className="border-l border-white/10 p-5 text-teal">
                   After 14 Months
                 </div>
               </div>
               {[
-                {
-                  label: "New patients / month",
-                  before: "47/mo",
-                  after: <Counter target={148} suffix="/mo" />,
-                  change: "+215%",
-                },
-                {
-                  label: "Google rating",
-                  before: "2.3 stars",
-                  after: <Counter target={4.8} decimals={1} suffix=" stars" />,
-                  change: "+109%",
-                },
-                {
-                  label: "Avg. monthly ad spend",
-                  before: "$1,200",
-                  after: <Counter target={3200} prefix="$" />,
-                  change: "8.4x ROI",
-                },
-                {
-                  label: "Google reviews total",
-                  before: "12",
-                  after: <Counter target={287} />,
-                  change: "+2,292%",
-                },
+                { label: "New patients / month", before: "47/mo", after: <Counter target={148} suffix="/mo" />, change: "+215%" },
+                { label: "Google rating", before: "2.3 stars", after: <Counter target={4.8} decimals={1} suffix=" stars" />, change: "+109%" },
+                { label: "Avg. monthly ad spend", before: "$1,200", after: <Counter target={3200} prefix="$" />, change: "8.4x ROI" },
+                { label: "Google reviews total", before: "12", after: <Counter target={287} />, change: "+2,292%" },
               ].map((r) => (
                 <div
                   key={r.label}
-                  className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-line last:border-b-0"
+                  className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-white/10 last:border-b-0"
                 >
-                  <div className="flex items-center p-5 text-[13px] font-semibold uppercase tracking-wide text-navy">
+                  <div className="flex items-center p-5 text-[12.5px] font-semibold uppercase tracking-wide text-white/85">
                     {r.label}
                   </div>
-                  <div className="display flex items-center border-l border-line p-5 text-[22px] text-navy/40">
+                  <div className="display flex items-center border-l border-white/10 p-5 text-[21px] text-white/40">
                     {r.before}
                   </div>
-                  <div className="flex items-center gap-3 border-l border-line bg-teal-soft/40 p-5">
-                    <span className="display text-[22px] text-teal-deep">
+                  <div className="flex flex-wrap items-center gap-3 border-l border-white/10 p-5">
+                    <span className="display text-[21px] text-teal">
                       {r.after}
                     </span>
                     <span className="chip teal !text-[9.5px]">{r.change}</span>
@@ -491,26 +361,80 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="mx-auto mb-14 max-w-[640px] text-center">
-              <span className="kicker center justify-center">
-                Why People Love Us
-              </span>
-              <WordReveal
-                as="h2"
-                className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy"
-                text="From the *community*"
-              />
-            </div>
-          </FadeUp>
+      {/* ============ why BOA ============ */}
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Why BOA"
+            title={
+              <>
+                Built on <em>credibility</em>, not hype.
+              </>
+            }
+          />
+          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {authority.map((a) => (
+              <StaggerItem key={a.title} className="h-full">
+                <div className="h-full rounded-2xl border border-line bg-paper p-7 text-center">
+                  <h3 className="text-[15px] font-semibold text-navy">
+                    {a.title}
+                  </h3>
+                  <p className="mt-2 text-[13px] leading-relaxed text-muted">
+                    {a.copy}
+                  </p>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* ============ testimonials ============ */}
+      <section className="border-t border-line bg-paper py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Why People Love Us"
+            title={
+              <>
+                From the <em>community</em>
+              </>
+            }
+            className="mb-12"
+          />
           <FadeUp delay={0.1}>
             <TestimonialSlider />
           </FadeUp>
         </div>
       </section>
 
+      {/* ============ community ============ */}
+      <section className="dark-canvas on-dark py-18 lg:py-20">
+        <div className="mx-auto max-w-[680px] px-5 text-center">
+          <FadeUp>
+            <span className="kicker center justify-center">
+              Be Part of Our Community
+            </span>
+            <h2 className="display mt-4 text-[clamp(24px,3vw,32px)] text-white">
+              3,700+ practitioners, <em>one private group.</em>
+            </h2>
+            <p className="lede mx-auto mt-4 max-w-[520px]">
+              Candid questions, honest answers, zero gatekeeping - join the BOA
+              Facebook community where aesthetic leaders compare notes every
+              day.
+            </p>
+            <a
+              href="https://www.facebook.com/groups/BusinessOfAesthetics"
+              target="_blank"
+              rel="noopener"
+              className="btn btn-teal mt-8"
+            >
+              Join the BOA Facebook Group <span className="arr">→</span>
+            </a>
+          </FadeUp>
+        </div>
+      </section>
+
+      <NewsletterBand />
       <CtaBand />
     </>
   );

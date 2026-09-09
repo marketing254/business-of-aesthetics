@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
+import { asset } from "@/lib/asset";
 import Link from "next/link";
 import Image from "next/image";
 import CtaBand from "@/components/CtaBand";
+import PageHero from "@/components/PageHero";
+import SectionHead from "@/components/SectionHead";
+import NewsletterBand from "@/components/NewsletterBand";
+import ContinueListening from "@/components/ContinueListening";
+import EpisodeAudio from "@/components/EpisodeAudio";
 import EpisodeExplorer from "@/components/EpisodeExplorer";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
-import WordReveal from "@/components/motion/WordReveal";
-import Aurora from "@/components/motion/Aurora";
 import { hosts, platforms } from "@/lib/data";
 import { fetchPodcasts } from "@/lib/sheet";
 
 export const metadata: Metadata = {
   title: "Podcast - Business Lessons for Aesthetic Practices",
   description:
-    "Weekly conversations with the leading minds in dermatology, plastic surgery and aesthetics — the complete Business of Aesthetics podcast archive.",
+    "Weekly conversations with the leading minds in dermatology, plastic surgery and aesthetics - the complete Business of Aesthetics podcast archive.",
 };
 
 const reviews = [
@@ -36,46 +40,56 @@ const reviews = [
 export default async function PodcastPage() {
   const podcasts = await fetchPodcasts();
   const latest = podcasts[0];
-  const categories = Array.from(new Set(podcasts.map((episode) => episode.category)));
+  const categories = Array.from(
+    new Set(podcasts.map((episode) => episode.category))
+  );
 
   return (
     <>
-      <section className="dark-canvas on-dark relative overflow-hidden">
-        <Aurora intensity={0.45} />
-        <div className="ghost-word right-[-3%] top-[52%] text-[clamp(120px,16vw,250px)]">
-          fieldnotes
-        </div>
-        <div className="relative mx-auto max-w-[1280px] px-5 pb-16 pt-16 lg:pb-20 lg:pt-24">
-          <FadeUp>
-            <span className="kicker">The Business of Aesthetics Podcast</span>
-            <WordReveal
-              text="A living archive of *practice decisions*."
-              className="display mt-6 max-w-[820px] text-[clamp(32px,4.3vw,52px)] text-white"
-            />
-            <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-white/75">
-              Weekly conversations with the operators, surgeons, and growth
-              experts shaping aesthetic medicine — every episode with full
-              audio, notes, and transcript.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-6">
-              <a href="#episodes" className="btn btn-teal">
-                Explore Episodes <span className="arr">-&gt;</span>
-              </a>
-              <Link href="/speakers" className="linkline !text-teal">
-                Apply to be a Guest <span className="arr">-&gt;</span>
-              </Link>
-            </div>
-          </FadeUp>
+      <PageHero
+        kicker="The Business of Aesthetics Podcast"
+        title={
+          <>
+            A living archive of <em>practice decisions.</em>
+          </>
+        }
+        lede="Weekly conversations with the operators, surgeons, and growth experts shaping aesthetic medicine - every episode with full audio, notes, and transcript."
+      >
+        <a href="#episodes" className="btn btn-navy">
+          Explore Episodes <span className="arr">→</span>
+        </a>
+        <Link href="/speakers" className="btn btn-outline">
+          Apply to be a Guest
+        </Link>
+      </PageHero>
 
-          <FadeUp delay={0.12}>
-            {latest ? (
-              <div className="mt-14 max-w-[620px] border border-white/12 bg-white/[0.03] p-6 sm:p-7">
-                <div className="flex items-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal">
+      {/* latest episode + continue listening */}
+      <section className="border-b border-line bg-paper py-14 lg:py-16">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+            <span>
+              <span className="text-teal-deep">{podcasts.length}</span> Episodes
+              &amp; Counting
+            </span>
+            <span className="text-line">·</span>
+            <span>
+              <span className="text-teal-deep">{categories.length}</span> Topic
+              Tracks
+            </span>
+            <span className="text-line">·</span>
+            <span>
+              New <span className="text-teal-deep">Weekly</span>
+            </span>
+          </div>
+
+          {latest && (
+            <FadeUp delay={0.08}>
+              <div className="card-frame mx-auto mt-10 max-w-[720px] p-6 !shadow-none sm:p-8">
+                <div className="flex items-center justify-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
                   <span className="live-dot" /> Latest Episode
                 </div>
-
-                <div className="mt-5 flex items-center gap-4">
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-white/15 bg-navy-ink">
+                <div className="mt-6 flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-line bg-sand">
                     {latest.guestPhotoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -85,84 +99,58 @@ export default async function PodcastPage() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="grid h-full w-full place-items-center">
-                        <span className="display text-[16px] text-teal">
+                      <div className="dark-canvas grid h-full w-full place-items-center">
+                        <span className="display text-[18px] text-teal">
                           {latest.initials}
                         </span>
                       </div>
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11.5px] font-bold text-white/55">
+                    <div className="text-[11.5px] font-bold uppercase tracking-[0.12em] text-muted">
                       Episode {latest.episode} · {latest.datePublished}
                     </div>
-                    <h2 className="display mt-1 text-[19px] leading-snug text-white">
+                    <h2 className="mt-1 text-[17px] font-semibold leading-snug text-navy">
                       {latest.title}
                     </h2>
                   </div>
                 </div>
-
                 {latest.audioSource && (
-                  <audio
-                    controls
-                    src={latest.audioSource}
-                    className="mt-5 w-full"
-                  />
+                  <div className="mt-5">
+                    <EpisodeAudio
+                      src={latest.audioSource}
+                      slug={latest.slug}
+                      title={latest.title}
+                      href={`/podcast/${latest.slug}`}
+                    />
+                  </div>
                 )}
-
-                <Link
-                  href={`/podcast/${latest.slug}`}
-                  className="linkline !text-teal mt-5 inline-flex"
-                >
-                  Episode page <span className="arr">-&gt;</span>
-                </Link>
+                <div className="mt-5 text-center">
+                  <Link
+                    href={`/podcast/${latest.slug}`}
+                    className="linkline"
+                  >
+                    Open the episode page <span className="arr">→</span>
+                  </Link>
+                </div>
               </div>
-            ) : (
-              <div className="mt-14 max-w-[620px] border border-white/12 bg-white/[0.03] p-8 text-white/70">
-                Podcast data is syncing from Google Sheets.
-              </div>
-            )}
-          </FadeUp>
-        </div>
+            </FadeUp>
+          )}
 
-        <div className="relative border-t border-white/10">
-          <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-2 px-5 py-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55">
-            <span>
-              <span className="text-teal">{podcasts.length || "294"}</span>{" "}
-              Episodes &amp; Counting
-            </span>
-            <span className="text-white/25">·</span>
-            <span>
-              <span className="text-teal">{categories.length || "12+"}</span>{" "}
-              Topic Tracks
-            </span>
-            <span className="text-white/25">·</span>
-            <span>
-              New <span className="text-teal">Weekly</span>
-            </span>
-          </div>
-        </div>
-      </section>
+          <ContinueListening />
 
-      <section className="border-b border-line bg-paper py-12">
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-6 px-5">
-          <div>
-            <h3 className="display text-[22px] text-navy">
+          {/* platforms */}
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3 border-t border-line pt-8">
+            <span className="mr-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-muted">
               Follow the show
-            </h3>
-            <p className="mt-1 text-[13.5px] text-muted">
-              Every episode page here also carries the full audio, notes, and
-              transcript.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
+            </span>
             {platforms.map((p) => (
               <a
                 key={p.name}
                 href={p.href}
                 target="_blank"
                 rel="noopener"
-                className="chip !py-3 !text-[11px] transition-all hover:border-teal hover:text-teal-deep"
+                className="chip !py-2.5 !text-[11px] transition-all hover:border-teal hover:text-teal-deep"
               >
                 {p.name}
               </a>
@@ -171,48 +159,42 @@ export default async function PodcastPage() {
         </div>
       </section>
 
-      <section id="episodes" className="scroll-mt-24 py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="grid gap-8 lg:grid-cols-[0.62fr_1fr]">
-              <div>
-                <span className="kicker">The Archive</span>
-                <h2 className="display mt-4 text-[clamp(26px,3.3vw,40px)] text-navy">
-                  Search the <em>whole catalog</em>.
-                </h2>
-              </div>
-              <p className="max-w-[680px] text-[15.5px] leading-relaxed text-muted lg:pt-9">
-                Filter by category, search by episode number or guest, then
-                open an individual page with audio, transcript, notes, and the
-                original BOA link.
-              </p>
-            </div>
-          </FadeUp>
+      {/* archive */}
+      <section id="episodes" className="scroll-mt-24 py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="The Archive"
+            title={
+              <>
+                Search the <em>whole catalog.</em>
+              </>
+            }
+            lede="Filter by category, search by episode number or guest, then open an individual page with audio, transcript, and notes."
+          />
           <div className="mt-10">
             <EpisodeExplorer episodes={podcasts} />
           </div>
         </div>
       </section>
 
-      <section className="border-y border-line py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="mx-auto max-w-[680px] text-center">
-              <span className="kicker center justify-center">
-                What Listeners Say
-              </span>
-              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
+      {/* reviews */}
+      <section className="border-y border-line bg-paper py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="What Listeners Say"
+            title={
+              <>
                 Trusted by the <em>aesthetics community</em>
-              </h2>
-            </div>
-          </FadeUp>
+              </>
+            }
+          />
           <Stagger className="mt-14 grid gap-10 md:grid-cols-3">
             {reviews.map((r, i) => (
               <StaggerItem
                 key={r.name}
                 className={`h-full ${i > 0 ? "md:border-l md:border-line md:pl-10" : ""}`}
               >
-                <figure className="flex h-full flex-col">
+                <figure className="flex h-full flex-col text-center md:text-left">
                   <blockquote className="flex-1 text-[14.5px] italic leading-relaxed text-ink/85">
                     &ldquo;{r.quote}&rdquo;
                   </blockquote>
@@ -226,16 +208,17 @@ export default async function PodcastPage() {
         </div>
       </section>
 
-      <section id="hosts" className="py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="max-w-[640px]">
-              <span className="kicker">The Voices</span>
-              <h2 className="display mt-5 text-[clamp(26px,3.3vw,36px)] text-navy">
+      {/* hosts */}
+      <section id="hosts" className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="The Voices"
+            title={
+              <>
                 Hosted by <em>industry leaders</em>
-              </h2>
-            </div>
-          </FadeUp>
+              </>
+            }
+          />
           <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {hosts.map((h) => (
               <StaggerItem key={h.name} className="h-full">
@@ -243,7 +226,7 @@ export default async function PodcastPage() {
                   {h.image ? (
                     <div className="tone-img relative mx-auto h-20 w-20 overflow-hidden rounded-full border border-line">
                       <Image
-                        src={h.image}
+                        src={asset(h.image)}
                         alt={h.name}
                         fill
                         sizes="80px"
@@ -278,6 +261,8 @@ export default async function PodcastPage() {
         </div>
       </section>
 
+      <NewsletterBand />
+
       <CtaBand
         eyebrow="Your Move"
         title={
@@ -286,8 +271,8 @@ export default async function PodcastPage() {
           </>
         }
         copy="Use the archive for the ideas. Book a strategy meeting when you want a plan for your own practice."
-        primary={{ href: "/msm", label: "Book a Free Strategy Meeting" }}
-        secondary={{ href: "#episodes", label: "Browse Episodes" }}
+        primary={{ href: "/marketing#book", label: "Book a Free Strategy Meeting" }}
+        secondary={{ href: "/podcast#episodes", label: "Browse Episodes" }}
       />
     </>
   );

@@ -322,9 +322,17 @@ export async function fetchTranscript(url: string): Promise<TranscriptBlock[]> {
     const timeRe = /^\d{1,2}:\d{2}(?::\d{2})?$/;
     const headingRe = /^(\d{1,2}:\d{2}(?::\d{2})?)\s*[\u2013\u2014-]+\s*(.+)$/;
     const speakerRe = /^([A-Za-z][A-Za-z.'\u2019 -]{1,28}?):\s*(.*)$/;
+    // a bare name on its own line ("Ashton Rogers") starts a speaker turn
+    const nameOnlyRe =
+      /^[A-Z][A-Za-z.'\u2019-]+(?:\s+[A-Z][A-Za-z.'\u2019-]+){1,3}$/;
 
     for (const raw of text.replace(/^\uFEFF/, '').split(/\r?\n/)) {
-      const line = raw.trim();
+      // strip doc-export bullet markers ("* ", "\u2022 ") and inline separators
+      let line = raw
+        .trim()
+        .replace(/^[\u2022\u25AA\u25E6\u2219\u00B7*-]+\s*/, "")
+        .replace(/\s+\*\s+/g, " ")
+        .trim();
       if (!line) continue;
 
       const heading = line.match(headingRe);
@@ -344,6 +352,20 @@ export async function fetchTranscript(url: string): Promise<TranscriptBlock[]> {
         blocks.push(current);
         continue;
       }
+      if (nameOnlyRe.test(line) && line.length <= 34) {
+        // exports sometimes double the label ("Jane Doe Jane Doe")
+        const words = line.split(/\s+/);
+        if (
+          words.length % 2 === 0 &&
+          words.slice(0, words.length / 2).join(" ") ===
+            words.slice(words.length / 2).join(" ")
+        ) {
+          line = words.slice(0, words.length / 2).join(" ");
+        }
+        current = { speaker: line, text: '' };
+        blocks.push(current);
+        continue;
+      }
       if (!current) {
         current = { text: '' };
         blocks.push(current);
@@ -354,6 +376,206 @@ export async function fetchTranscript(url: string): Promise<TranscriptBlock[]> {
   } catch {
     return [];
   }
+}
+
+/**
+ * Fetch a link-shared Google Doc as plain paragraphs so its content renders
+ * on the page itself (notes, descriptions) instead of linking out.
+ */
+export async function fetchDocText(url: string): Promise<string[]> {
+  const m = (url || "").match(/docs\.google\.com\/document\/d\/([\w-]+)/i);
+  if (!m) return [];
+  try {
+    const res = await fetch(
+      `https://docs.google.com/document/d/${m[1]}/export?format=txt`,
+      STATIC_BUILD ? { cache: "force-cache" } : { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (text.trimStart().startsWith("<")) return [];
+    return compact(text.replace(/^﻿/, ""))
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+/** Extract a Drive file id from any drive.google.com link form. */
+export function driveFileId(url: string): string {
+  const trimmed = (url || "").trim();
+  const m =
+    trimmed.match(/drive\.google\.com\/file\/d\/([\w-]{20,})/i) ||
+    trimmed.match(/[?&]id=([\w-]{20,})/i);
+  return m ? m[1] : "";
+}
+
+function vttTime(h: string, m: string, s: string): string {
+  const hours = Number(h);
+  return hours > 0 ? `${hours}:${m}:${s}` : `${Number(m)}:${s}`;
+}
+
+/**
+ * Turn WebVTT captions (the format BOA's replay transcripts are stored in on
+ * Drive) into readable transcript paragraphs - tiny caption fragments are
+ * merged into ~45-second blocks, each stamped with its start time.
+ */
+function parseVtt(text: string): TranscriptBlock[] {
+  interface Cue {
+    seconds: number;
+    label: string;
+    text: string;
+  }
+  const cues: Cue[] = [];
+  let pending: Cue | null = null;
+  const cueRe = /^(\d{2}):(\d{2}):(\d{2})[.,]\d+\s+-->/;
+
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    const m = line.match(cueRe);
+    if (m) {
+      pending = {
+        seconds: Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]),
+        label: vttTime(m[1], m[2], m[3]),
+        text: "",
+      };
+      cues.push(pending);
+      continue;
+    }
+    if (!line || /^\d+$/.test(line) || /^WEBVTT/i.test(line)) continue;
+    if (pending) pending.text += (pending.text ? " " : "") + line;
+  }
+
+  const blocks: TranscriptBlock[] = [];
+  let current: TranscriptBlock | null = null;
+  let blockStart = -1;
+  for (const cue of cues) {
+    if (!cue.text) continue;
+    if (!current || cue.seconds - blockStart >= 45) {
+      current = { time: cue.label, text: cue.text };
+      blockStart = cue.seconds;
+      blocks.push(current);
+    } else {
+      current.text += " " + cue.text;
+    }
+  }
+  return blocks.map((b) => ({ ...b, text: b.text.replace(/\s+/g, " ").trim() }));
+}
+
+/**
+ * Pull a transcript stored as a Drive FILE (WebVTT captions or plain text)
+ * and shape it into transcript blocks. Google Doc links should go through
+ * fetchTranscript instead.
+ */
+export async function fetchDriveTranscript(
+  url: string
+): Promise<TranscriptBlock[]> {
+  const id = driveFileId(url);
+  if (!id) return [];
+  try {
+    const res = await fetch(
+      `https://drive.google.com/uc?export=download&id=${id}`,
+      STATIC_BUILD
+        ? { cache: "force-cache", redirect: "follow" }
+        : { next: { revalidate: 3600 }, redirect: "follow" }
+    );
+    if (!res.ok) return [];
+    const text = await res.text();
+    const head = text.trimStart();
+    if (head.startsWith("<")) return []; // permission / confirm page
+    if (/^WEBVTT/i.test(head)) return parseVtt(text);
+    return compact(text)
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => ({ text: line }));
+  } catch {
+    return [];
+  }
+}
+
+export interface NotesSection {
+  heading?: string;
+  paragraphs: string[];
+}
+
+export interface StructuredNotes {
+  meta: { label: string; value: string }[];
+  sections: NotesSection[];
+}
+
+const NOTE_META_LABELS = new Set([
+  "DATE",
+  "TIME",
+  "CATEGORY",
+  "FORMAT",
+  "LOCATION",
+  "DURATION",
+  "HOST",
+  "MODERATOR",
+  "PANELISTS",
+  "SPEAKERS",
+]);
+
+const NOTE_HEADING_RE =
+  /^(event description|key discussion points|key takeaways|discussion points|session overview|about (the|this) (panel|session|event|webinar)|who should attend|panelists?|speakers?|moderators?|conclusion|summary|highlights|what you('| wi)ll learn)\b/i;
+
+function titleCaseLabel(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
+}
+
+/**
+ * BOA replay description docs follow a template: brand line, title, a block
+ * of LABEL / value pairs (DATE, TIME, CATEGORY, FORMAT...), then prose
+ * sections with headings. Structure those plain lines so the page can render
+ * a proper meta grid + formatted sections instead of a wall of text.
+ */
+export function structureNotes(lines: string[]): StructuredNotes {
+  const meta: StructuredNotes["meta"] = [];
+  const sections: NotesSection[] = [];
+  let current: NotesSection | null = null;
+
+  let i = 0;
+  // drop the brand line and, when a meta label follows, the doc's own title
+  // (the page header already shows both)
+  while (i < lines.length && /^business of aesthetics$/i.test(lines[i].trim()))
+    i++;
+  if (
+    i + 1 < lines.length &&
+    NOTE_META_LABELS.has(lines[i + 1].trim().toUpperCase())
+  )
+    i++;
+
+  for (; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    // doc boilerplate footer, e.g. "Business of Aesthetics | Expert Panel Replay Description"
+    if (/^business of aesthetics\b.*description\s*$/i.test(line)) continue;
+    const upper = line.toUpperCase();
+
+    if (NOTE_META_LABELS.has(upper) && i + 1 < lines.length) {
+      meta.push({ label: titleCaseLabel(line), value: lines[++i].trim() });
+      continue;
+    }
+
+    const isHeading =
+      NOTE_HEADING_RE.test(line) ||
+      (line === upper && line.length <= 48 && /[A-Z]/.test(line));
+    if (isHeading) {
+      current = { heading: line, paragraphs: [] };
+      sections.push(current);
+      continue;
+    }
+
+    if (!current) {
+      current = { paragraphs: [] };
+      sections.push(current);
+    }
+    current.paragraphs.push(line);
+  }
+
+  return { meta, sections };
 }
 
 async function fetchSheetRows(gid: string): Promise<SheetRow[]> {
@@ -418,8 +640,23 @@ export async function fetchPodcasts(): Promise<SheetPodcast[]> {
         initials: initialsOf(guestName),
       };
     })
-    .filter((episode) => episode.episode > 0 && episode.title)
+    .filter(
+      // only episodes published with full details go on the site
+      (episode) =>
+        episode.episode > 0 &&
+        episode.title &&
+        episode.description &&
+        episode.audioSource
+    )
     .sort((a, b) => b.episode - a.episode);
+}
+
+/** True while the event's date is today or later (past sessions are hidden). */
+export function isUpcoming(event: SheetEvent): boolean {
+  if (!event.dateIso) return true;
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  return event.dateIso >= today;
 }
 
 export async function fetchEvents(): Promise<SheetEvent[]> {
@@ -500,8 +737,10 @@ function mapReplayRow(row: SheetRow, kind: SheetReplay["kind"]): SheetReplay {
 }
 
 export async function fetchSpeakers(): Promise<SheetSpeaker[]> {
+  // the live sheet leads; the carried-over website archive fills in behind it
+  const { archiveSpeakers } = await import("./speakers-archive");
   const rows = await fetchSheetRows(SHEET_GIDS.speakers);
-  return rows
+  const fromSheet = rows
     .map((row) => {
       const name = oneLine(value(row, "name"));
       return {
@@ -517,6 +756,12 @@ export async function fetchSpeakers(): Promise<SheetSpeaker[]> {
       };
     })
     .filter((speaker) => speaker.name.length > 0);
+
+  const seen = new Set(fromSheet.map((s) => s.name.trim().toLowerCase()));
+  return [
+    ...fromSheet,
+    ...archiveSpeakers.filter((s) => !seen.has(s.name.trim().toLowerCase())),
+  ];
 }
 
 /** Group speakers by the event/panel they belong to (sheet order preserved). */

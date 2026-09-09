@@ -9,7 +9,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "motion/react";
 import type { SheetSpeaker } from "@/lib/sheet";
-import TiltCard from "@/components/motion/TiltCard";
+import { asset } from "@/lib/asset";
 
 const POLL_MS = 45_000;
 const EASE = [0.22, 0.61, 0.21, 1] as const;
@@ -34,7 +34,7 @@ function SpeakerCard({ s, i }: { s: SheetSpeaker; i: number }) {
     <article className="card-frame group flex h-full flex-col overflow-hidden">
       <div className="tone-img relative aspect-[4/4.4] bg-sand">
         {s.imageUrl && !imgFailed ? (
-          // Sheet-driven Google Drive image — plain img keeps it live & simple
+          // Sheet-driven Google Drive image - plain img keeps it live & simple
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={s.imageUrl}
@@ -154,7 +154,7 @@ export default function LiveSpeakers({
     let alive = true;
     const refresh = async () => {
       try {
-        const res = await fetch("/api/speakers", { cache: "no-store" });
+        const res = await fetch(asset("/api/speakers"), { cache: "no-store" });
         if (!res.ok) return;
         const data = (await res.json()) as SheetSpeaker[];
         if (alive && Array.isArray(data) && data.length) setSpeakers(data);
@@ -172,18 +172,19 @@ export default function LiveSpeakers({
   if (!speakers.length) {
     return (
       <div className="card-frame p-10 text-center text-[15px] text-muted">
-        Speaker profiles are being updated — check back shortly.
+        Speaker profiles are being updated - check back shortly.
       </div>
     );
   }
 
+  /* centered flow layout - looks right whether there are 2 speakers or 20 */
   if (reduced) {
     return (
-      <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-wrap justify-center gap-6">
         {speakers.map((s, i) => (
-          <TiltCard key={`${s.name}-${i}`} maxTilt={5} className="h-full">
+          <div key={`${s.name}-${i}`} className="w-full max-w-[360px] sm:w-[340px]">
             <SpeakerCard s={s} i={i} />
-          </TiltCard>
+          </div>
         ))}
       </div>
     );
@@ -191,7 +192,7 @@ export default function LiveSpeakers({
 
   return (
     <motion.div
-      className="grid gap-7 md:grid-cols-2 lg:grid-cols-3"
+      className="flex flex-wrap justify-center gap-6"
       variants={gridParent}
       initial="hidden"
       animate="show"
@@ -200,11 +201,9 @@ export default function LiveSpeakers({
         <motion.div
           key={`${s.name}-${i}`}
           variants={gridItem}
-          className="flex h-full"
+          className="flex w-full max-w-[360px] sm:w-[340px] [&>article]:w-full"
         >
-          <TiltCard maxTilt={5} className="flex h-full w-full flex-col">
-            <SpeakerCard s={s} i={i} />
-          </TiltCard>
+          <SpeakerCard s={s} i={i} />
         </motion.div>
       ))}
     </motion.div>

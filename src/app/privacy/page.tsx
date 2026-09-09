@@ -67,13 +67,13 @@ export default function PrivacyPage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-line">
-        <div className="mx-auto max-w-[880px] px-5 pb-16 pt-16 lg:pt-20">
+        <div className="mx-auto max-w-[880px] px-5 pb-14 pt-16 text-center lg:pt-20">
           <FadeUp>
-            <span className="kicker">Legal</span>
-            <h1 className="display mt-6 text-[clamp(31px,4.1vw,46px)] text-navy">
+            <span className="kicker center justify-center">Legal</span>
+            <h1 className="display mt-5 text-[clamp(30px,4vw,44px)] text-navy">
               Privacy <em>Policy</em>
             </h1>
-            <p className="mt-5 text-[15.5px] leading-relaxed text-muted">
+            <p className="lede mx-auto mt-5 max-w-[560px] text-[15.5px]">
               Last updated: March 26, 2026. We respect your privacy and are
               committed to protecting your personal data.
             </p>

@@ -29,7 +29,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -41,8 +40,12 @@ jobs:
         env:
           STATIC_EXPORT: "1"
           NEXT_BASE_PATH: /${{ github.event.repository.name }}
+          # inlined into client code so local images resolve under the subpath
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           # add BOA_SHEET_ID under Settings → Secrets and variables → Actions
           BOA_SHEET_ID: ${{ secrets.BOA_SHEET_ID }}
+          # low worker count: each build worker loads the full blog archive
+          NEXT_BUILD_CPUS: "2"
         run: npm run build
 
       - name: Disable Jekyll processing

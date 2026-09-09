@@ -5,7 +5,7 @@ import { useState } from "react";
 const applicationTypes = [
   "Podcast Guest",
   "Expert Panel Speaker",
-  "Both — Podcast & Panel",
+  "Both - Podcast & Panel",
 ];
 
 const topics = [

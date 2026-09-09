@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Inline transcript reader — quiet, structured, readable.
- * Section headings ("00:00 — Topic"), speaker turns, and plain paragraphs
+ * Inline transcript reader - quiet, structured, readable.
+ * Section headings ("00:00 - Topic"), speaker turns, and plain paragraphs
  * each get their own treatment; live search highlights matches.
  */
 
@@ -110,7 +110,7 @@ export default function TranscriptView({
           )}
           {q && filtered.length === 0 && (
             <p className="py-10 text-center text-[14px] text-muted">
-              No matches for &ldquo;{q}&rdquo; — try a different phrase.
+              No matches for &ldquo;{q}&rdquo; - try a different phrase.
             </p>
           )}
         </div>

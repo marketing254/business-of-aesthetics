@@ -1,7 +1,10 @@
 import Link from "next/link";
-import Reveal from "./Reveal";
-import Aurora from "./motion/Aurora";
+import { FadeUp } from "@/components/motion/Animate";
 
+/**
+ * Closing call-to-action band - one calm, centered dark panel shared by
+ * every page.
+ */
 export default function CtaBand({
   eyebrow = "Free Strategy Meeting",
   title = (
@@ -9,8 +12,8 @@ export default function CtaBand({
       One conversation could <em>change everything</em>.
     </>
   ),
-  copy = "Get a free 60-minute Marketing Strategy Meeting with a senior advisor. Walk away with a clear, custom growth plan for your practice — no pressure, no pitch.",
-  primary = { href: "/msm", label: "Book My Strategy Meeting" },
+  copy = "Get a free 60-minute Marketing Strategy Meeting with a senior advisor. Walk away with a clear, custom growth plan for your practice - no pressure, no pitch.",
+  primary = { href: "/marketing#book", label: "Book My Strategy Meeting" },
   secondary = { href: "/podcast", label: "Listen to the Podcast" },
 }: {
   eyebrow?: string;
@@ -20,29 +23,15 @@ export default function CtaBand({
   secondary?: { href: string; label: string };
 }) {
   return (
-    <section className="dark-canvas on-dark relative overflow-hidden py-24 sm:py-28">
-      <Aurora intensity={0.4} />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(700px 400px at 85% 10%, rgba(19,175,160,0.22), transparent 65%), radial-gradient(600px 400px at 5% 100%, rgba(12,18,41,0.8), transparent 60%)",
-        }}
-      />
-      <div className="ghost-word bottom-[-4%] right-[-2%] text-[clamp(120px,17vw,270px)]">
-        grow
-      </div>
-      <div className="relative mx-auto max-w-[1280px] px-5">
-        <Reveal>
-          <div className="mx-auto max-w-[760px] text-center">
+    <section className="dark-canvas on-dark py-20 sm:py-24">
+      <div className="mx-auto max-w-[1280px] px-5">
+        <FadeUp>
+          <div className="mx-auto max-w-[720px] text-center">
             <span className="kicker center justify-center">{eyebrow}</span>
-            <h2 className="display mx-auto mt-5 text-[clamp(27px,3.8vw,44px)] text-white">
+            <h2 className="display mx-auto mt-5 text-[clamp(26px,3.4vw,40px)] text-white">
               {title}
             </h2>
-            <p className="mx-auto mt-5 max-w-[600px] text-[16.5px] leading-relaxed text-white/75">
-              {copy}
-            </p>
+            <p className="lede mx-auto mt-5 max-w-[580px]">{copy}</p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
               <Link href={primary.href} className="btn btn-teal">
                 {primary.label} <span className="arr">→</span>
@@ -52,7 +41,7 @@ export default function CtaBand({
               </Link>
             </div>
           </div>
-        </Reveal>
+        </FadeUp>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
+import PageHero from "@/components/PageHero";
+import SectionHead from "@/components/SectionHead";
 import ContactForm from "@/components/ContactForm";
 import { site } from "@/lib/data";
 import { FadeUp, FadeIn, Stagger, StaggerItem } from "@/components/motion/Animate";
@@ -9,7 +9,7 @@ import { FadeUp, FadeIn, Stagger, StaggerItem } from "@/components/motion/Animat
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Get in touch with the Business of Aesthetics team. Questions, partnerships, or speaking interest — we'd love to hear from you.",
+    "Get in touch with the Business of Aesthetics team. Questions, partnerships, or speaking interest - we'd love to hear from you.",
 };
 
 const faqs = [
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: "Do you work with manufacturers and vendors?",
-    a: 'Yes — we partner with select manufacturers and vendors who genuinely serve our community. Use the contact form and select "Partnership" so we can route your message to the right person.',
+    a: 'Yes - we partner with select manufacturers and vendors who genuinely serve our community. Use the contact form and select "Partnership" so we can route your message to the right person.',
   },
   {
     q: "How fast will I hear back?",
@@ -34,75 +34,31 @@ const faqs = [
 export default function ContactPage() {
   return (
     <>
-      {/* hero */}
-      <section className="relative overflow-hidden">
-        <div className="ghost-word right-[-3%] top-[55%] text-[clamp(110px,15vw,230px)]">
-          hello
-        </div>
-        <div className="relative mx-auto grid max-w-[1280px] items-center gap-14 px-5 pb-16 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:pt-20">
-          <FadeUp>
-            <span className="kicker">Contact Us</span>
-            <h1 className="display mt-6 text-[clamp(32px,4.1vw,50px)] text-navy">
-              Let&apos;s start a <em>conversation.</em>
-            </h1>
-            <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-muted">
-              Questions, partnership ideas, podcast guest pitches or speaking
-              interest — we&apos;d love to hear from you. We typically respond
-              within one business day.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Link href="/msm" className="btn btn-navy">
-                Book Strategy Meeting <span className="arr">→</span>
-              </Link>
-              <Link href="/podcast" className="linkline !text-[13px]">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Listen to the Podcast
-              </Link>
-            </div>
-          </FadeUp>
-          <FadeUp delay={0.12}>
-            <div className="offset-frame card-frame relative mx-auto max-w-[500px] bg-sand p-9">
-              <span className="kicker">Quick Facts</span>
-              <ul className="mt-8 space-y-6">
-                <li className="border-b border-line pb-6">
-                  <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
-                    Response Time
-                  </div>
-                  <div className="display mt-2 text-[22px] text-navy">
-                    Within 1 business day
-                  </div>
-                </li>
-                <li className="border-b border-line pb-6">
-                  <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
-                    Toll-Free
-                  </div>
-                  <div className="display mt-2 text-[22px] text-navy">
-                    {site.phone}
-                  </div>
-                </li>
-                <li>
-                  <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
-                    Office
-                  </div>
-                  <div className="display mt-2 text-[22px] text-navy">
-                    Las Vegas, NV
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
-
-      <Marquee />
+      <PageHero
+        kicker="Contact Us"
+        title={
+          <>
+            Let&apos;s start a <em>conversation.</em>
+          </>
+        }
+        lede="Questions, partnership ideas, podcast guest pitches or speaking interest - we'd love to hear from you. We typically respond within one business day."
+        compact
+      >
+        <a href={`mailto:${site.email}`} className="btn btn-navy">
+          {site.email}
+        </a>
+        <a href={site.phoneHref} className="btn btn-outline">
+          {site.phone}
+        </a>
+      </PageHero>
 
       {/* info + form */}
-      <section className="bg-paper py-24">
-        <div className="mx-auto grid max-w-[1280px] gap-12 px-5 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="bg-paper py-20 lg:py-24">
+        <div className="mx-auto grid max-w-[1180px] items-start gap-10 px-5 lg:grid-cols-[0.9fr_1.1fr]">
           <FadeUp>
             <div className="card-frame">
               <div className="border-b border-line p-7 pb-5">
-                <h3 className="display text-[26px] text-navy">
+                <h3 className="display text-[24px] text-navy">
                   Reach us directly
                 </h3>
               </div>
@@ -140,7 +96,8 @@ export default function ContactPage() {
                   },
                   {
                     label: "Office",
-                    value: "1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104, USA",
+                    value:
+                      "1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104, USA",
                     sub: "",
                   },
                   {
@@ -157,8 +114,12 @@ export default function ContactPage() {
                       {row.href ? (
                         <a
                           href={row.href}
-                          target={row.href.startsWith("http") ? "_blank" : undefined}
-                          rel={row.href.startsWith("http") ? "noopener" : undefined}
+                          target={
+                            row.href.startsWith("http") ? "_blank" : undefined
+                          }
+                          rel={
+                            row.href.startsWith("http") ? "noopener" : undefined
+                          }
                           className="text-[14.5px] font-bold text-navy transition-colors hover:text-teal-deep"
                         >
                           {row.value}
@@ -181,7 +142,7 @@ export default function ContactPage() {
                 <div className="w-[110px] shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                   Follow Us
                 </div>
-                <div className="flex gap-2.5">
+                <div className="flex flex-wrap gap-2.5">
                   {[
                     { label: "Instagram", href: site.socials.instagram },
                     { label: "Facebook", href: site.socials.facebook },
@@ -209,19 +170,17 @@ export default function ContactPage() {
       </section>
 
       {/* map */}
-      <section className="border-y border-line bg-sand py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="max-w-[640px]">
-              <span className="kicker">Find Us</span>
-              <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
+      <section className="border-y border-line bg-sand py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Find Us"
+            title={
+              <>
                 Visit our <em>office</em>
-              </h2>
-              <p className="mt-4 text-[15.5px] text-muted">
-                1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104
-              </p>
-            </div>
-          </FadeUp>
+              </>
+            }
+            lede="1810 E Sahara Ave Suite #1471, Las Vegas, NV 89104"
+          />
           <FadeIn delay={0.1}>
             <div className="card-frame mt-10 h-[380px] overflow-hidden">
               <iframe
@@ -237,14 +196,16 @@ export default function ContactPage() {
       </section>
 
       {/* faq */}
-      <section className="py-24">
-        <div className="mx-auto max-w-[820px] px-5">
-          <FadeUp>
-            <span className="kicker">Quick Questions</span>
-            <h2 className="display mt-5 text-[clamp(24px,3.1vw,33px)] text-navy">
-              Before you <em>write</em>
-            </h2>
-          </FadeUp>
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[780px] px-5">
+          <SectionHead
+            kicker="Quick Questions"
+            title={
+              <>
+                Before you <em>write</em>
+              </>
+            }
+          />
           <div className="mt-10">
             {faqs.map((f, i) => (
               <details key={f.q} className="faq" open={i === 0}>

@@ -18,8 +18,8 @@ const sections = [
     body: "All podcast episodes, articles, videos, and graphics on this site are the property of Business of Aesthetics or its content partners and are protected by copyright. You may share links freely, but please do not republish full content without permission.",
   },
   {
-    title: "Coaching & marketing services",
-    body: "BOA offers coaching (CSM) and marketing services (MSM) through partnerships with Ekwa Marketing. The terms of any specific coaching or marketing engagement will be governed by a separate written agreement.",
+    title: "Marketing services",
+    body: "BOA offers marketing services (MSM) through partnerships with Ekwa Marketing. The terms of any specific marketing engagement will be governed by a separate written agreement.",
   },
   {
     title: "Disclaimer",
@@ -54,13 +54,13 @@ export default function TermsPage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-line">
-        <div className="mx-auto max-w-[880px] px-5 pb-16 pt-16 lg:pt-20">
+        <div className="mx-auto max-w-[880px] px-5 pb-14 pt-16 text-center lg:pt-20">
           <FadeUp>
-            <span className="kicker">Legal</span>
-            <h1 className="display mt-6 text-[clamp(31px,4.1vw,46px)] text-navy">
+            <span className="kicker center justify-center">Legal</span>
+            <h1 className="display mt-5 text-[clamp(30px,4vw,44px)] text-navy">
               Terms of <em>Service</em>
             </h1>
-            <p className="mt-5 text-[15.5px] leading-relaxed text-muted">
+            <p className="lede mx-auto mt-5 max-w-[560px] text-[15.5px]">
               Last updated: March 26, 2026. By using this website, you agree to
               the terms outlined below.
             </p>

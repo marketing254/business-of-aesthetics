@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 /* ============================================================
-   BOA design system v3 — built from the logo: teal + deep navy.
+   BOA design system v4 — built from the logo: teal + deep navy.
    Semantic tokens drive BOTH themes; every utility color maps to
    a variable, so light/dark is a single [data-theme] switch.
-   Type: Bricolage Grotesque (display) + Figtree (body).
+   Type: Fraunces (display serif) + Manrope (body sans) — an
+   editorial, beauty-brand pairing.
    ============================================================ */
 
 :root {
@@ -82,15 +83,16 @@ body {
 
 .display {
   font-family: var(--font-display);
-  font-weight: 570;
-  letter-spacing: -0.02em;
-  line-height: 1.12;
+  font-weight: 520;
+  letter-spacing: -0.005em;
+  line-height: 1.16;
+  font-variation-settings: "SOFT" 40;
 }
 
 .display em,
 .display i {
-  font-style: normal;
-  font-weight: 640;
+  font-style: italic;
+  font-weight: 480;
   color: var(--color-teal-deep);
 }
 
@@ -127,6 +129,16 @@ body {
 }
 .on-dark .kicker {
   color: var(--color-teal);
+}
+
+/* lede — the one-paragraph intro under a centered section heading */
+.lede {
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+.on-dark .lede {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* index number ornament, e.g. section numbers */
@@ -246,8 +258,8 @@ body {
 }
 .card-frame:hover {
   border-color: var(--color-teal);
-  transform: translateY(-4px);
-  box-shadow: 0 24px 48px -24px rgba(19, 42, 84, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px -24px rgba(19, 42, 84, 0.16);
 }
 
 .signal-panel {
@@ -310,10 +322,6 @@ body {
   z-index: -1;
   border-radius: 20px;
 }
-
-/* ---------- marquee ---------- */
-
-/* marquee movement is GSAP-driven (see Marquee.tsx) */
 
 /* ---------- reveal on scroll ---------- */
 
@@ -393,6 +401,77 @@ details.faq .faq-body {
   color: rgba(255, 255, 255, 0.72);
 }
 
+/* ---------- article prose (blog) ---------- */
+
+.prose-boa {
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--color-muted);
+}
+.prose-boa p {
+  margin: 0 0 1.15em;
+}
+.prose-boa h2,
+.prose-boa h3,
+.prose-boa h4 {
+  font-family: var(--font-display);
+  font-weight: 540;
+  color: var(--color-navy);
+  line-height: 1.25;
+  margin: 1.9em 0 0.7em;
+}
+.prose-boa h2 { font-size: 24px; }
+.prose-boa h3 { font-size: 20px; }
+.prose-boa h4 { font-size: 17px; }
+.prose-boa ul,
+.prose-boa ol {
+  margin: 0 0 1.2em;
+  padding-left: 1.4em;
+}
+.prose-boa ul { list-style: none; }
+.prose-boa ul li {
+  position: relative;
+  margin-bottom: 0.55em;
+  padding-left: 0.4em;
+}
+.prose-boa ul li::before {
+  content: "";
+  position: absolute;
+  left: -1.1em;
+  top: 0.72em;
+  width: 0.75em;
+  height: 3px;
+  background: var(--color-teal);
+}
+.prose-boa ol li {
+  margin-bottom: 0.55em;
+}
+.prose-boa strong,
+.prose-boa b {
+  color: var(--color-navy);
+  font-weight: 700;
+}
+.prose-boa a {
+  color: var(--color-teal-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  transition: color 0.2s ease;
+}
+.prose-boa a:hover {
+  color: var(--color-accent, var(--color-teal));
+}
+.prose-boa blockquote {
+  margin: 1.6em 0;
+  border-left: 3px solid var(--color-teal);
+  padding: 0.2em 0 0.2em 1.2em;
+  font-style: italic;
+  color: var(--color-ink);
+}
+.prose-boa > :first-child { margin-top: 0; }
+.prose-boa > :last-child { margin-bottom: 0; }
+
 /* ---------- forms ---------- */
 
 .field label {
@@ -422,7 +501,7 @@ details.faq .faq-body {
 .field textarea:focus {
   outline: none;
   border-color: var(--color-teal);
-  background: #fff;
+  background: var(--surface);
 }
 .field textarea {
   min-height: 130px;
@@ -430,22 +509,6 @@ details.faq .faq-body {
 }
 
 /* ---------- misc ---------- */
-
-.ghost-word {
-  position: absolute;
-  font-family: var(--font-display);
-  font-weight: 800;
-  color: transparent;
-  -webkit-text-stroke: 1px color-mix(in oklab, var(--heading) 9%, transparent);
-  pointer-events: none;
-  user-select: none;
-  line-height: 0.8;
-  letter-spacing: -0.04em;
-  white-space: nowrap;
-}
-.on-dark .ghost-word {
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
-}
 
 /* thin scrollbar for horizontal scrollers */
 .scroll-x {
@@ -466,7 +529,7 @@ details.faq .faq-body {
   text-transform: uppercase;
   border: 1px solid var(--color-line);
   border-radius: 999px;
-  background: #fff;
+  background: var(--surface);
   color: var(--color-navy);
   white-space: nowrap;
 }
@@ -490,7 +553,7 @@ details.faq .faq-body {
   text-transform: uppercase;
   border: 1px solid var(--color-line);
   border-radius: 999px;
-  background: #fff;
+  background: var(--surface);
   color: var(--color-muted);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -564,6 +627,156 @@ details.faq .faq-body {
 .menu-stagger > *:nth-child(8) { animation-delay: 0.4s; }
 .menu-stagger > *:nth-child(9) { animation-delay: 0.45s; }
 .menu-stagger > *:nth-child(10) { animation-delay: 0.5s; }
+
+/* ---------- cinematic hero scene (3D orbital rings) ---------- */
+
+.hero-scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1100px;
+}
+
+.hs-glow {
+  position: absolute;
+  width: min(760px, 92vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--accent) 16%, transparent) 0%,
+    color-mix(in oklab, var(--accent) 6%, transparent) 38%,
+    transparent 68%
+  );
+  animation: hsBreath 9s ease-in-out infinite;
+}
+
+.hs-rig {
+  position: relative;
+  width: min(680px, 88vw);
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+  will-change: transform;
+  animation: hsIntro 1.6s cubic-bezier(0.22, 0.61, 0.21, 1) both;
+}
+
+.hs-ring,
+.hs-arc,
+.hs-core {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+}
+
+.hs-ring {
+  border: 1.5px solid color-mix(in oklab, var(--accent) 38%, transparent);
+}
+.hs-r1 {
+  width: 100%;
+  height: 100%;
+  animation: hsSpin1 44s linear infinite;
+}
+.hs-r2 {
+  width: 74%;
+  height: 74%;
+  border-color: color-mix(in oklab, var(--heading) 26%, transparent);
+  animation: hsSpin2 58s linear infinite;
+}
+.hs-r3 {
+  width: 50%;
+  height: 50%;
+  border-color: color-mix(in oklab, var(--accent) 26%, transparent);
+  animation: hsSpin3 70s linear infinite;
+}
+
+/* luminous swept arc riding the outer ring's plane */
+.hs-arc {
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    color-mix(in oklab, var(--accent) 85%, transparent) 320deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--accent) 60%, transparent));
+  animation: hsSweep 14s linear infinite;
+}
+
+.hs-core {
+  width: 15%;
+  height: 15%;
+  background: radial-gradient(
+    circle at 38% 32%,
+    color-mix(in oklab, var(--accent) 55%, transparent),
+    color-mix(in oklab, var(--accent) 18%, transparent) 55%,
+    transparent 75%
+  );
+  filter: blur(6px);
+  animation: hsBreath 7s ease-in-out infinite;
+}
+
+.hs-speck {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.35;
+  filter: blur(1px);
+  animation: hsFloat 12s ease-in-out infinite;
+}
+
+@keyframes hsSpin1 {
+  from { transform: rotateX(72deg) rotateZ(0deg); }
+  to { transform: rotateX(72deg) rotateZ(360deg); }
+}
+@keyframes hsSpin2 {
+  from { transform: rotateX(62deg) rotateY(-16deg) rotateZ(360deg); }
+  to { transform: rotateX(62deg) rotateY(-16deg) rotateZ(0deg); }
+}
+@keyframes hsSpin3 {
+  from { transform: rotateX(80deg) rotateY(12deg) rotateZ(0deg); }
+  to { transform: rotateX(80deg) rotateY(12deg) rotateZ(360deg); }
+}
+@keyframes hsSweep {
+  from { transform: rotateX(72deg) rotateZ(0deg); }
+  to { transform: rotateX(72deg) rotateZ(-360deg); }
+}
+@keyframes hsBreath {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes hsFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.2; }
+  50% { transform: translateY(-26px); opacity: 0.5; }
+}
+@keyframes hsIntro {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-rig,
+  .hs-ring,
+  .hs-arc,
+  .hs-core,
+  .hs-glow,
+  .hs-speck {
+    animation: none;
+  }
+  .hs-r1 { transform: rotateX(72deg); }
+  .hs-r2 { transform: rotateX(62deg) rotateY(-16deg); }
+  .hs-r3 { transform: rotateX(80deg) rotateY(12deg); }
+  .hs-arc { display: none; }
+}
 
 /* subtle pulse for live dot */
 @keyframes livePulse {

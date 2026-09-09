@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Marquee from "@/components/Marquee";
 import CtaBand from "@/components/CtaBand";
-import { FadeUp, Stagger, StaggerItem, DrawLine } from "@/components/motion/Animate";
-import WordReveal from "@/components/motion/WordReveal";
-import TiltCard from "@/components/motion/TiltCard";
-import Parallax from "@/components/motion/Parallax";
+import PageHero from "@/components/PageHero";
+import SectionHead from "@/components/SectionHead";
+import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import {
   fetchEventPanels,
   fetchEventReplays,
   fetchEvents,
+  isUpcoming,
   type SheetEvent,
   type SheetReplay,
 } from "@/lib/sheet";
+
+const LATEST_REPLAYS_LIMIT = 12;
 
 export const metadata: Metadata = {
   title: "Events",
@@ -54,7 +55,7 @@ function EventCard({ event }: { event: SheetEvent }) {
         </span>
       </div>
 
-      <h3 className="display mt-5 text-[23px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+      <h3 className="display mt-5 text-[21px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
         {event.title}
       </h3>
       <p className="mt-4 line-clamp-5 flex-1 text-[14px] leading-relaxed text-muted">
@@ -70,7 +71,7 @@ function EventCard({ event }: { event: SheetEvent }) {
             {event.panelists.slice(0, 4).map((person) => (
               <span
                 key={person.name}
-                className="inline-flex items-center gap-2 border border-line bg-cream px-2.5 py-1.5 text-[12px] font-bold text-ink"
+                className="inline-flex items-center gap-2 rounded-full border border-line bg-cream px-2.5 py-1.5 text-[12px] font-bold text-ink"
               >
                 {person.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -94,7 +95,7 @@ function EventCard({ event }: { event: SheetEvent }) {
       )}
 
       <span className="linkline mt-7">
-        View details <span className="arr">-&gt;</span>
+        View details <span className="arr">→</span>
       </span>
     </Link>
   );
@@ -104,24 +105,44 @@ function ReplayRow({ replay }: { replay: SheetReplay }) {
   return (
     <Link
       href={`/events/replays/${replay.slug}`}
-      className="group grid gap-5 border-b border-line py-6 transition-colors hover:bg-paper md:grid-cols-[160px_1fr_auto] md:items-center"
+      className="card-frame group flex h-full flex-col p-6 sm:p-7"
     >
-      <div>
-        <span className="index-no text-[15px]">{replay.date}</span>
-        <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
-          {replay.duration || "Replay"}
-        </div>
-      </div>
-      <div>
+      <div className="flex items-center justify-between gap-3">
         <span className="chip">{replay.category}</span>
-        <h3 className="display mt-3 text-[22px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
-          {replay.title}
-        </h3>
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+          {replay.date}
+        </span>
       </div>
-      <span className="linkline">
-        Open replay <span className="arr">-&gt;</span>
-      </span>
+      <h3 className="mt-4 flex-1 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
+        {replay.title}
+      </h3>
+      <div className="mt-5 flex items-center justify-between border-t border-line pt-4">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+          {replay.duration || "Full session"}
+        </span>
+        <span className="linkline">
+          Watch <span className="arr">→</span>
+        </span>
+      </div>
     </Link>
+  );
+}
+
+function StayTunedCard() {
+  return (
+    <div className="card-frame mx-auto flex max-w-[640px] flex-col items-center gap-4 p-10 text-center sm:p-14">
+      <span className="kicker center justify-center">Stay Tuned</span>
+      <h3 className="display text-[24px] text-navy sm:text-[28px]">
+        This session has concluded.
+      </h3>
+      <p className="max-w-[440px] text-[14.5px] leading-relaxed text-muted">
+        The next live session will be announced here soon - keep an eye on
+        this page or join the list.
+      </p>
+      <Link href="/contact" className="btn btn-outline mt-2">
+        Get Notified
+      </Link>
+    </div>
   );
 }
 
@@ -132,191 +153,176 @@ export default async function EventsPage() {
     fetchEventReplays(),
   ]);
 
-  const [featuredEvent, ...restEvents] = events;
+  const upcomingEvents = events.filter(isUpcoming);
+  const upcomingPanels = panels.filter(isUpcoming);
+  const latestReplays = replays.slice(0, LATEST_REPLAYS_LIMIT);
+
+  const [featuredEvent, ...restEvents] = upcomingEvents;
   const yearGroups = groupEventsByYear(restEvents);
 
   return (
     <>
-      <section className="relative overflow-hidden">
-        <Parallax
-          speed={0.14}
-          className="ghost-word right-[-3%] top-[55%] text-[clamp(110px,15vw,230px)]"
-        >
-          calendar
-        </Parallax>
-        <div className="relative mx-auto grid max-w-[1280px] gap-12 px-5 pb-20 pt-14 lg:grid-cols-[0.9fr_1fr] lg:pt-20">
-          <div>
-            <FadeUp>
-              <span className="kicker">Events</span>
-            </FadeUp>
-            <WordReveal
-              text="A cleaner calendar for *serious practice owners.*"
-              className="display mt-6 text-[clamp(32px,4.1vw,52px)] text-navy"
-            />
-            <FadeUp delay={0.35}>
-              <p className="mt-6 max-w-[580px] text-[17px] leading-relaxed text-muted">
-                Live webinars, deep-dive workshops, and expert panels — plus a
-                complete replay library. Updated the moment a new session is
-                announced.
-              </p>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href="#calendar" className="btn btn-navy">
-                  View Calendar <span className="arr">-&gt;</span>
-                </a>
-                <a href="#replays" className="btn btn-outline">
-                  Watch Replays
-                </a>
-              </div>
-            </FadeUp>
-          </div>
+      <PageHero
+        kicker="Events"
+        title={
+          <>
+            A cleaner calendar for <em>serious practice owners.</em>
+          </>
+        }
+        lede="Live webinars, deep-dive workshops, and expert panels - plus a complete replay library. Updated the moment a new session is announced."
+      >
+        <a href="#calendar" className="btn btn-navy">
+          View Calendar <span className="arr">→</span>
+        </a>
+        <a href="#replays" className="btn btn-outline">
+          Watch Replays
+        </a>
+      </PageHero>
 
-          <FadeUp delay={0.15}>
-            <div className="signal-panel grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
-              {[
-                { label: "Scheduled events", value: events.length },
-                { label: "Upcoming panels", value: panels.length },
-                { label: "Event replays", value: replays.length },
-              ].map((stat) => (
-                <div key={stat.label} className="bg-paper p-7">
-                  <div className="display text-[36px] leading-none text-teal-deep">
-                    {stat.value}
-                  </div>
-                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </FadeUp>
-        </div>
+      {/* stats */}
+      <section className="border-b border-line bg-paper py-12">
+        <Stagger className="mx-auto grid max-w-[880px] grid-cols-3 gap-6 px-5 text-center">
+          {[
+            { label: "Scheduled events", value: upcomingEvents.length },
+            { label: "Upcoming panels", value: upcomingPanels.length },
+            { label: "Event replays", value: replays.length },
+          ].map((stat) => (
+            <StaggerItem key={stat.label}>
+              <div className="display text-[clamp(28px,3.2vw,40px)] leading-none text-teal-deep">
+                {stat.value}
+              </div>
+              <div className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-muted">
+                {stat.label}
+              </div>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
-      <Marquee
-        items={[
-          "Marketing",
-          "Patient Experience",
-          "Technology",
-          "Leadership",
-          "Operations",
-          "Clinical Growth",
-          "Finance",
-          "Conversion",
-        ]}
-      />
+      {/* calendar */}
+      <section id="calendar" className="scroll-mt-24 py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Event Calendar"
+            title={
+              <>
+                Upcoming and scheduled <em>events</em>
+              </>
+            }
+            lede="Every upcoming session on the BOA calendar - each one opens into its own page with the full description, featured voices, and registration."
+          />
 
-      <section id="calendar" className="scroll-mt-24 border-b border-line bg-paper py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="grid gap-8 lg:grid-cols-[0.45fr_1fr]">
-              <div>
-                <span className="kicker">Event Calendar</span>
-                <h2 className="display mt-5 text-[clamp(26px,3.3vw,38px)] text-navy">
-                  Upcoming and scheduled <em>events</em>
-                </h2>
-              </div>
-              <p className="max-w-[660px] text-[15.5px] leading-relaxed text-muted lg:pt-9">
-                Every upcoming session on the BOA calendar — each one opens into
-                its own page with the full description, featured voices, and
-                registration.
-              </p>
-            </div>
-          </FadeUp>
+          {upcomingEvents.length > 0 ? (
+            <>
+              {featuredEvent && (
+                <FadeUp>
+                  <div className="mx-auto mt-14 max-w-[680px]">
+                    <div className="mb-5 text-center">
+                      <span className="kicker center justify-center">
+                        Next Up
+                      </span>
+                    </div>
+                    <EventCard event={featuredEvent} />
+                  </div>
+                </FadeUp>
+              )}
 
-          {featuredEvent && (
+              {yearGroups.length > 0 && (
+                <div className="mt-16 space-y-16">
+                  {yearGroups.map((group) => (
+                    <div key={group.year ?? "tba"}>
+                      <div className="mb-8 flex items-center gap-6">
+                        <span className="h-px flex-1 bg-line" aria-hidden />
+                        <span className="display shrink-0 text-[clamp(26px,3.4vw,38px)] leading-none text-teal-deep/40">
+                          {group.year ?? "TBA"}
+                        </span>
+                        <span className="h-px flex-1 bg-line" aria-hidden />
+                      </div>
+                      <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {group.events.map((event) => (
+                          <StaggerItem key={event.slug} className="h-full">
+                            <EventCard event={event} />
+                          </StaggerItem>
+                        ))}
+                      </Stagger>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
             <div className="mt-14">
-              <FadeUp>
-                <span className="kicker">Next Up</span>
-              </FadeUp>
-              <div className="mt-5 lg:max-w-[640px]">
-                <TiltCard maxTilt={7} className="h-full">
-                  <EventCard event={featuredEvent} />
-                </TiltCard>
-              </div>
+              <StayTunedCard />
             </div>
           )}
+        </div>
+      </section>
 
-          {yearGroups.length > 0 && (
-            <div className="mt-16 space-y-16">
-              {yearGroups.map((group) => (
-                <div key={group.year ?? "tba"}>
-                  <div className="mb-8 flex items-center gap-6">
-                    <span className="display shrink-0 text-[clamp(37px,4.9vw,58px)] leading-none text-teal-deep/25">
-                      {group.year ?? "TBA"}
-                    </span>
-                    <DrawLine className="h-px flex-1 bg-line" />
-                  </div>
-                  <Stagger className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-                    {group.events.map((event) => (
-                      <StaggerItem key={event.slug} className="h-full">
-                        <EventCard event={event} />
-                      </StaggerItem>
-                    ))}
-                  </Stagger>
-                </div>
+      {/* panels */}
+      <section className="dark-canvas on-dark py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            dark
+            kicker="Event Panels"
+            title={
+              <>
+                Live panels with <em>named experts.</em>
+              </>
+            }
+            lede="Moderated expert panels scheduled alongside our events - meet the panelists before you join live."
+          />
+
+          {upcomingPanels.length > 0 ? (
+            <Stagger className="mx-auto mt-12 grid max-w-[980px] gap-6 md:grid-cols-2">
+              {upcomingPanels.map((event) => (
+                <StaggerItem key={event.slug} className="h-full">
+                  <EventCard event={event} />
+                </StaggerItem>
               ))}
+            </Stagger>
+          ) : (
+            <div className="mt-12">
+              <StayTunedCard />
             </div>
           )}
+
+          <FadeUp className="mt-12 text-center">
+            <Link href="/panels" className="btn btn-ghost-light">
+              Visit the Panel Hub <span className="arr">→</span>
+            </Link>
+          </FadeUp>
         </div>
       </section>
 
-      <section className="dark-canvas on-dark py-24">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div className="max-w-[700px]">
-                <span className="kicker">Event Panels</span>
-                <h2 className="display mt-5 text-[clamp(26px,3.3vw,38px)] text-white">
-                  Live panels with <em>named experts</em>.
-                </h2>
-                <p className="mt-4 text-[15.5px] leading-relaxed text-white/70">
-                  Moderated expert panels scheduled alongside our events — meet
-                  the panelists before you join live.
-                </p>
-              </div>
-              <Link href="/panels" className="linkline !text-teal">
-                Panel hub <span className="arr">-&gt;</span>
-              </Link>
-            </div>
-          </FadeUp>
-
-          <Stagger className="mt-12 grid gap-7 md:grid-cols-2">
-            {panels.map((event) => (
-              <StaggerItem key={event.slug} className="h-full">
-                <EventCard event={event} />
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-
-      <section id="replays" className="scroll-mt-24 py-24 lg:py-28">
-        <div className="mx-auto max-w-[1280px] px-5">
-          <FadeUp>
-            <div className="max-w-[700px]">
-              <span className="kicker">Event Replays</span>
-              <h2 className="display mt-5 text-[clamp(26px,3.3vw,38px)] text-navy">
-                A replay library that <em>does not feel buried</em>.
-              </h2>
-              <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
-                The replay tab creates individual replay pages with video links,
-                summaries, descriptions, and transcript references.
-              </p>
-            </div>
-          </FadeUp>
-          <DrawLine className="mt-10 h-px bg-line" />
-          <Stagger className="border-t-0">
-            {replays.map((replay) => (
+      {/* replays */}
+      <section id="replays" className="scroll-mt-24 py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Latest Replays"
+            title={
+              <>
+                A replay library that <em>does not feel buried.</em>
+              </>
+            }
+            lede={`The ${latestReplays.length} most recent event replays - each one opens into its own page with the full video, summary, and description.`}
+          />
+          <Stagger className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {latestReplays.map((replay) => (
               <StaggerItem key={replay.slug}>
                 <ReplayRow replay={replay} />
               </StaggerItem>
             ))}
           </Stagger>
+          {replays.length > LATEST_REPLAYS_LIMIT && (
+            <p className="mt-8 text-center text-[13px] text-muted">
+              Showing the {LATEST_REPLAYS_LIMIT} most recent replays. Older
+              sessions stay reachable from their related event and panel pages.
+            </p>
+          )}
         </div>
       </section>
 
-      <CtaBand
-        secondary={{ href: "/panels", label: "View Panel Replays" }}
-      />
+      <CtaBand secondary={{ href: "/panels", label: "View Panel Replays" }} />
     </>
   );
 }

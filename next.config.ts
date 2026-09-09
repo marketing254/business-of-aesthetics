@@ -15,6 +15,10 @@ import type { NextConfig } from "next";
 const isStaticExport = process.env.STATIC_EXPORT === "1";
 
 const nextConfig: NextConfig = {
+  // fewer build workers: each one loads the full blog archive JSON, so a
+  // wide worker pool exhausts memory on smaller machines / CI runners.
+  // NEXT_BUILD_CPUS can dial it down further on low-memory machines.
+  experimental: { cpus: Number(process.env.NEXT_BUILD_CPUS || 4) },
   ...(isStaticExport
     ? {
         output: "export" as const,
