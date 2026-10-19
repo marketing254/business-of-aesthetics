@@ -27,20 +27,13 @@ git remote add origin https://github.com/<your-username>/<repo-name>.git
 git push -u origin main
 ```
 
-### Hosting on GitHub Pages
+### Hosting
 
-`.github/workflows/pages.yml` builds a static export and deploys it to
-GitHub Pages on every push (plus every 6 hours so sheet edits get picked up).
-After pushing, do two things once in the repo settings:
-
-1. Settings -> Pages -> Source: **GitHub Actions**
-2. Settings -> Secrets and variables -> Actions -> add secret
-   `BOA_SHEET_ID` (the long ID from the spreadsheet URL)
-
-The site then lives at `https://<username>.github.io/<repo-name>/`.
-Note: on Pages the sheet data is baked in at build time — edits appear on
-the next rebuild (push/schedule/manual run), not instantly. For instant
-updates, import the repo on Vercel (free) with the same `BOA_SHEET_ID` env.
+The site runs on **Vercel** (root directory `boa-next`). The old GitHub Pages
+static-export workflow was removed: the site now has server features
+(lead API, generated social image, dynamic sitemap and `llms.txt`) that a
+static export cannot provide. `.github/workflows/ci.yml` still type-checks
+and builds every push.
 
 ## Configuration (.env.local)
 
