@@ -224,7 +224,7 @@ function splitLines(value: string) {
 }
 
 function mediaImageUrl(url: string, width = 1200) {
-  const trimmed = (url || "").trim();
+  const trimmed = localizeLegacyMedia(url);
   if (!trimmed || /drive\.google\.com\/drive\/folders/i.test(trimmed)) return "";
   return driveImageUrl(trimmed, width);
 }
@@ -266,6 +266,35 @@ export function driveImageUrl(url: string, width = 1200): string {
     trimmed.match(/\/d\/([\w-]{20,})/) || trimmed.match(/[?&]id=([\w-]{20,})/);
   if (m) return `https://lh3.googleusercontent.com/d/${m[1]}=w${width}`;
   return trimmed;
+}
+
+/**
+ * Request a smaller rendition of a Drive-hosted image (lh3 URLs accept a
+ * =wNNN size suffix). Cards and avatars should never download the 1200 px
+ * original - a 64 px avatar at w1200 is ~50 KB per speaker.
+ */
+export function thumbUrl(url: string, width: number): string {
+  const u = localizeLegacyMedia(url);
+  if (!u) return "";
+  // already an optimizer URL (thumbed upstream) - never double-wrap
+  if (u.startsWith("/_next/image")) return u;
+  // Drive thumbnailer: ask for the size we render
+  if (/lh3\.googleusercontent\.com\/d\//.test(u)) return u.replace(/=w\d+$/, "=w" + width);
+  // mirrored WordPress uploads (see scripts/mirror-legacy-media.mjs) and any
+  // other local file: run through the Next image optimizer (resize + WebP)
+  if (u.startsWith("/")) {
+    const allowed = [64, 96, 128, 256, 384, 640, 750, 828, 1080, 1200];
+    const w = allowed.find((a) => a >= width) ?? 1200;
+    return "/_next/image?url=" + encodeURIComponent(u) + "&w=" + w + "&q=75";
+  }
+  return u;
+}
+
+/** Old-host image URLs (still in the sheet) -> same path, served locally. */
+export function localizeLegacyMedia(url: string): string {
+  return (url || "")
+    .trim()
+    .replace(/^https?:\/\/(?:www\.)?businessofaesthetics\.org(\/wp-content\/uploads\/)/i, "$1");
 }
 
 /**
@@ -590,7 +619,9 @@ async function fetchSheetRows(gid: string): Promise<SheetRow[]> {
   try {
     const res = await fetch(csvUrl(gid), {
       // per-request on servers; cached into the build for static export
-      cache: STATIC_BUILD ? "force-cache" : "no-store",
+      // 60-second ISR cache: edits appear within a minute, but visitors no
+      // longer wait on 1-6 round-trips to Google Sheets for every page view
+      ...(STATIC_BUILD ? { cache: "force-cache" as const } : { next: { revalidate: 60 } }),
       redirect: "follow",
     });
     if (!res.ok) return [];

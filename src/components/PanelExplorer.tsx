@@ -50,7 +50,7 @@ export default function PanelExplorer({
 
   return (
     <div ref={topRef} className="scroll-mt-24">
-      <div className="scroll-x flex justify-start gap-2.5 pb-1 sm:justify-center">
+      <div className="flex flex-wrap justify-center gap-2.5 pb-1">
         {categories.map((c) => (
           <button
             key={c}
@@ -90,7 +90,7 @@ export default function PanelExplorer({
                 )}
 
                 <div className="mt-7 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
-                  <span className="text-[11.5px] font-semibold uppercase tracking-[0.16em] text-muted">
+                  <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
                     {p.duration || "Replay"}
                   </span>
                   <span className="linkline">

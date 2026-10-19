@@ -168,7 +168,7 @@ export default function GlobalSearch() {
               />
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-md border border-line px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted transition-colors hover:text-navy"
+                className="rounded-md border border-line px-1.5 py-0.5 text-[12px] font-semibold uppercase tracking-wider text-muted transition-colors hover:text-navy"
               >
                 Esc
               </button>
@@ -189,7 +189,7 @@ export default function GlobalSearch() {
               )}
               {results.map((g) => (
                 <div key={g.group} className="py-1.5">
-                  <div className="px-3 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                  <div className="px-3 pb-1.5 pt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-muted">
                     {g.group}
                   </div>
                   {g.items.map((doc) => {
@@ -227,7 +227,7 @@ export default function GlobalSearch() {
               ))}
             </div>
 
-            <div className="flex items-center justify-between border-t border-line px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted">
+            <div className="flex items-center justify-between border-t border-line px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">
               <span>↑↓ navigate · Enter open</span>
               <span>Business of Aesthetics</span>
             </div>

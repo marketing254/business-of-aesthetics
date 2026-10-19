@@ -75,7 +75,7 @@ export default function TranscriptView({
               <div key={i} className="pb-2 pt-8 first:pt-6">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
                   {b.time && (
-                    <span className="text-[11px] font-semibold tracking-[0.08em] text-teal-deep">
+                    <span className="text-[12px] font-semibold tracking-[0.08em] text-teal-deep">
                       {highlight(b.time, q)}
                     </span>
                   )}
@@ -89,12 +89,12 @@ export default function TranscriptView({
                 {(b.speaker || b.time) && (
                   <div className="mb-1.5 flex items-baseline gap-3">
                     {b.speaker && (
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-deep">
+                      <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-teal-deep">
                         {highlight(b.speaker, q)}
                       </span>
                     )}
                     {b.time && !b.speaker && (
-                      <span className="text-[11px] font-semibold tracking-[0.08em] text-muted">
+                      <span className="text-[12px] font-semibold tracking-[0.08em] text-muted">
                         {highlight(b.time, q)}
                       </span>
                     )}

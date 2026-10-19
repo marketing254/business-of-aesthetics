@@ -32,7 +32,6 @@ yarn-error.log*
 
 # env files (real values stay local; only the example template is committed)
 .env*
-!.env.example
 
 # vercel
 .vercel
@@ -40,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Apps Script source (contains the lead secret) - kept locally only
+scripts/appscript.gs
+appscript.gs
+
+# internal launch/SEO notes - kept locally only
+docs/

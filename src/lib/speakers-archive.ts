@@ -6,7 +6,7 @@
 
 import type { SheetSpeaker } from "@/lib/sheet";
 
-const WP = "https://www.businessofaesthetics.org/wp-content/uploads";
+const WP = "/wp-content/uploads";
 
 function archive(
   name: string,

@@ -27,7 +27,7 @@ export default function ReplayNotes({ notes }: { notes: StructuredNotes }) {
         <dl className="mx-auto mb-10 grid max-w-[640px] grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-4">
           {notes.meta.slice(0, 4).map((m) => (
             <div key={m.label} className="bg-paper px-4 py-4 text-center">
-              <dt className="text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+              <dt className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                 {m.label}
               </dt>
               <dd className="mt-1.5 text-[13px] font-semibold leading-snug text-navy">

@@ -11,6 +11,7 @@ import {
   isUpcoming,
   type SheetEvent,
   type SheetReplay,
+  thumbUrl,
 } from "@/lib/sheet";
 
 const LATEST_REPLAYS_LIMIT = 12;
@@ -46,7 +47,7 @@ function EventCard({ event }: { event: SheetEvent }) {
           <span className="index-no text-[15px]">
             {event.day || event.monthYear || "BOA"}
           </span>
-          <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+          <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-muted">
             {event.time || "Time TBA"}
           </div>
         </div>
@@ -64,7 +65,7 @@ function EventCard({ event }: { event: SheetEvent }) {
 
       {event.panelists.length > 0 && (
         <div className="mt-6 border-t border-line pt-4">
-          <div className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+          <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
             Featured voices
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -76,7 +77,7 @@ function EventCard({ event }: { event: SheetEvent }) {
                 {person.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={person.imageUrl}
+                    src={thumbUrl(person.imageUrl, 120)}
                     alt=""
                     referrerPolicy="no-referrer"
                     className="h-6 w-6 rounded-full object-cover object-top"
@@ -109,7 +110,7 @@ function ReplayRow({ replay }: { replay: SheetReplay }) {
     >
       <div className="flex items-center justify-between gap-3">
         <span className="chip">{replay.category}</span>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">
           {replay.date}
         </span>
       </div>
@@ -117,7 +118,7 @@ function ReplayRow({ replay }: { replay: SheetReplay }) {
         {replay.title}
       </h3>
       <div className="mt-5 flex items-center justify-between border-t border-line pt-4">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">
           {replay.duration || "Full session"}
         </span>
         <span className="linkline">
@@ -191,7 +192,7 @@ export default async function EventsPage() {
               <div className="display text-[clamp(28px,3.2vw,40px)] leading-none text-teal-deep">
                 {stat.value}
               </div>
-              <div className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-muted">
+              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-muted">
                 {stat.label}
               </div>
             </StaggerItem>

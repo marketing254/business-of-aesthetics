@@ -3,7 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import type { SheetPodcast } from "@/lib/sheet";
+import { thumbUrl, type SheetPodcast } from "@/lib/sheet";
+
+/** Only what the list needs - keeps the RSC payload small (was 480 KB). */
+export type EpisodeCard = Pick<
+  SheetPodcast,
+  "episode" | "title" | "guestName" | "guestPhotoUrl" | "category" | "datePublished" | "slug" | "initials"
+>;
 import Paginator from "@/components/Paginator";
 
 const EASE = [0.22, 0.61, 0.21, 1] as const;
@@ -22,7 +28,7 @@ function initials(name: string) {
 export default function EpisodeExplorer({
   episodes,
 }: {
-  episodes: SheetPodcast[];
+  episodes: EpisodeCard[];
 }) {
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(episodes.map((e) => e.category))).sort()],
@@ -85,7 +91,7 @@ export default function EpisodeExplorer({
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
           </span>
         </div>
-        <div className="scroll-x flex max-w-full justify-start gap-2.5 pb-1 sm:justify-center">
+        <div className="flex flex-wrap justify-center gap-2.5 pb-1">
           {categories.map((c) => (
             <button
               key={c}
@@ -119,7 +125,7 @@ export default function EpisodeExplorer({
                   {e.guestPhotoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={e.guestPhotoUrl}
+                      src={thumbUrl(e.guestPhotoUrl, 400)}
                       alt={e.guestName}
                       referrerPolicy="no-referrer"
                       className="h-12 w-12 shrink-0 rounded-full border border-line object-cover object-top"
@@ -134,7 +140,7 @@ export default function EpisodeExplorer({
                     <div className="truncate text-[13.5px] font-semibold text-ink">
                       {e.guestName}
                     </div>
-                    <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+                    <div className="mt-0.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">
                       EP {String(e.episode).padStart(3, "0")} · {e.datePublished}
                     </div>
                   </div>

@@ -44,7 +44,7 @@ export default function ShareBar({ title }: { title: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
-      <span className="mr-1 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-muted">
+      <span className="mr-1 text-[12px] font-semibold uppercase tracking-[0.2em] text-muted">
         Share
       </span>
       <button onClick={copy} className={iconBtn} title="Copy link" aria-label="Copy link">

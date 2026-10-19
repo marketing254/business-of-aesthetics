@@ -76,7 +76,7 @@ export default function BlogExplorer({ posts }: { posts: BlogCard[] }) {
                 href={`/blog/${p.slug}`}
                 className="card-frame group flex h-full flex-col p-7"
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+                <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
                   {p.dateLabel} · {p.readMins} min read
                 </div>
                 <h3 className="mt-3 flex-1 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">

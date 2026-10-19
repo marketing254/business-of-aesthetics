@@ -16,18 +16,21 @@ export function FadeUp({
   distance = 28,
   className,
   once = true,
+  eager = false,
 }: {
   children: ReactNode;
   delay?: number;
   distance?: number;
   className?: string;
   once?: boolean;
+  /** render visible immediately - use for hero/LCP content */
+  eager?: boolean;
 }) {
   const reduced = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={reduced ? false : { opacity: 0, y: distance }}
+      initial={reduced || eager ? false : { opacity: 0, y: distance }}
       whileInView={{ opacity: 1, y: 0 }}
       /* low amount so tall blocks (which can never reach high visibility
          ratios) still trigger reliably */

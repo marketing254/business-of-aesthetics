@@ -5,19 +5,33 @@ import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import SpeakerForm from "@/components/SpeakerForm";
-import LiveSpeakers from "@/components/LiveSpeakers";
+import SpeakerDirectory from "@/components/SpeakerDirectory";
+import JsonLd from "@/components/JsonLd";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import { fetchSpeakers } from "@/lib/sheet";
+import {
+  breadcrumbJsonLd,
+  graph,
+  speakerListJsonLd,
+  webPageJsonLd,
+} from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Become a Guest Speaker",
+  title: "Speakers - Featured Experts & Guest Speaker Applications",
   description:
-    "Share your expertise with 3,700+ aesthetic practitioners. Apply to be a guest on the Business of Aesthetics Podcast or Expert Panels.",
+    "Browse the dermatologists, plastic surgeons, med spa owners and industry experts who speak on Business of Aesthetics panels and podcasts - and apply to be a guest.",
+  alternates: { canonical: "/speakers" },
+  openGraph: {
+    title: "Business of Aesthetics Speakers",
+    description:
+      "The experts behind BOA's podcast and expert panels, plus how to apply as a guest speaker.",
+    url: "/speakers",
+  },
 };
 
 const proof = [
   { n: 3700, s: "+", label: "Monthly Listeners" },
-  { n: 284, s: "+", label: "Published Episodes" },
+  { n: 290, s: "+", label: "Published Episodes" },
   { n: 15, s: "K+", label: "Social Media Followers" },
   { n: 50, s: "+", label: "Expert Panels Hosted" },
 ];
@@ -88,22 +102,56 @@ export default async function SpeakersPage() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageJsonLd({
+            path: "/speakers",
+            name: "Business of Aesthetics Speakers",
+            description: metadata.description as string,
+            type: "CollectionPage",
+          }),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Speakers", path: "/speakers" },
+          ]),
+          speakerListJsonLd(sheetSpeakers)
+        )}
+      />
+
       <PageHero
-        kicker="Become A Guest Speaker"
+        kicker="Speakers"
         title={
           <>
-            Share your expertise. Reach <em>3,700+ practitioners.</em>
+            The experts who <em>share what works.</em>
           </>
         }
-        lede="The Business of Aesthetics Podcast is the leading voice for aesthetic medicine professionals. We're looking for passionate leaders with real stories, bold ideas, and actionable insights to share."
+        lede="Practice owners, clinicians, marketers and advisors who have joined Business of Aesthetics panels and the podcast - browse the directory, or apply to bring your own expertise to 3,700+ practitioners."
       >
-        <a href="#apply" className="btn btn-navy">
-          Apply Now <span className="arr">→</span>
+        <a href="#directory" className="btn btn-navy">
+          Browse Speakers <span className="arr">→</span>
         </a>
-        <Link href="/podcast" className="btn btn-outline">
-          Listen First
-        </Link>
+        <a href="#apply" className="btn btn-outline">
+          Apply to Speak
+        </a>
       </PageHero>
+
+      {/* speaker directory - live from the Google Sheet */}
+      <section id="directory" className="scroll-mt-24 border-b border-line bg-paper py-16 lg:py-20">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Speaker Directory"
+            title={
+              <>
+                Featured <em>speakers</em>
+              </>
+            }
+            lede="Everyone who has taken the stage on a BOA panel or episode. The directory updates automatically as our team confirms new speakers."
+          />
+          <div className="mt-10">
+            <SpeakerDirectory initial={sheetSpeakers} />
+          </div>
+        </div>
+      </section>
 
       {/* proof bar */}
       <section className="dark-canvas on-dark py-12">
@@ -113,30 +161,12 @@ export default async function SpeakersPage() {
               <div className="display text-[clamp(28px,3.2vw,38px)] leading-none text-white">
                 <Counter target={s.n} suffix={s.s} />
               </div>
-              <div className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal">
+              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.22em] text-teal">
                 {s.label}
               </div>
             </StaggerItem>
           ))}
         </Stagger>
-      </section>
-
-      {/* LIVE speaker directory from the Google Sheet */}
-      <section className="border-b border-line bg-paper py-20 lg:py-24">
-        <div className="mx-auto max-w-[1180px] px-5">
-          <SectionHead
-            kicker="Speaker Directory · Live"
-            title={
-              <>
-                Meet our <em>featured speakers</em>
-              </>
-            }
-            lede="The experts joining BOA events and panels. This directory updates automatically the moment our team confirms a new speaker."
-          />
-          <div className="mt-12">
-            <LiveSpeakers initial={sheetSpeakers} />
-          </div>
-        </div>
       </section>
 
       {/* benefits */}
@@ -185,7 +215,7 @@ export default async function SpeakersPage() {
           <Stagger className="mx-auto mt-10 flex max-w-[880px] flex-wrap justify-center gap-3">
             {topics.map((t) => (
               <StaggerItem key={t}>
-                <span className="chip !py-3 !text-[11px] transition-all hover:border-teal hover:text-teal-deep">
+                <span className="chip !py-3 !text-[12px] transition-all hover:border-teal hover:text-teal-deep">
                   {t}
                 </span>
               </StaggerItem>

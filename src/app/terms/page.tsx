@@ -40,7 +40,7 @@ const sections = [
         Questions about these terms? Email{" "}
         <a
           href="mailto:ideas@businessofaesthetics.org"
-          className="font-bold text-teal-deep underline"
+          className="inline-block py-1 font-bold text-teal-deep underline"
         >
           ideas@businessofaesthetics.org
         </a>

@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp } from "@/components/motion/Animate";
-import { fetchEvents } from "@/lib/sheet";
+import { fetchEvents, thumbUrl } from "@/lib/sheet";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
+
 
 type EventDetailProps = {
   params: Promise<{ slug: string }>;
@@ -24,7 +27,9 @@ export async function generateMetadata({
 
   return {
     title: event.title,
-    description: event.description,
+    description: event.description.replace(/\s+/g, " ").slice(0, 160),
+    alternates: { canonical: `/events/${event.slug}` },
+    openGraph: { title: event.title, url: `/events/${event.slug}` },
   };
 }
 
@@ -42,6 +47,16 @@ export default async function EventDetailPage({ params }: EventDetailProps) {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          eventJsonLd(event, `/events/${event.slug}`),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Events", path: "/events" },
+            { name: event.title, path: `/events/${event.slug}` },
+          ])
+        )}
+      />
       {/* centered header */}
       <section className="border-b border-line">
         <div className="mx-auto max-w-[1180px] px-5 pb-14 pt-12 lg:pt-16">
@@ -106,7 +121,7 @@ export default async function EventDetailPage({ params }: EventDetailProps) {
                     {person.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={person.imageUrl}
+                        src={thumbUrl(person.imageUrl, 120)}
                         alt={person.name}
                         referrerPolicy="no-referrer"
                         className="mx-auto h-20 w-20 rounded-full border border-line object-cover object-top"

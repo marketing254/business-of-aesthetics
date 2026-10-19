@@ -10,6 +10,7 @@ import {
   fetchPanelReplays,
   isUpcoming,
   type SheetEvent,
+  thumbUrl,
 } from "@/lib/sheet";
 
 export const metadata: Metadata = {
@@ -52,7 +53,7 @@ function UpcomingPanel({ panel }: { panel: SheetEvent }) {
           <span className="index-no text-[15px]">
             {panel.day || panel.monthYear}
           </span>
-          <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+          <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-muted">
             {panel.time || "8:00 PM ET"}
           </div>
         </div>
@@ -67,7 +68,7 @@ function UpcomingPanel({ panel }: { panel: SheetEvent }) {
       </p>
 
       <div className="mt-6 border-t border-line pt-4">
-        <div className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
           Panelists
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -79,7 +80,7 @@ function UpcomingPanel({ panel }: { panel: SheetEvent }) {
               {person.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={person.imageUrl}
+                  src={thumbUrl(person.imageUrl, 120)}
                   alt=""
                   referrerPolicy="no-referrer"
                   className="h-6 w-6 rounded-full object-cover object-top"
@@ -143,7 +144,7 @@ export default async function PanelsPage() {
         <a href="#upcoming" className="btn btn-navy">
           Upcoming Panels <span className="arr">→</span>
         </a>
-        <a href="#series" className="btn btn-outline">
+        <a href="#replays" className="btn btn-outline">
           Replay Archive
         </a>
       </PageHero>
@@ -160,7 +161,7 @@ export default async function PanelsPage() {
               <div className="display text-[clamp(22px,2.8vw,34px)] leading-none text-teal-deep">
                 {stat.value}
               </div>
-              <div className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-muted">
+              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-muted">
                 {stat.label}
               </div>
             </StaggerItem>
@@ -205,7 +206,7 @@ export default async function PanelsPage() {
 
       {/* replay archive */}
       <section
-        id="series"
+        id="replays"
         className="scroll-mt-24 border-y border-line bg-paper py-20 lg:py-24"
       >
         <div className="mx-auto max-w-[1180px] px-5">
@@ -242,7 +243,7 @@ export default async function PanelsPage() {
             <div className="scroll-x mx-auto mt-12 max-w-[980px]">
               <table className="w-full min-w-[720px] border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-white/15 text-[10.5px] uppercase tracking-[0.22em]">
+                  <tr className="border-b border-white/15 text-[12px] uppercase tracking-[0.22em]">
                     <th className="py-4 pr-6 font-semibold text-white/50">
                       What Matters
                     </th>

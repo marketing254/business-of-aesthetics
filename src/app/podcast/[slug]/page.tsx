@@ -6,8 +6,11 @@ import TranscriptView from "@/components/TranscriptView";
 import LeadGate from "@/components/LeadGate";
 import ShareBar from "@/components/ShareBar";
 import EpisodeAudio from "@/components/EpisodeAudio";
-import { fetchPodcasts, fetchTranscript } from "@/lib/sheet";
+import { fetchPodcasts, fetchTranscript, thumbUrl } from "@/lib/sheet";
 import { platforms } from "@/lib/data";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, graph, podcastEpisodeJsonLd } from "@/lib/seo";
+
 
 type PodcastDetailProps = {
   params: Promise<{ slug: string }>;
@@ -79,9 +82,20 @@ export async function generateMetadata({
   const { episode } = await loadEpisode(slug);
   if (!episode) return { title: "Podcast Episode" };
 
+  const description = episode.description.replace(/\s+/g, " ").slice(0, 160);
   return {
     title: `Episode ${episode.episode} - ${episode.title}`,
-    description: episode.description,
+    description,
+    alternates: { canonical: `/podcast/${episode.slug}` },
+    openGraph: {
+      type: "article",
+      title: `Ep ${episode.episode}: ${episode.title}`,
+      description,
+      url: `/podcast/${episode.slug}`,
+      ...(episode.posterImage || episode.guestPhotoUrl
+        ? { images: [{ url: episode.posterImage || episode.guestPhotoUrl }] }
+        : {}),
+    },
   };
 }
 
@@ -105,6 +119,16 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          podcastEpisodeJsonLd(episode),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Podcast", path: "/podcast" },
+            { name: `Episode ${episode.episode}`, path: `/podcast/${episode.slug}` },
+          ])
+        )}
+      />
       {/* ============ header + player ============ */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-[1180px] px-5 pb-4 pt-12 lg:pt-16">
@@ -153,7 +177,7 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
                 {episode.guestPhotoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={episode.guestPhotoUrl}
+                    src={thumbUrl(episode.guestPhotoUrl, 240)}
                     alt={episode.guestName || episode.title}
                     referrerPolicy="no-referrer"
                     className="h-full w-full object-cover"
@@ -167,11 +191,11 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
                 )}
               </div>
               <div className="w-full min-w-0 flex-1">
-                <div className="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                <div className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                   <span className="live-dot" /> Listen to this episode
                 </div>
                 {episode.audioSource ? (
-                  <LeadGate label="this episode">
+                  <LeadGate label="this episode" meta={{ form: "podcast_gate", title: episode.title, slug: episode.slug, episode: episode.episode, date: episode.datePublished }}>
                     <div className="mt-3">
                       <EpisodeAudio
                         src={episode.audioSource}
@@ -235,7 +259,7 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
           <div className="space-y-6 lg:sticky lg:top-28">
             <FadeUp delay={0.08}>
               <aside className="card-frame p-7">
-                <div className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                <div className="text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
                   Listen Anywhere
                 </div>
                 <h3 className="display mt-2 text-[22px] text-navy">
@@ -270,7 +294,7 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
 
             <FadeUp delay={0.14}>
               <aside className="card-frame p-7">
-                <div className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                <div className="text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
                   Episode Details
                 </div>
                 <dl className="mt-4 space-y-4 text-[13px]">
@@ -329,7 +353,7 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
                   href={`/podcast/${older.slug}`}
                   className="card-frame group block h-full p-7"
                 >
-                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                  <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                     &lt;- Previous Episode
                   </span>
                   <h3 className="mt-3 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
@@ -346,7 +370,7 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
                   href={`/podcast/${newer.slug}`}
                   className="card-frame group block h-full p-7 md:text-right"
                 >
-                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                  <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                     Next Episode -&gt;
                   </span>
                   <h3 className="mt-3 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">

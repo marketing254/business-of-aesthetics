@@ -6,6 +6,7 @@ import LeadGate from "@/components/LeadGate";
 import ShareBar from "@/components/ShareBar";
 import ReplayNotes from "@/components/ReplayNotes";
 import TranscriptView from "@/components/TranscriptView";
+import VideoEmbed from "@/components/VideoEmbed";
 import { FadeUp } from "@/components/motion/Animate";
 import {
   driveFileId,
@@ -17,6 +18,9 @@ import {
   videoEmbedUrl,
   type TranscriptBlock,
 } from "@/lib/sheet";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, graph, videoObjectJsonLd } from "@/lib/seo";
+
 
 type PanelReplayProps = {
   params: Promise<{ slug: string }>;
@@ -75,11 +79,22 @@ export default async function PanelReplayPage({ params }: PanelReplayProps) {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          videoObjectJsonLd(replay, `/panels/replays/${replay.slug}`, embed || undefined),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Expert Panels", path: "/panels" },
+            { name: "Replays", path: "/panels#replays" },
+            { name: replay.title, path: `/panels/replays/${replay.slug}` },
+          ])
+        )}
+      />
       {/* centered header */}
       <section className="border-b border-line">
         <div className="mx-auto max-w-[1180px] px-5 pb-12 pt-12 lg:pt-16">
           <FadeUp>
-            <Link href="/panels#series" className="linkline">
+            <Link href="/panels#replays" className="linkline">
               <span className="arr">&lt;-</span> Back to panel replays
             </Link>
 
@@ -117,21 +132,13 @@ export default async function PanelReplayPage({ params }: PanelReplayProps) {
         <div className="mx-auto max-w-[980px] px-5">
           {embed ? (
             <FadeUp>
-              <LeadGate label="this replay" variant="panel">
-                <div className="overflow-hidden rounded-2xl border border-line bg-navy-ink">
-                  <iframe
-                    src={embed}
-                    title={replay.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="aspect-video w-full"
-                  />
-                </div>
+              <LeadGate label="this replay" variant="panel" meta={{ form: "panel_replay_gate", title: replay.title, slug: replay.slug, date: replay.date }}>
+                <VideoEmbed embedUrl={embed} title={replay.title} poster={replay.imageUrl || undefined} />
               </LeadGate>
             </FadeUp>
           ) : replay.videoUrl ? (
             <FadeUp>
-              <LeadGate label="this replay" variant="panel">
+              <LeadGate label="this replay" variant="panel" meta={{ form: "panel_replay_gate", title: replay.title, slug: replay.slug, date: replay.date }}>
                 <div className="grid aspect-video place-items-center rounded-2xl border border-line bg-sand">
                   <a
                     href={replay.videoUrl}
@@ -218,7 +225,7 @@ export default async function PanelReplayPage({ params }: PanelReplayProps) {
 
       <CtaBand
         eyebrow="Panel Archive"
-        primary={{ href: "/panels#series", label: "More Panel Replays" }}
+        primary={{ href: "/panels#replays", label: "More Panel Replays" }}
         secondary={{ href: "/events", label: "Event Calendar" }}
       />
     </>

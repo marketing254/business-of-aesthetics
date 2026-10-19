@@ -229,7 +229,7 @@ export const featuredEvent: EventItem = {
   year: 2026,
   badge: "Business Strategy",
   desc: "Join five industry leaders as they break down the critical decisions that will define your practice's trajectory over the next year and a half - from market positioning to operational resilience.",
-  image: "https://www.businessofaesthetics.org/wp-content/uploads/2026/05/may20.jpg",
+  image: "/wp-content/uploads/2026/05/may20.jpg",
   link: "https://www.businessofaesthetics.org/webinar/future-proofing-your-aesthetic-practice-decisions-you-must-get-right-in-the-next-18-months/",
 };
 
@@ -243,7 +243,7 @@ export const events: EventItem[] = [
     badge: "Finance",
     desc: "Why revenue plateaus happen and the strategic shifts that break through them.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2026/04/Webinar-Replay-Apr22.jpg",
+      "/wp-content/uploads/2026/04/Webinar-Replay-Apr22.jpg",
     link: "https://www.businessofaesthetics.org/webinar/busy-isnt-profitable-why-many-aesthetic-practices-stall-at-the-same-revenue-level/",
   },
   {
@@ -254,7 +254,7 @@ export const events: EventItem[] = [
     badge: "Strategy",
     desc: "Building long-term growth through marketing, finance, operations and leadership.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2026/03/Webinar-March-25.jpg",
+      "/wp-content/uploads/2026/03/Webinar-March-25.jpg",
     link: "https://www.businessofaesthetics.org/webinar/strategic-planning-for-aesthetic-practices-in-2026-building-long-term-growth-through-marketing-finance-operations-and-leadership/",
   },
   {
@@ -264,7 +264,7 @@ export const events: EventItem[] = [
     badge: "Growth",
     desc: "The full playbook for scaling aesthetic practices the right way.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2026/02/Webinar-Replay-22725.jpg",
+      "/wp-content/uploads/2026/02/Webinar-Replay-22725.jpg",
     link: "https://www.businessofaesthetics.org/webinar/smart-growth-for-aesthetic-practices-a-complete-owners-guide/",
   },
   {
@@ -275,7 +275,7 @@ export const events: EventItem[] = [
     badge: "Technology",
     desc: "Communication, technology, patient experience and marketing strategies for 2026.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2026/01/jan21r.jpg",
+      "/wp-content/uploads/2026/01/jan21r.jpg",
     link: "https://www.businessofaesthetics.org/webinar/enhancing-modern-aesthetic-practices-in-2026-through-communication-technology-patient-experience-and-marketing/",
   },
   {
@@ -286,7 +286,7 @@ export const events: EventItem[] = [
     badge: "Operations",
     desc: "The business systems that protect and accelerate aesthetic practice growth.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/12/December-9th.jpg",
+      "/wp-content/uploads/2025/12/December-9th.jpg",
     link: "https://www.businessofaesthetics.org/webinar/scaling-smarter-legal-financial-operational-strategies-for-aesthetic-practice-growth/",
   },
   {
@@ -296,7 +296,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "Injectables, devices and team training - the full growth stack.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/10/Webinar-1022.jpg",
+      "/wp-content/uploads/2025/10/Webinar-1022.jpg",
     link: "https://www.businessofaesthetics.org/webinar/maximizing-practice-growth-with-next-gen-injectables-devices-team-training/",
   },
   {
@@ -307,7 +307,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "Drive success for growing, established, and veteran aesthetic practices.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/10/sept30.jpg",
+      "/wp-content/uploads/2025/10/sept30.jpg",
     link: "https://www.businessofaesthetics.org/webinar/optimizing-outcomes-and-maximizing-revenue-with-next-gen-long-lasting-injectables-to-drive-success-for-growing-established-and-veteran-aesthetic-practices/",
   },
   {
@@ -318,7 +318,7 @@ export const events: EventItem[] = [
     badge: "Dermatology",
     desc: "Scaling dermatology practices with technology, marketing and leadership.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/09/September-23rd.jpg",
+      "/wp-content/uploads/2025/09/September-23rd.jpg",
     link: "https://www.businessofaesthetics.org/webinar/dermatology-growth-summit-scaling-practices-with-technology-marketing-leadership/",
   },
   {
@@ -328,7 +328,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "Tailoring care for every patient age group - from Gen Z to boomers.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/09/Webinar-set18.jpg",
+      "/wp-content/uploads/2025/09/Webinar-set18.jpg",
     link: "https://www.businessofaesthetics.org/webinar/targeted-treatments-for-every-generation-from-botox-to-facelifts/",
   },
   {
@@ -338,7 +338,7 @@ export const events: EventItem[] = [
     badge: "Plastic Surgery",
     desc: "Business, branding, and beyond - a complete owner's roadmap.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/08/aug20-25.jpg",
+      "/wp-content/uploads/2025/08/aug20-25.jpg",
     link: "https://www.businessofaesthetics.org/webinar/scaling-the-modern-plastic-surgery-practice-business-branding-and-beyond/",
   },
   {
@@ -349,7 +349,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "The latest in surgical, non-surgical, and regenerative medicine.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/10/Webinar-1024.jpg",
+      "/wp-content/uploads/2025/10/Webinar-1024.jpg",
     link: "https://www.businessofaesthetics.org/webinar/advancements-in-aesthetics-surgical-non-surgical-regenerative-medicine-more/",
   },
   {
@@ -358,7 +358,7 @@ export const events: EventItem[] = [
     year: 2025,
     badge: "Marketing",
     desc: "Tactical, hands-on sales and marketing training for aesthetic teams.",
-    image: "https://www.businessofaesthetics.org/wp-content/uploads/2025/07/j23.jpg",
+    image: "/wp-content/uploads/2025/07/j23.jpg",
     link: "https://www.businessofaesthetics.org/webinar/aesthetics-sales-and-marketing-boot-camp/",
   },
   {
@@ -369,7 +369,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "Age-diverse treatment offerings to broaden your patient base.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/06/Webinar-Replay625.jpg",
+      "/wp-content/uploads/2025/06/Webinar-Replay625.jpg",
     link: "https://www.businessofaesthetics.org/webinar/multi-generational-skincare-boost-your-practice-with-age-diverse-treatment-offerings/",
   },
   {
@@ -378,7 +378,7 @@ export const events: EventItem[] = [
     year: 2025,
     badge: "Growth",
     desc: "Scaling device-based revenue from purchase through ROI.",
-    image: "https://www.businessofaesthetics.org/wp-content/uploads/2025/06/jun12.jpg",
+    image: "/wp-content/uploads/2025/06/jun12.jpg",
     link: "https://www.businessofaesthetics.org/webinar/everything-you-need-to-know-about-buying-marketing-and-growing-device-revenue/",
   },
   {
@@ -388,7 +388,7 @@ export const events: EventItem[] = [
     badge: "Business Strategy",
     desc: "Starting, buying, expanding, retirement planning, and selling.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/06/Webinar-Replay-528.jpg",
+      "/wp-content/uploads/2025/06/Webinar-Replay-528.jpg",
     link: "https://www.businessofaesthetics.org/webinar/aesthetic-practice-ownership-journey-starting-buying-expanding-retirement-planning-and-selling/",
   },
   {
@@ -398,7 +398,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "Injectables, fillers, threads, and the techniques driving results.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/05/webinar-replay-thumbnail-april-.jpg",
+      "/wp-content/uploads/2025/05/webinar-replay-thumbnail-april-.jpg",
     link: "https://www.businessofaesthetics.org/webinar/non-surgical-facial-rejuvenation-injectables-fillers-threads-and-more/",
   },
   {
@@ -408,7 +408,7 @@ export const events: EventItem[] = [
     badge: "Finance",
     desc: "The numbers every aesthetic practice owner must know.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/03/1067615319.jpg",
+      "/wp-content/uploads/2025/03/1067615319.jpg",
     link: "https://www.businessofaesthetics.org/webinar/metrics-and-numbers-that-drive-your-practice-accounting-finance-tax/",
   },
   {
@@ -418,7 +418,7 @@ export const events: EventItem[] = [
     badge: "Industry Trends",
     desc: "The newest treatments, techniques, and trends shaping the industry.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/02/boawebfeb.jpg",
+      "/wp-content/uploads/2025/02/boawebfeb.jpg",
     link: "https://www.businessofaesthetics.org/webinar/whats-new-in-aesthetics/",
   },
   {
@@ -428,7 +428,7 @@ export const events: EventItem[] = [
     badge: "Strategy",
     desc: "Setting actionable goals for practice growth in the year ahead.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2025/01/Webinar-Replay-12925.jpg",
+      "/wp-content/uploads/2025/01/Webinar-Replay-12925.jpg",
     link: "https://www.businessofaesthetics.org/webinar/blueprint-for-success-setting-your-goals-for-practice-growth-in-2025/",
   },
   {
@@ -438,7 +438,7 @@ export const events: EventItem[] = [
     badge: "HR & Culture",
     desc: "Essential HR strategies for aesthetic practice success.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/12/2024121304453.jpg",
+      "/wp-content/uploads/2024/12/2024121304453.jpg",
     link: "https://www.businessofaesthetics.org/webinar/the-hr-playbook-essential-strategies-for-success-in-2025/",
   },
   {
@@ -449,7 +449,7 @@ export const events: EventItem[] = [
     badge: "Marketing",
     desc: "A comprehensive guide to marketing and consultation conversion.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/11/Webinar-Replay-Thumbnail-Images-4.jpg",
+      "/wp-content/uploads/2024/11/Webinar-Replay-Thumbnail-Images-4.jpg",
     link: "https://www.businessofaesthetics.org/webinar/from-clicks-to-clients-a-comprehensive-guide-to-aesthetic-marketing-and-consultation/",
   },
   {
@@ -459,7 +459,7 @@ export const events: EventItem[] = [
     badge: "Marketing",
     desc: "Marketing strategies for newly launched aesthetic practices.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/10/Webinar-30oct.jpg",
+      "/wp-content/uploads/2024/10/Webinar-30oct.jpg",
     link: "https://www.businessofaesthetics.org/webinar/starting-a-new-clinic-heres-how-to-market-it-successfully/",
   },
   {
@@ -469,7 +469,7 @@ export const events: EventItem[] = [
     badge: "Growth",
     desc: "Non-invasive hair growth treatments and their market impact.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/10/BOA-101124.jpg",
+      "/wp-content/uploads/2024/10/BOA-101124.jpg",
     link: "https://www.businessofaesthetics.org/webinar/the-business-of-hair-how-non-invasive-hair-growth-is-changing-the-market/",
   },
   {
@@ -480,7 +480,7 @@ export const events: EventItem[] = [
     badge: "Operations",
     desc: "Conversion strategies that turn patient inquiries into booked appointments.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/09/BOA-Sep19.jpg",
+      "/wp-content/uploads/2024/09/BOA-Sep19.jpg",
     link: "https://www.businessofaesthetics.org/webinar/turning-inquiries-into-appointments-conversion-strategies-for-aesthetic-practices/",
   },
   {
@@ -490,7 +490,7 @@ export const events: EventItem[] = [
     badge: "Business Strategy",
     desc: "Lessons learned from real-world aesthetic practice ownership.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/09/BOA-Panel-Discussion.jpg",
+      "/wp-content/uploads/2024/09/BOA-Panel-Discussion.jpg",
     link: "https://www.businessofaesthetics.org/webinar/dissecting-real-world-wins-and-woes-in-aesthetic-practice-ownership-lessons-learned/",
   },
   {
@@ -500,7 +500,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "The latest RF technology and its clinical applications.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/08/BOA-Panel-Discussion-Archive-Lengea-Law-Webinar.jpg",
+      "/wp-content/uploads/2024/08/BOA-Panel-Discussion-Archive-Lengea-Law-Webinar.jpg",
     link: "https://www.businessofaesthetics.org/webinar/advancements-in-radio-frequency/",
   },
   {
@@ -510,7 +510,7 @@ export const events: EventItem[] = [
     badge: "Summit",
     desc: "Strategies for 2024 and beyond - the smart way to grow.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/07/Webinar-Replay-jul-27.jpg",
+      "/wp-content/uploads/2024/07/Webinar-Replay-jul-27.jpg",
     link: "https://www.businessofaesthetics.org/webinar/aesthetics-summit-2024/",
   },
   {
@@ -521,7 +521,7 @@ export const events: EventItem[] = [
     badge: "Finance",
     desc: "Budgeting, profitability, and growth strategies for practice owners.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/06/BOA62624.jpg",
+      "/wp-content/uploads/2024/06/BOA62624.jpg",
     link: "https://www.businessofaesthetics.org/webinar/financial-management-for-your-aesthetic-practice-budgeting-profitability-and-growth/",
   },
   {
@@ -531,7 +531,7 @@ export const events: EventItem[] = [
     badge: "Patient Experience",
     desc: "Building a patient experience that drives loyalty and referrals.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/05/May-30th-webinar.jpg",
+      "/wp-content/uploads/2024/05/May-30th-webinar.jpg",
     link: "https://www.businessofaesthetics.org/webinar/how-to-attract-engage-and-retain-happy-patients/",
   },
   {
@@ -541,7 +541,7 @@ export const events: EventItem[] = [
     badge: "Growth",
     desc: "Tapping into the growing male aesthetics market.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/04/BOA-Panel-Discussion-Archive-Lengea-Law-Webinar-template-Sara-Shikhman.jpg",
+      "/wp-content/uploads/2024/04/BOA-Panel-Discussion-Archive-Lengea-Law-Webinar-template-Sara-Shikhman.jpg",
     link: "https://www.businessofaesthetics.org/webinar/growing-your-aesthetic-practice-with-male-patients/",
   },
   {
@@ -551,7 +551,7 @@ export const events: EventItem[] = [
     badge: "Marketing",
     desc: "Make 2024 your best year yet with a comprehensive marketing plan.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/03/Crafting-your-medspa.png",
+      "/wp-content/uploads/2024/03/Crafting-your-medspa.png",
     link: "https://www.businessofaesthetics.org/webinar/crafting-your-2024-marketing-masterplan-to-make-2024-your-best-year-yet/",
   },
   {
@@ -561,7 +561,7 @@ export const events: EventItem[] = [
     badge: "Growth",
     desc: "Membership models that drive predictable recurring revenue.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/02/incorporate-membership-plans.jpg",
+      "/wp-content/uploads/2024/02/incorporate-membership-plans.jpg",
     link: "https://www.businessofaesthetics.org/webinar/how-to-incorporate-membership-plans-to-grow-your-practice/",
   },
   {
@@ -571,7 +571,7 @@ export const events: EventItem[] = [
     badge: "Clinical",
     desc: "Advanced injectable techniques for clinical excellence.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2024/02/Advanced-Injectables.jpg",
+      "/wp-content/uploads/2024/02/Advanced-Injectables.jpg",
     link: "https://www.businessofaesthetics.org/webinar/building-your-aesthetic-practice-on-advanced-injectable-techniques/",
   },
   {
@@ -581,7 +581,7 @@ export const events: EventItem[] = [
     badge: "Leadership",
     desc: "Building and retaining a team that drives practice growth.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2023/12/unnamed.jpg",
+      "/wp-content/uploads/2023/12/unnamed.jpg",
     link: "https://www.businessofaesthetics.org/webinar/creating-a-high-performance-team-for-aesthetic-practice-success/",
   },
   {
@@ -591,7 +591,7 @@ export const events: EventItem[] = [
     badge: "Legal",
     desc: "Essential legal knowledge for medspa owners and operators.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2023/05/51023.png",
+      "/wp-content/uploads/2023/05/51023.png",
     link: "https://www.businessofaesthetics.org/webinar/medspa-laws-101-what-every-business-owner-needs-to-know/",
   },
   {
@@ -601,7 +601,7 @@ export const events: EventItem[] = [
     badge: "Leadership",
     desc: "Leadership strategies that inspire your team and grow your practice.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2023/05/51023.png",
+      "/wp-content/uploads/2023/05/51023.png",
     link: "https://www.businessofaesthetics.org/webinar/the-art-of-influential-practice-leadership/",
   },
   {
@@ -611,7 +611,7 @@ export const events: EventItem[] = [
     badge: "Legal",
     desc: "Common legal pitfalls and how to avoid them.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2023/05/51023.png",
+      "/wp-content/uploads/2023/05/51023.png",
     link: "https://www.businessofaesthetics.org/webinar/10-biggest-legal-mistakes-aesthetic-practice-owners-make/",
   },
   {
@@ -621,7 +621,7 @@ export const events: EventItem[] = [
     badge: "Operations",
     desc: "Exploring the lucrative used equipment market trend.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2023/04/42623.jpg",
+      "/wp-content/uploads/2023/04/42623.jpg",
     link: "https://www.businessofaesthetics.org/webinar/unlock-the-cash-in-your-unused-technology-exploring-the-lucrative-used-market-trend/",
   },
   {
@@ -631,7 +631,7 @@ export const events: EventItem[] = [
     badge: "Operations",
     desc: "The real cost-benefit analysis of aesthetic equipment service contracts.",
     image:
-      "https://www.businessofaesthetics.org/wp-content/uploads/2023/01/BOA-Panel-Discussion-Archive.jpg",
+      "/wp-content/uploads/2023/01/BOA-Panel-Discussion-Archive.jpg",
     link: "https://www.businessofaesthetics.org/webinar/1-26-2023/",
   },
 ];

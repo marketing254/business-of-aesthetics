@@ -6,6 +6,7 @@ import LeadGate from "@/components/LeadGate";
 import ShareBar from "@/components/ShareBar";
 import ReplayNotes from "@/components/ReplayNotes";
 import TranscriptView from "@/components/TranscriptView";
+import VideoEmbed from "@/components/VideoEmbed";
 import { FadeUp } from "@/components/motion/Animate";
 import {
   driveFileId,
@@ -17,6 +18,9 @@ import {
   videoEmbedUrl,
   type TranscriptBlock,
 } from "@/lib/sheet";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, graph, videoObjectJsonLd } from "@/lib/seo";
+
 
 type ReplayDetailProps = {
   params: Promise<{ slug: string }>;
@@ -34,9 +38,18 @@ export async function generateMetadata({
   const replay = await loadReplay(slug);
   if (!replay) return { title: "Event Replay" };
 
+  const description = (replay.summary || replay.description).replace(/\s+/g, " ").slice(0, 160);
   return {
     title: `${replay.title} - Event Replay`,
-    description: replay.summary || replay.description,
+    description,
+    alternates: { canonical: `/events/replays/${replay.slug}` },
+    openGraph: {
+      type: "video.other",
+      title: replay.title,
+      description,
+      url: `/events/replays/${replay.slug}`,
+      ...(replay.imageUrl ? { images: [{ url: replay.imageUrl }] } : {}),
+    },
   };
 }
 
@@ -77,6 +90,17 @@ export default async function EventReplayDetailPage({
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          videoObjectJsonLd(replay, `/events/replays/${replay.slug}`, embed || undefined),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Events", path: "/events" },
+            { name: "Replays", path: "/events#replays" },
+            { name: replay.title, path: `/events/replays/${replay.slug}` },
+          ])
+        )}
+      />
       {/* centered header */}
       <section className="border-b border-line">
         <div className="mx-auto max-w-[1180px] px-5 pb-12 pt-12 lg:pt-16">
@@ -119,21 +143,13 @@ export default async function EventReplayDetailPage({
         <div className="mx-auto max-w-[980px] px-5">
           {embed ? (
             <FadeUp>
-              <LeadGate label="this replay" variant="panel">
-                <div className="overflow-hidden rounded-2xl border border-line bg-navy-ink">
-                  <iframe
-                    src={embed}
-                    title={replay.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="aspect-video w-full"
-                  />
-                </div>
+              <LeadGate label="this replay" variant="panel" meta={{ form: "event_replay_gate", title: replay.title, slug: replay.slug, date: replay.date }}>
+                <VideoEmbed embedUrl={embed} title={replay.title} poster={replay.imageUrl || undefined} />
               </LeadGate>
             </FadeUp>
           ) : replay.videoUrl ? (
             <FadeUp>
-              <LeadGate label="this replay" variant="panel">
+              <LeadGate label="this replay" variant="panel" meta={{ form: "event_replay_gate", title: replay.title, slug: replay.slug, date: replay.date }}>
                 <div className="grid aspect-video place-items-center rounded-2xl border border-line bg-sand">
                   <a
                     href={replay.videoUrl}

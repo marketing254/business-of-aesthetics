@@ -11,7 +11,10 @@ import EpisodeAudio from "@/components/EpisodeAudio";
 import EpisodeExplorer from "@/components/EpisodeExplorer";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import { hosts, platforms } from "@/lib/data";
-import { fetchPodcasts } from "@/lib/sheet";
+import { fetchPodcasts, thumbUrl } from "@/lib/sheet";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, graph, podcastSeriesJsonLd, webPageJsonLd } from "@/lib/seo";
+
 
 export const metadata: Metadata = {
   title: "Podcast - Business Lessons for Aesthetic Practices",
@@ -46,6 +49,13 @@ export default async function PodcastPage() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageJsonLd({ path: "/podcast", name: "Business of Aesthetics Podcast", description: metadata.description as string, type: "CollectionPage" }),
+          podcastSeriesJsonLd(podcasts),
+          breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Podcast", path: "/podcast" }])
+        )}
+      />
       <PageHero
         kicker="The Business of Aesthetics Podcast"
         title={
@@ -66,7 +76,7 @@ export default async function PodcastPage() {
       {/* latest episode + continue listening */}
       <section className="border-b border-line bg-paper py-14 lg:py-16">
         <div className="mx-auto max-w-[1180px] px-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-muted">
             <span>
               <span className="text-teal-deep">{podcasts.length}</span> Episodes
               &amp; Counting
@@ -85,7 +95,7 @@ export default async function PodcastPage() {
           {latest && (
             <FadeUp delay={0.08}>
               <div className="card-frame mx-auto mt-10 max-w-[720px] p-6 !shadow-none sm:p-8">
-                <div className="flex items-center justify-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                <div className="flex items-center justify-center gap-2.5 text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
                   <span className="live-dot" /> Latest Episode
                 </div>
                 <div className="mt-6 flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
@@ -93,7 +103,7 @@ export default async function PodcastPage() {
                     {latest.guestPhotoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={latest.guestPhotoUrl}
+                        src={thumbUrl(latest.guestPhotoUrl, 400)}
                         alt={latest.guestName}
                         referrerPolicy="no-referrer"
                         className="h-full w-full object-cover"
@@ -107,7 +117,7 @@ export default async function PodcastPage() {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11.5px] font-bold uppercase tracking-[0.12em] text-muted">
+                    <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-muted">
                       Episode {latest.episode} · {latest.datePublished}
                     </div>
                     <h2 className="mt-1 text-[17px] font-semibold leading-snug text-navy">
@@ -141,7 +151,7 @@ export default async function PodcastPage() {
 
           {/* platforms */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-3 border-t border-line pt-8">
-            <span className="mr-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-muted">
+            <span className="mr-2 text-[12px] font-semibold uppercase tracking-[0.22em] text-muted">
               Follow the show
             </span>
             {platforms.map((p) => (
@@ -150,7 +160,7 @@ export default async function PodcastPage() {
                 href={p.href}
                 target="_blank"
                 rel="noopener"
-                className="chip !py-2.5 !text-[11px] transition-all hover:border-teal hover:text-teal-deep"
+                className="chip !py-2.5 !text-[12px] transition-all hover:border-teal hover:text-teal-deep"
               >
                 {p.name}
               </a>
@@ -172,7 +182,18 @@ export default async function PodcastPage() {
             lede="Filter by category, search by episode number or guest, then open an individual page with audio, transcript, and notes."
           />
           <div className="mt-10">
-            <EpisodeExplorer episodes={podcasts} />
+            <EpisodeExplorer
+              episodes={podcasts.map((e) => ({
+                episode: e.episode,
+                title: e.title,
+                guestName: e.guestName,
+                guestPhotoUrl: thumbUrl(e.guestPhotoUrl, 160),
+                category: e.category,
+                datePublished: e.datePublished,
+                slug: e.slug,
+                initials: e.initials,
+              }))}
+            />
           </div>
         </div>
       </section>
@@ -248,7 +269,7 @@ export default async function PodcastPage() {
                   <h3 className="mt-4 text-[15.5px] font-semibold text-navy">
                     {h.name}
                   </h3>
-                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                  <div className="mt-1 text-[12px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                     {h.role}
                   </div>
                   <p className="mt-2.5 text-[12.5px] leading-relaxed text-muted">

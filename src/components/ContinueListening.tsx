@@ -36,7 +36,7 @@ export default function ContinueListening() {
       >
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-4">
           <div className="min-w-0">
-            <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+            <span className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
               <span className="live-dot" /> Continue listening
             </span>
             <p className="mt-1 truncate text-[14px] font-semibold text-navy transition-colors group-hover:text-teal-deep">

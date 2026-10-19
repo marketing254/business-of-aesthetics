@@ -26,7 +26,7 @@ export default function PageHero({
           compact ? "pb-12 pt-12 lg:pb-14 lg:pt-16" : "pb-16 pt-14 lg:pb-20 lg:pt-20"
         }`}
       >
-        <FadeUp>
+        <FadeUp eager>
           <span className="kicker center justify-center">{kicker}</span>
           <h1 className="display mx-auto mt-5 max-w-[820px] text-[clamp(30px,4vw,48px)] text-navy">
             {title}

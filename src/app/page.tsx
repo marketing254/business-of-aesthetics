@@ -12,6 +12,16 @@ import {
   fetchPodcasts,
   isUpcoming,
 } from "@/lib/sheet";
+import JsonLd from "@/components/JsonLd";
+import type { Metadata } from "next";
+import { DEFAULT_DESCRIPTION, breadcrumbJsonLd, graph, podcastSeriesJsonLd, webPageJsonLd } from "@/lib/seo";
+
+
+export const metadata: Metadata = {
+  title: "Business of Aesthetics - Podcast, Expert Panels & Growth for Aesthetic Practices",
+  description: DEFAULT_DESCRIPTION,
+  alternates: { canonical: "/" },
+};
 
 const pillars = [
   {
@@ -66,11 +76,18 @@ export default async function Home() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageJsonLd({ path: "/", name: "Business of Aesthetics", description: DEFAULT_DESCRIPTION }),
+          podcastSeriesJsonLd(podcasts),
+          breadcrumbJsonLd([{ name: "Home", path: "/" }])
+        )}
+      />
       {/* ============ hero — centered, with cinematic 3D orbit ============ */}
       <section className="relative overflow-hidden">
         <HeroScene />
         <div className="relative mx-auto max-w-[900px] px-5 pb-14 pt-16 text-center lg:pb-16 lg:pt-24">
-          <FadeUp>
+          <FadeUp eager>
             <span className="kicker center justify-center">
               Your Success Matters - Since 2007
             </span>
@@ -147,7 +164,7 @@ export default async function Home() {
                   <div className="display text-[clamp(32px,3.6vw,44px)] leading-none text-navy">
                     <Counter target={st.n} suffix={st.s} />
                   </div>
-                  <div className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                  <div className="mt-2.5 text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
                     {st.label}
                   </div>
                 </div>
@@ -155,7 +172,7 @@ export default async function Home() {
             ))}
           </Stagger>
           <div className="mt-12 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 border-t border-line pt-8">
-            <span className="text-[10.5px] font-semibold uppercase tracking-[0.24em] text-muted">
+            <span className="text-[12px] font-semibold uppercase tracking-[0.24em] text-muted">
               Trusted by leaders in aesthetic medicine
             </span>
             {orgs.map((o) => (
@@ -236,7 +253,7 @@ export default async function Home() {
                       <span className="index-no text-[15px]">
                         EP {episode.episode}
                       </span>
-                      <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+                      <div className="mt-1.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
                         {episode.datePublished}
                       </div>
                     </div>
@@ -289,9 +306,9 @@ export default async function Home() {
                     <h3 className="display mt-5 flex-1 text-[20px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
                       {replay.title}
                     </h3>
-                    <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-muted">
+                    <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">
                       <span>{replay.date}</span>
-                      <span className="linkline !text-[11px]">
+                      <span className="linkline !text-[12px]">
                         Watch <span className="arr">→</span>
                       </span>
                     </div>
@@ -300,7 +317,7 @@ export default async function Home() {
               ))}
             </Stagger>
             <FadeUp className="mt-10 text-center">
-              <Link href="/panels#series" className="btn btn-outline">
+              <Link href="/panels#replays" className="btn btn-outline">
                 Full Panel Archive <span className="arr">→</span>
               </Link>
             </FadeUp>
@@ -323,7 +340,7 @@ export default async function Home() {
           />
           <FadeUp delay={0.1}>
             <div className="mx-auto mt-12 max-w-[860px] overflow-hidden rounded-2xl border border-white/12 bg-navy-deep/60">
-              <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-white/10 text-[10.5px] font-semibold uppercase tracking-[0.2em]">
+              <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-white/10 text-[12px] font-semibold uppercase tracking-[0.2em]">
                 <div className="p-5 text-white/50">Metric</div>
                 <div className="border-l border-white/10 p-5 text-white/50">
                   Before BOA

@@ -87,9 +87,21 @@ set — then the iframe embed renders automatically
   holds the panel posters extracted from the old `panels.html` (they were
   embedded as base64 there)
 
-## Notes carried over from the old site
+## Lead capture (write side)
 
-- Contact/speaker/newsletter forms are front-end only (same as the old site) —
-  wire them to a backend or form service when ready.
-- Event replay links point to businessofaesthetics.org; podcast platform links
-  are generic homepages, same as before.
+Every form (contact, guest speaker, newsletter, podcast/replay gates) posts to
+`/api/lead`, which relays to the Google Apps Script in `scripts/appscript.gs`.
+That script appends one row per submission to the same spreadsheet (one tab
+per form). Set `LEAD_WEBHOOK_URL` + `LEAD_SECRET` in the host env. Full steps
+in the internal launch guide (`docs/LAUNCH-GUIDE.md`, kept outside git).
+
+## SEO & launch
+
+- `docs/` (local only, git-ignored) — `LAUNCH-GUIDE.md`: Vercel deploy, connecting www.businessofaesthetics.org,
+  env vars, GA4/GTM/Clarity, Search Console, Bing Webmaster, IndexNow, AI search.
+- `docs/SEO-AUDIT.md` (local only) — audit of the old WordPress site vs. this build, backlink
+  plan, prioritised actions.
+- `scripts/indexnow.py` — submit the sitemap (or specific URLs) to IndexNow.
+- `scripts/gen-legacy-redirects.mjs` — regenerates `src/lib/legacy-redirects.json`
+  (old WordPress post URLs → `/blog/<slug>`), consumed by `next.config.ts`.
+- Generated routes: `/robots.txt`, `/sitemap.xml`, `/llms.txt`, `/opengraph-image`.

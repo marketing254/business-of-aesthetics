@@ -100,12 +100,12 @@ export default function EpisodeAudio({
       {resumeAt > 0 && !dismissed && (
         <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-xl border border-teal/40 bg-teal-soft/50 px-4 py-2.5 text-[12.5px] font-semibold text-navy">
           <span>You were at {fmt(resumeAt)} last time.</span>
-          <button onClick={resume} className="linkline !text-[11px]">
+          <button onClick={resume} className="linkline !text-[12px]">
             Resume <span className="arr">→</span>
           </button>
           <button
             onClick={() => setDismissed(true)}
-            className="text-[11px] font-semibold uppercase tracking-wider text-muted transition-colors hover:text-navy"
+            className="text-[12px] font-semibold uppercase tracking-wider text-muted transition-colors hover:text-navy"
           >
             Start over
           </button>

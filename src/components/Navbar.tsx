@@ -2,16 +2,17 @@
 
 /**
  * Standard site navigation - built for clarity.
- * One sticky row: logo left, the site's sections in plain words, and a
- * single booking CTA right. A slim announcement strip sits above and
- * scrolls away; mobile gets a hamburger + full-screen menu.
+ * One sticky row: logo left, the site's sections in plain words (two of
+ * them with dropdowns: Events and Resources), and a single booking CTA
+ * right. A slim announcement strip sits above and scrolls away; mobile
+ * gets a hamburger + full-screen menu with the same groups expanded.
  */
 
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { site } from "@/lib/data";
@@ -27,22 +28,177 @@ function ActiveMark() {
   );
 }
 
-const links = [
+export interface NavChild {
+  href: string;
+  label: string;
+  hint?: string;
+}
+
+export interface NavItem {
+  href: string;
+  label: string;
+  /** paths (prefix match) that light this item up */
+  match?: string[];
+  children?: NavChild[];
+  /** static HTML page outside the app router - use a full page load */
+  plain?: boolean;
+}
+
+export const navItems: NavItem[] = [
   { href: "/about", label: "About" },
   { href: "/podcast", label: "Podcast" },
-  { href: "/events", label: "Events" },
-  { href: "/panels", label: "Panels" },
+  {
+    href: "/events",
+    label: "Events",
+    match: ["/events", "/panels"],
+    children: [
+      { href: "/events", label: "Upcoming Events", hint: "Live webinars & workshops" },
+      { href: "/panels", label: "Expert Panels", hint: "Moderated live roundtables" },
+      { href: "/events#replays", label: "Event Replays", hint: "Watch past webinars free" },
+      { href: "/panels#replays", label: "Panel Replays", hint: "Every panel recording" },
+    ],
+  },
   { href: "/marketing", label: "Marketing" },
-  { href: "/blog", label: "Blog" },
-  { href: "/resources", label: "Resources" },
+  {
+    href: "/resources",
+    label: "Resources",
+    match: ["/resources", "/blog"],
+    children: [
+      { href: "/blog", label: "Blog", hint: "Growth articles for practices" },
+    ],
+  },
   { href: "/speakers", label: "Speakers" },
   { href: "/contact", label: "Contact" },
 ];
+
+function isActive(item: NavItem, pathname: string) {
+  const paths = item.match ?? [item.href];
+  return paths.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function Chevron({ open }: { open?: boolean }) {
+  return (
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+/** Desktop item with a hover/focus/click dropdown. */
+function DesktopDropdown({
+  item,
+  active,
+}: {
+  item: NavItem;
+  active: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const closeTimer = useRef<number | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const show = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    setOpen(true);
+  };
+  const hide = () => {
+    closeTimer.current = window.setTimeout(() => setOpen(false), 120);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) hide();
+      }}
+    >
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`nav-link relative inline-flex items-center gap-1.5 ${
+          active ? "text-teal-deep" : ""
+        }`}
+      >
+        {item.label}
+        <Chevron open={open} />
+        {active && <ActiveMark />}
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            role="menu"
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.98 }}
+            transition={{ duration: 0.18, ease: [0.22, 0.61, 0.21, 1] }}
+            className="absolute left-1/2 top-full z-50 w-[300px] -translate-x-1/2 pt-4"
+          >
+            <div className="overflow-hidden rounded-2xl border border-line bg-paper p-2 shadow-[0_24px_48px_-24px_rgba(19,42,84,0.35)]">
+              {item.children!.map((c) => (
+                <Link
+                  key={c.href}
+                  href={c.href}
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="group flex items-start gap-3 rounded-xl px-3.5 py-3 transition-colors hover:bg-sand focus:bg-sand focus:outline-none"
+                >
+                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-teal opacity-60 transition-opacity group-hover:opacity-100" />
+                  <span className="min-w-0">
+                    <span className="block text-[14px] font-semibold text-navy transition-colors group-hover:text-teal-deep">
+                      {c.label}
+                    </span>
+                    {c.hint && (
+                      <span className="mt-0.5 block text-[12px] leading-snug text-muted">
+                        {c.hint}
+                      </span>
+                    )}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -83,7 +239,7 @@ export default function Navbar() {
           </div>
           <Link
             href="/podcast"
-            className="group flex min-w-0 items-center gap-2.5 transition-colors hover:text-teal"
+            className="group flex min-w-0 items-center gap-2.5 py-1 transition-colors hover:text-teal"
           >
             <span className="live-dot shrink-0" />
             <span className="truncate">
@@ -123,22 +279,29 @@ export default function Navbar() {
 
           {/* desktop nav */}
           <nav className="hidden items-center gap-6 xl:flex" aria-label="Primary">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`nav-link relative ${
-                  pathname === l.href || pathname.startsWith(`${l.href}/`)
-                    ? "text-teal-deep"
-                    : ""
-                }`}
-              >
-                {l.label}
-                {(pathname === l.href || pathname.startsWith(`${l.href}/`)) && (
-                  <ActiveMark />
-                )}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActive(item, pathname);
+              if (item.children) {
+                return <DesktopDropdown key={item.href} item={item} active={active} />;
+              }
+              if (item.plain) {
+                return (
+                  <a key={item.href} href={item.href} className="nav-link relative">
+                    {item.label}
+                  </a>
+                );
+              }
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-link relative ${active ? "text-teal-deep" : ""}`}
+                >
+                  {item.label}
+                  {active && <ActiveMark />}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-2.5">
@@ -195,28 +358,82 @@ export default function Navbar() {
             </button>
             <div className="flex min-h-full flex-col px-7 pb-10 pt-24">
               <nav className="menu-stagger flex flex-col" aria-label="Mobile">
-                {links.map((l, i) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className="group flex items-baseline gap-4 border-b border-white/10 py-3.5"
-                  >
-                    <span
-                      className="index-no text-[13px]"
-                      style={{ color: "var(--color-teal)" }}
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className={`display text-[27px] text-white transition-colors group-hover:text-teal ${
-                        pathname === l.href ? "!text-teal" : ""
-                      }`}
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      {l.label}
-                    </span>
-                  </Link>
-                ))}
+                {navItems.map((item, i) => {
+                  const active = isActive(item, pathname);
+                  const isOpen = expanded === item.href;
+                  return (
+                    <div key={item.href} className="border-b border-white/10">
+                      <div className="flex items-baseline gap-4 py-3.5">
+                        <span
+                          className="index-no text-[13px]"
+                          style={{ color: "var(--color-teal)" }}
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {item.plain ? (
+                          <a
+                            href={item.href}
+                            className="display flex-1 text-[27px] text-white transition-colors hover:text-teal"
+                            style={{ fontFamily: "var(--font-display)" }}
+                          >
+                            {item.label}
+                          </a>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className={`display flex-1 text-[27px] text-white transition-colors hover:text-teal ${
+                              active ? "!text-teal" : ""
+                            }`}
+                            style={{ fontFamily: "var(--font-display)" }}
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                        {item.children && (
+                          <button
+                            type="button"
+                            aria-label={`${isOpen ? "Collapse" : "Expand"} ${item.label}`}
+                            aria-expanded={isOpen}
+                            onClick={() =>
+                              setExpanded((v) => (v === item.href ? null : item.href))
+                            }
+                            className="grid h-9 w-9 shrink-0 place-items-center self-center rounded-full border border-white/20 text-white/80 transition-colors hover:border-teal hover:text-teal"
+                          >
+                            <Chevron open={isOpen} />
+                          </button>
+                        )}
+                      </div>
+                      <AnimatePresence initial={false}>
+                        {item.children && isOpen && (
+                          <motion.ul
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: [0.22, 0.61, 0.21, 1] }}
+                            className="overflow-hidden pl-9"
+                          >
+                            {item.children.map((c) => (
+                              <li key={c.href}>
+                                <Link
+                                  href={c.href}
+                                  className="block py-2.5 text-[16px] text-white/80 transition-colors hover:text-teal"
+                                >
+                                  {c.label}
+                                  {c.hint && (
+                                    <span className="block text-[12px] text-white/45">
+                                      {c.hint}
+                                    </span>
+                                  )}
+                                </Link>
+                              </li>
+                            ))}
+                            <li className="pb-3" />
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
               </nav>
 
               <div className="mt-auto pt-10">

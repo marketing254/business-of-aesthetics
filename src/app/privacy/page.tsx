@@ -30,7 +30,7 @@ const sections = [
         you. To exercise these rights, email{" "}
         <a
           href="mailto:ideas@businessofaesthetics.org"
-          className="font-bold text-teal-deep underline"
+          className="inline-block py-1 font-bold text-teal-deep underline"
         >
           ideas@businessofaesthetics.org
         </a>
@@ -53,7 +53,7 @@ const sections = [
         For any privacy questions, write to us at{" "}
         <a
           href="mailto:ideas@businessofaesthetics.org"
-          className="font-bold text-teal-deep underline"
+          className="inline-block py-1 font-bold text-teal-deep underline"
         >
           ideas@businessofaesthetics.org
         </a>{" "}

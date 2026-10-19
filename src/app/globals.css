@@ -106,7 +106,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -226,10 +226,13 @@ body {
 
 /* text-arrow link */
 .linkline {
+  padding: 4px 0;
+  min-height: 32px;
+  align-items: center;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -476,7 +479,7 @@ details.faq .faq-body {
 
 .field label {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -523,7 +526,7 @@ details.faq .faq-body {
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -547,7 +550,7 @@ details.faq .faq-body {
 /* filter pill */
 .fpill {
   padding: 9px 18px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -789,4 +792,9 @@ details.faq .faq-body {
   border-radius: 50%;
   background: var(--color-teal);
   animation: livePulse 2.2s infinite;
+}
+
+/* tap targets: inline links inside article prose get a little vertical padding */
+.prose-boa a {
+  padding: 3px 0;
 }

@@ -6,6 +6,9 @@ import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
+import JsonLd from "@/components/JsonLd";
+import { ORG_ID, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
+
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -28,27 +31,6 @@ const values = [
     no: "03",
     title: "Community Over Competition",
     copy: "A rising tide lifts every practice. Our members share freely because they know it makes the whole industry stronger.",
-  },
-];
-
-const team = [
-  {
-    initials: "LK",
-    name: "Lena Kowalski",
-    role: "Product Owner",
-    bio: "Drives the BOA platform roadmap, podcast production, and member experience across every touchpoint.",
-  },
-  {
-    initials: "DM",
-    name: "David Martinez",
-    role: "Partnership Manager",
-    bio: "Builds relationships with industry partners, sponsors, and aesthetic vendors who share our community-first values.",
-  },
-  {
-    initials: "AS",
-    name: "Aisha Sharma",
-    role: "Marketing Manager",
-    bio: "Leads BOA marketing, brand storytelling, and helps members translate insight into measurable growth.",
   },
 ];
 
@@ -104,6 +86,12 @@ const founders = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        data={graph(
+          { ...webPageJsonLd({ path: "/about", name: "About Business of Aesthetics", description: metadata.description as string, type: "AboutPage" }), mainEntity: { "@id": ORG_ID } },
+          breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "About", path: "/about" }])
+        )}
+      />
       <PageHero
         kicker="About Us"
         title={
@@ -134,7 +122,7 @@ export default function AboutPage() {
               <div className="display text-[clamp(26px,3vw,36px)] leading-none text-navy">
                 {s.v}
               </div>
-              <div className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                 {s.label}
               </div>
             </StaggerItem>
@@ -248,7 +236,7 @@ export default function AboutPage() {
                     <h3 className="display text-[clamp(24px,2.8vw,32px)] text-navy">
                       {f.name}
                     </h3>
-                    <div className="mt-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                    <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                       {f.role}
                     </div>
                     {f.paragraphs.map((p) => (
@@ -264,43 +252,6 @@ export default function AboutPage() {
               </FadeUp>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* team */}
-      <section className="border-y border-line bg-paper py-20 lg:py-24">
-        <div className="mx-auto max-w-[1180px] px-5">
-          <SectionHead
-            kicker="The BOA Team"
-            title={
-              <>
-                The people who <em>make it happen</em>
-              </>
-            }
-            lede="A small, passionate team backed by Ekwa Marketing's global community of experts."
-          />
-          <Stagger className="mx-auto mt-12 grid max-w-[980px] gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {team.map((t) => (
-              <StaggerItem key={t.name} className="h-full">
-                <div className="card-frame h-full p-7 text-center">
-                  <div className="dark-canvas mx-auto grid h-24 w-24 place-items-center rounded-full">
-                    <span className="display text-[26px] text-teal">
-                      {t.initials}
-                    </span>
-                  </div>
-                  <h3 className="mt-5 text-[16.5px] font-semibold text-navy">
-                    {t.name}
-                  </h3>
-                  <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
-                    {t.role}
-                  </div>
-                  <p className="mt-3 text-[13px] leading-relaxed text-muted">
-                    {t.bio}
-                  </p>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
         </div>
       </section>
 
@@ -341,25 +292,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* join */}
-      <section className="border-t border-line bg-sand py-18 text-center lg:py-20">
-        <div className="mx-auto max-w-[640px] px-5">
-          <FadeUp>
-            <h2 className="display text-[clamp(24px,3vw,32px)] text-navy">
-              Join the BOA <em>community</em>
-            </h2>
-            <p className="lede mx-auto mt-4 max-w-[520px]">
-              Connect with thousands of aesthetic practitioners who are growing
-              their practices the right way.
-            </p>
-            <Link href="/contact" className="btn btn-navy mt-8">
-              Get in Touch <span className="arr">→</span>
-            </Link>
-          </FadeUp>
-        </div>
-      </section>
-
-      <CtaBand />
+      <CtaBand
+        eyebrow="Join the BOA Community"
+        title={
+          <>
+            Grow your practice <em>the right way.</em>
+          </>
+        }
+        copy="Connect with thousands of aesthetic practitioners, get a free 60-minute Marketing Strategy Meeting, or just say hello - no pressure, no pitch."
+        primary={{ href: "/marketing#book", label: "Book My Strategy Meeting" }}
+        secondary={{ href: "/contact", label: "Get in Touch" }}
+      />
     </>
   );
 }

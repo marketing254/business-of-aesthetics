@@ -5,6 +5,9 @@ import CtaBand from "@/components/CtaBand";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp } from "@/components/motion/Animate";
 import { blogPosts, getBlogPost } from "@/lib/blog";
+import JsonLd from "@/components/JsonLd";
+import { blogPostingJsonLd, breadcrumbJsonLd, graph } from "@/lib/seo";
+
 
 type BlogDetailProps = {
   params: Promise<{ slug: string }>;
@@ -21,7 +24,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) return { title: "Article" };
-  return { title: post.title, description: post.excerpt };
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      url: `/blog/${post.slug}`,
+      publishedTime: post.date,
+      modifiedTime: post.date,
+      section: post.category,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogDetailProps) {
@@ -35,6 +51,16 @@ export default async function BlogPostPage({ params }: BlogDetailProps) {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          blogPostingJsonLd(post),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ])
+        )}
+      />
       {/* centered header */}
       <section className="border-b border-line">
         <div className="mx-auto max-w-[880px] px-5 pb-12 pt-12 lg:pt-16">
@@ -77,7 +103,7 @@ export default async function BlogPostPage({ params }: BlogDetailProps) {
                 href={`/blog/${older.slug}`}
                 className="card-frame group block h-full p-6"
               >
-                <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                   &lt;- Older
                 </span>
                 <h3 className="mt-2.5 line-clamp-2 text-[15px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
@@ -92,7 +118,7 @@ export default async function BlogPostPage({ params }: BlogDetailProps) {
                 href={`/blog/${newer.slug}`}
                 className="card-frame group block h-full p-6 md:text-right"
               >
-                <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                   Newer -&gt;
                 </span>
                 <h3 className="mt-2.5 line-clamp-2 text-[15px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">

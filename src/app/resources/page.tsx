@@ -8,6 +8,10 @@ import KbExplorer from "@/components/KbExplorer";
 import { tools } from "@/lib/data";
 import { blogPosts } from "@/lib/blog";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
+import JsonLd from "@/components/JsonLd";
+import { kbFaqs } from "@/lib/data";
+import { breadcrumbJsonLd, faqPageJsonLd, graph, webPageJsonLd } from "@/lib/seo";
+
 
 export const metadata: Metadata = {
   title: "Resources",
@@ -25,6 +29,13 @@ const kbStats = [
 export default function ResourcesPage() {
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageJsonLd({ path: "/resources", name: "Resources for Aesthetic Practices", description: metadata.description as string, type: "CollectionPage" }),
+          faqPageJsonLd(kbFaqs.map((f) => ({ q: f.q, a: f.a }))),
+          breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Resources", path: "/resources" }])
+        )}
+      />
       <PageHero
         kicker="Resources"
         title={
@@ -53,7 +64,7 @@ export default function ResourcesPage() {
             <a
               key={s.href}
               href={s.href}
-              className="flex shrink-0 items-baseline gap-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-navy transition-colors hover:text-teal-deep"
+              className="flex shrink-0 items-baseline gap-2.5 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-navy transition-colors hover:text-teal-deep"
             >
               <span className="index-no">{s.no}</span> {s.label}
             </a>
@@ -83,7 +94,7 @@ export default function ResourcesPage() {
                   href={`/blog/${a.slug}`}
                   className="card-frame group flex h-full flex-col p-7"
                 >
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+                  <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
                     {a.dateLabel} · {a.readMins} min read
                   </div>
                   <h3 className="mt-3 flex-1 text-[16px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
@@ -170,7 +181,7 @@ export default function ResourcesPage() {
             {kbStats.map((s) => (
               <div key={s.label} className="bg-paper p-7 text-center">
                 <div className="display text-[30px] text-navy">{s.v}</div>
-                <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                <div className="mt-1 text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
                   {s.label}
                 </div>
               </div>

@@ -3,8 +3,12 @@ import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import ContactForm from "@/components/ContactForm";
+import MapEmbed from "@/components/MapEmbed";
 import { site } from "@/lib/data";
 import { FadeUp, FadeIn, Stagger, StaggerItem } from "@/components/motion/Animate";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, faqPageJsonLd, graph, webPageJsonLd } from "@/lib/seo";
+
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -34,6 +38,13 @@ const faqs = [
 export default function ContactPage() {
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageJsonLd({ path: "/contact", name: "Contact Business of Aesthetics", description: metadata.description as string, type: "ContactPage" }),
+          faqPageJsonLd(faqs),
+          breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])
+        )}
+      />
       <PageHero
         kicker="Contact Us"
         title={
@@ -107,7 +118,7 @@ export default function ContactPage() {
                   },
                 ].map((row) => (
                   <StaggerItem key={row.label} className="flex gap-5 p-6">
-                    <div className="w-[110px] shrink-0 pt-0.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                    <div className="w-[110px] shrink-0 pt-0.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                       {row.label}
                     </div>
                     <div className="min-w-0">
@@ -120,7 +131,7 @@ export default function ContactPage() {
                           rel={
                             row.href.startsWith("http") ? "noopener" : undefined
                           }
-                          className="text-[14.5px] font-bold text-navy transition-colors hover:text-teal-deep"
+                          className="inline-block py-1 text-[14.5px] font-bold text-navy transition-colors hover:text-teal-deep"
                         >
                           {row.value}
                         </a>
@@ -139,7 +150,7 @@ export default function ContactPage() {
                 ))}
               </Stagger>
               <div className="flex items-center gap-5 border-t border-line p-6">
-                <div className="w-[110px] shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                <div className="w-[110px] shrink-0 text-[12px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                   Follow Us
                 </div>
                 <div className="flex flex-wrap gap-2.5">
@@ -183,13 +194,7 @@ export default function ContactPage() {
           />
           <FadeIn delay={0.1}>
             <div className="card-frame mt-10 h-[380px] overflow-hidden">
-              <iframe
-                src="https://www.google.com/maps?q=1810+E+Sahara+Ave,+Las+Vegas,+NV+89104&output=embed"
-                title="BOA office map"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-full w-full border-0"
-              />
+              <MapEmbed />
             </div>
           </FadeIn>
         </div>

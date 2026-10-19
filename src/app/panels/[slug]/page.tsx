@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
-import { fetchEventPanels } from "@/lib/sheet";
+import { fetchEventPanels, thumbUrl } from "@/lib/sheet";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
+
 
 type PanelDetailProps = {
   params: Promise<{ slug: string }>;
@@ -35,6 +38,16 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          eventJsonLd(panel, `/panels/${panel.slug}`),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Expert Panels", path: "/panels" },
+            { name: panel.title, path: `/panels/${panel.slug}` },
+          ])
+        )}
+      />
       {/* centered header */}
       <section className="border-b border-line">
         <div className="mx-auto max-w-[1180px] px-5 pb-14 pt-12 lg:pt-16">
@@ -118,7 +131,7 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
                   {person.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={person.imageUrl}
+                      src={thumbUrl(person.imageUrl, 120)}
                       alt={person.name}
                       referrerPolicy="no-referrer"
                       className="h-24 w-24 shrink-0 rounded-full border border-line object-cover object-top"
@@ -134,7 +147,7 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
                     <h3 className="display text-[20px] text-navy">
                       {person.name}
                     </h3>
-                    <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+                    <div className="mt-1 text-[12px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                       Featured panelist
                     </div>
                   </div>
@@ -152,7 +165,7 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
             ? { href: panel.registerUrl, label: "Register for This Panel" }
             : { href: "/events", label: "View Event Calendar" }
         }
-        secondary={{ href: "/panels#series", label: "Watch Replays" }}
+        secondary={{ href: "/panels#replays", label: "Watch Replays" }}
       />
     </>
   );

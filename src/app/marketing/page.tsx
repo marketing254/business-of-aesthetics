@@ -197,7 +197,7 @@ export default function MarketingPage() {
                   <div className="display text-[clamp(34px,3.8vw,46px)] leading-none text-white">
                     {s.v}
                   </div>
-                  <div className="mt-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal">
+                  <div className="mt-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-teal">
                     {s.title}
                   </div>
                   <p className="mt-2 text-[13.5px] text-white/65">{s.copy}</p>
