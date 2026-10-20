@@ -29,6 +29,7 @@ function legacyPostRedirects(): Redirect[] {
 /** Old WordPress sections / pages -> new routes. Order matters (first match wins). */
 const legacySectionRedirects: Redirect[] = [
   // --- pages that moved
+  { source: "/preview/coaching", destination: "/coaching", permanent: true },
   { source: "/about-us", destination: "/about", permanent: true },
   { source: "/cookie-policy", destination: "/privacy", permanent: true },
   { source: "/privacy-policy", destination: "/privacy", permanent: true },
@@ -160,11 +161,8 @@ const nextConfig: NextConfig = {
       }
     : {
         async rewrites() {
-          // Standalone landing page kept as a static HTML file (own Apps Script + sheet).
-          // PREVIEW ONLY until approved: unlisted URL, noindex, not in nav/sitemap.
-          // To go live: move public/preview/coaching-7f3a9c2e.html to public/coaching.html
-          // and change this to { source: "/coaching", destination: "/coaching.html" }.
-          return [{ source: "/preview/coaching", destination: "/preview/coaching-7f3a9c2e.html" }];
+          // Standalone landing page kept as a static HTML file (own Apps Script + sheet)
+          return [{ source: "/coaching", destination: "/coaching.html" }];
         },
         async redirects() {
           return [...legacySectionRedirects, ...legacyPostRedirects()];
