@@ -317,7 +317,7 @@ export default function Navbar() {
             <ThemeToggle className="hidden sm:grid" />
             <Link
               href="/marketing#book"
-              className="btn btn-navy hidden !px-6 !py-3 lg:inline-flex"
+              className="btn btn-navy !px-6 !py-3 max-lg:!hidden"
             >
               Book a Meeting <span className="arr">→</span>
             </Link>

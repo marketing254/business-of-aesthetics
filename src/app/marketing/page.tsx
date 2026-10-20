@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
-import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import SchedulerEmbed from "@/components/SchedulerEmbed";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 
 export const metadata: Metadata = {
@@ -65,26 +63,78 @@ const process = [
 export default function MarketingPage() {
   return (
     <>
-      <PageHero
-        kicker="Marketing Services"
-        title={
-          <>
-            Grow your practice with{" "}
-            <em>marketing that actually works.</em>
-          </>
-        }
-        lede="Four focus areas, no fluff. Built specifically for dermatology, plastic surgery and aesthetic practices that want to attract more of the right patients."
+      {/* hero - copy left, booking calendar right (above the fold) */}
+      <section
+        id="book"
+        className="relative scroll-mt-24 overflow-hidden border-b border-line bg-cream"
       >
-        <a href="#book" className="btn btn-navy">
-          Book Strategy Meeting <span className="arr">→</span>
-        </a>
-        <Link href="/blog" className="btn btn-outline">
-          Read Growth Insights
-        </Link>
-      </PageHero>
+        <div className="mx-auto grid max-w-[1240px] items-start gap-10 px-5 pb-14 pt-12 lg:grid-cols-[1fr_minmax(0,560px)] lg:gap-14 lg:pb-20 lg:pt-16">
+          <FadeUp eager>
+            <div className="lg:pt-6">
+              <span className="kicker">Marketing Services by Ekwa</span>
+              <h1 className="display mt-5 max-w-[640px] text-[clamp(34px,4.6vw,58px)] leading-[1.02] text-navy">
+                Attract patients who <em>choose you</em>, not just whoever
+                finds you first.
+              </h1>
+              <p className="lede mt-6 max-w-[560px] text-[16.5px]">
+                Ekwa Marketing helps dermatology, plastic surgery and aesthetic
+                practices rank higher, convert more website visitors, and bring
+                in the kind of patients who stay for years.
+              </p>
+              <ul className="mt-8 space-y-3.5">
+                {[
+                  "200+ aesthetic practices served",
+                  "60-minute strategy meeting, no obligation",
+                  "A senior advisor reviews your practice before the call",
+                  "You keep the plan, whether you work with us or not",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-3 text-[15px] text-ink">
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-teal-soft text-teal-deep">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <a href="#services" className="btn btn-navy">
+                  See What We Do <span className="arr">→</span>
+                </a>
+                <Link href="/blog" className="btn btn-outline">
+                  Read Growth Insights
+                </Link>
+              </div>
+            </div>
+          </FadeUp>
+
+          <FadeUp eager delay={0.05}>
+            <div className="card-frame overflow-hidden !p-0">
+              <div className="border-b-4 border-teal bg-sand px-6 py-6 sm:px-8">
+                <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+                  Free · No obligation
+                </div>
+                <h2 className="display mt-2 text-[clamp(21px,2.4vw,27px)] text-navy">
+                  Book a Marketing Strategy Meeting
+                </h2>
+                <p className="mt-1.5 text-[14px] text-muted">
+                  Pick a date and time that works for you.
+                </p>
+              </div>
+              <div className="bg-white p-2 sm:p-3">
+                <iframe
+                  src="https://ekwasales-withoutceo-boa.youcanbook.me?embed=true&noframe=true&skipHeaderFooter=true"
+                  title="Book your free Marketing Strategy Meeting"
+                  allow="payment"
+                  className="h-[640px] w-full rounded-xl border-0 bg-white"
+                />
+              </div>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
 
       {/* pillars */}
-      <section className="bg-paper py-20 lg:py-24">
+      <section id="services" className="scroll-mt-24 bg-paper py-20 lg:py-24">
         <div className="mx-auto max-w-[1180px] px-5">
           <SectionHead
             kicker="Four Focus Areas"
@@ -205,54 +255,6 @@ export default function MarketingPage() {
               </FadeUp>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* scheduler - copy left, calendar right */}
-      <section
-        id="book"
-        className="scroll-mt-24 border-b border-line bg-sand py-20 lg:py-24"
-      >
-        <div className="mx-auto grid max-w-[1180px] items-start gap-10 px-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
-          <FadeUp>
-            <div className="lg:sticky lg:top-28">
-              <span className="kicker">Free Strategy Meeting</span>
-              <h2 className="display mt-4 text-[clamp(26px,3.2vw,36px)] text-navy">
-                Ready to <em>grow?</em> Pick a time.
-              </h2>
-              <p className="lede mt-4 max-w-[480px]">
-                Sit down with a senior advisor for a no-pressure Marketing
-                Strategy Meeting. We&apos;ll audit where you stand, identify
-                your biggest opportunities, and hand you a clear plan you can
-                act on - whether you work with us or not.
-              </p>
-              <ul className="mt-7 space-y-3.5">
-                {[
-                  ["60 minutes", "1-on-1 with a senior advisor, on video."],
-                  ["Honest practice audit", "Website, search, social, reputation."],
-                  ["A plan you keep", "Custom roadmap - yours either way."],
-                  ["100% free", "No credit card, no pitch, no pressure."],
-                ].map(([t, s]) => (
-                  <li key={t} className="flex gap-3.5">
-                    <span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-teal-soft text-teal-deep">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                    </span>
-                    <span className="text-[14px] leading-snug">
-                      <b className="font-semibold text-navy">{t}</b>
-                      <span className="text-muted"> - {s}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </FadeUp>
-          <FadeUp delay={0.1}>
-            <SchedulerEmbed
-              src="https://ekwasales-withoutceo-boa.youcanbook.me?embed=true"
-              title="Book your free Marketing Strategy Meeting"
-              minHeight={640}
-            />
-          </FadeUp>
         </div>
       </section>
 
