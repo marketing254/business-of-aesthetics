@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
-import { fetchEventPanels, thumbUrl } from "@/lib/sheet";
+import { fetchEventPanels, thumbUrl, legacyEventSlug } from "@/lib/sheet";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
 
@@ -34,7 +34,12 @@ export async function generateMetadata({
 export default async function PanelDetailPage({ params }: PanelDetailProps) {
   const { slug } = await params;
   const panel = await loadPanel(slug);
-  if (!panel) notFound();
+  if (!panel) {
+    const all = await fetchEventPanels();
+    const match = all.find((e) => legacyEventSlug(e) === slug);
+    if (match) permanentRedirect(`/panels/${match.slug}`);
+    notFound();
+  }
 
   return (
     <>

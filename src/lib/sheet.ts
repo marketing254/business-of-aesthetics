@@ -187,14 +187,49 @@ function oneLine(text: string) {
   return compact(text).replace(/\s+/g, " ");
 }
 
-export function slugify(text: string) {
+/**
+ * SEO-friendly short slug. Full titles produced 90+ character URLs cut
+ * mid-word ("...in-aestheti"). This keeps the meaningful words, drops filler
+ * words only when needed, and always ends on a whole word (~60 chars max).
+ */
+const SLUG_STOPWORDS = new Set([
+  "a", "an", "the", "of", "in", "on", "to", "for", "and", "or", "with", "your", "you",
+  "that", "this", "is", "are", "how", "why", "what", "into", "from", "at", "by", "it",
+  "its", "as", "be", "we", "our", "when", "than", "them", "they", "their", "about",
+]);
+export function shortSlug(text: string, max = 60): string {
+  // curly apostrophes ("can’t") would otherwise become "can-t"
+  const full = slugify(text.replace(/[‘’ʼ]/g, ""), 400);
+  if (full.length <= max) return full;
+  let words = full.split("-").filter(Boolean);
+  // drop filler words (never the first word) until it fits or nothing left to drop
+  while (words.join("-").length > max) {
+    const i = words.findIndex((w, k) => k > 0 && SLUG_STOPWORDS.has(w));
+    if (i === -1) break;
+    words.splice(i, 1);
+  }
+  // then truncate on a whole word, keeping at least 3 words
+  const out: string[] = [];
+  for (const w of words) {
+    if (out.length >= 3 && [...out, w].join("-").length > max) break;
+    out.push(w);
+  }
+  return out.join("-");
+}
+
+/** The pre-October-2026 slug shape (96-char hard cut) - kept so old URLs redirect. */
+export function legacySlugify(text: string) {
+  return slugify(text, 96);
+}
+
+export function slugify(text: string, maxLen = 96) {
   return oneLine(text)
     .toLowerCase()
     .replace(/&/g, " and ")
     .replace(/['"]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 96);
+    .slice(0, maxLen);
 }
 
 function initialsOf(name: string): string {
@@ -667,7 +702,7 @@ export async function fetchPodcasts(): Promise<SheetPodcast[]> {
         audioSource: value(row, "audio_source"),
         transcriptUrl: value(row, "transcript_url"),
         episodeUrl: value(row, "episode_url"),
-        slug: `${String(episode).padStart(3, "0")}-${slugify(title)}`,
+        slug: `${episode}-${shortSlug(title, 56)}`,
         initials: initialsOf(guestName),
       };
     })
@@ -682,8 +717,33 @@ export async function fetchPodcasts(): Promise<SheetPodcast[]> {
     .sort((a, b) => b.episode - a.episode);
 }
 
-/** True while the event's date is today or later (past sessions are hidden). */
+/**
+ * Normalise whatever editors type in the date column to YYYY-MM-DD so dates
+ * compare correctly. Accepts 2026-10-27, 10/27/2026 (US), 27 Oct 2026,
+ * "October 27, 2026" etc. Returns "" when nothing parseable is there.
+ */
+export function toIsoDay(label: string): string {
+  // "February 25th, 2026" / "21st July 2026" -> drop ordinal suffixes first
+  const t = (label || "").trim().replace(/(\d+)(st|nd|rd|th)(?![a-z])/gi, "$1");
+  // no 4-digit year ("21st July") -> not a real date; JS would invent 2001
+  if (!t || !/(19|20)\d{2}/.test(t)) return "";
+  let m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); // US M/D/YYYY (sheet default)
+  if (m) return `${m[3]}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+  const d = new Date(t);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/**
+ * True while the event's date is today or later (past sessions are hidden).
+ * Expert panels additionally need a registration link before they count as
+ * upcoming - rows without one are still being prepared and stay off the
+ * "upcoming" lists (their detail page still exists by slug).
+ */
 export function isUpcoming(event: SheetEvent): boolean {
+  if (event.kind === "event-panel" && !isExternalLink(event.registerUrl)) return false;
   if (!event.dateIso) return true;
   const now = new Date();
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -706,16 +766,18 @@ export async function fetchEventPanels(): Promise<SheetEvent[]> {
 
 function mapEventRow(row: SheetRow, kind: SheetEvent["kind"]): SheetEvent {
   const title = firstLine(value(row, "title"));
-  const dateIso = oneLine(value(row, "date_iso", "date"));
+  const rawDate = oneLine(value(row, "date_iso", "date"));
+  const dateIso = toIsoDay(rawDate);
   const monthYear = oneLine(value(row, "month_year"));
   const time = oneLine(value(row, "time"));
-  const dateLabel = dateIso || monthYear;
+  // keep the editor's own date text for display + slugs (URLs stay stable)
+  const dateLabel = rawDate || monthYear;
   const registerUrl = value(row, "register_url");
   const rawImageUrls = value(row, "image_urls", "image_url");
 
   return {
     kind,
-    slug: `${kind}-${slugify(`${dateLabel} ${title}`)}`,
+    slug: `${kind}-${dateIso || slugify(dateLabel, 20)}-${shortSlug(title, 48)}`,
     dateIso,
     dateLabel,
     day: oneLine(value(row, "day")),
@@ -753,7 +815,7 @@ function mapReplayRow(row: SheetRow, kind: SheetReplay["kind"]): SheetReplay {
 
   return {
     kind,
-    slug: `${kind}-${slugify(`${date} ${title}`)}`,
+    slug: `${kind}-${toIsoDay(date) || slugify(date, 20)}-${shortSlug(title, 48)}`,
     date,
     duration: oneLine(value(row, "duration")),
     category: oneLine(value(row, "category")) || "Replay",
@@ -809,4 +871,16 @@ export function groupByEvent(
     event,
     speakers,
   }));
+}
+
+/* ---------- legacy slugs (pre short-URL change) -> permanent redirects ---------- */
+
+export function legacyPodcastSlug(p: SheetPodcast): string {
+  return `${String(p.episode).padStart(3, "0")}-${legacySlugify(p.title)}`;
+}
+export function legacyEventSlug(e: SheetEvent): string {
+  return `${e.kind}-${legacySlugify(`${e.dateLabel} ${e.title}`)}`;
+}
+export function legacyReplaySlug(r: SheetReplay): string {
+  return `${r.kind}-${legacySlugify(`${r.date} ${r.title}`)}`;
 }

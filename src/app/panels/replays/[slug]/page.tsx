@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
 import LeadGate from "@/components/LeadGate";
 import ShareBar from "@/components/ShareBar";
@@ -17,6 +17,7 @@ import {
   structureNotes,
   videoEmbedUrl,
   type TranscriptBlock,
+  legacyReplaySlug,
 } from "@/lib/sheet";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, graph, videoObjectJsonLd } from "@/lib/seo";
@@ -54,7 +55,12 @@ function blocks(text: string) {
 export default async function PanelReplayPage({ params }: PanelReplayProps) {
   const { slug } = await params;
   const replay = await loadReplay(slug);
-  if (!replay) notFound();
+  if (!replay) {
+    const all = await fetchPanelReplays();
+    const match = all.find((r) => legacyReplaySlug(r) === slug);
+    if (match) permanentRedirect(`/panels/replays/${match.slug}`);
+    notFound();
+  }
 
   const embed = videoEmbedUrl(replay.videoUrl);
   // when the sheet's description cell is a Google Doc link, pull its content

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { FadeUp } from "@/components/motion/Animate";
 import TranscriptView from "@/components/TranscriptView";
 import LeadGate from "@/components/LeadGate";
 import ShareBar from "@/components/ShareBar";
 import EpisodeAudio from "@/components/EpisodeAudio";
-import { fetchPodcasts, fetchTranscript, thumbUrl } from "@/lib/sheet";
+import { fetchPodcasts, fetchTranscript, legacyPodcastSlug, thumbUrl } from "@/lib/sheet";
 import { platforms } from "@/lib/data";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, graph, podcastEpisodeJsonLd } from "@/lib/seo";
@@ -109,7 +109,14 @@ function paragraphs(text: string) {
 export default async function PodcastDetailPage({ params }: PodcastDetailProps) {
   const { slug } = await params;
   const { episode, newer, older } = await loadEpisode(slug);
-  if (!episode) notFound();
+  if (!episode) {
+    // old long URL (or just the episode number) -> permanent redirect to the short slug
+    const all = await fetchPodcasts();
+    const num = Number((slug.match(/^(\d+)/) || [])[1]);
+    const match = all.find((e) => legacyPodcastSlug(e) === slug) ?? all.find((e) => e.episode === num);
+    if (match) permanentRedirect(`/podcast/${match.slug}`);
+    notFound();
+  }
 
   const transcript = episode.transcriptUrl
     ? await fetchTranscript(episode.transcriptUrl)

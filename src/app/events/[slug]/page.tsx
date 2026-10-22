@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp } from "@/components/motion/Animate";
-import { fetchEvents, thumbUrl } from "@/lib/sheet";
+import { fetchEvents, thumbUrl, legacyEventSlug } from "@/lib/sheet";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
 
@@ -43,7 +43,12 @@ function blocks(text: string) {
 export default async function EventDetailPage({ params }: EventDetailProps) {
   const { slug } = await params;
   const event = await loadEvent(slug);
-  if (!event) notFound();
+  if (!event) {
+    const all = await fetchEvents();
+    const match = all.find((e) => legacyEventSlug(e) === slug);
+    if (match) permanentRedirect(`/events/${match.slug}`);
+    notFound();
+  }
 
   return (
     <>
