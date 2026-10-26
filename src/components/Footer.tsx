@@ -16,6 +16,7 @@ const explore = [
 const resourcesCol = [
   { href: "/blog", label: "Blog" },
   { href: "/resources", label: "Resources" },
+  { href: "/resources#freebies", label: "Free Downloads" },
   { href: "/marketing", label: "Marketing (MSM)" },
   { href: "/coaching", label: "BOA Practice System" },
   { href: "/marketing#book", label: "Free Strategy Meeting" },

@@ -6,6 +6,9 @@ import TranscriptView from "@/components/TranscriptView";
 import LeadGate from "@/components/LeadGate";
 import ShareBar from "@/components/ShareBar";
 import EpisodeAudio from "@/components/EpisodeAudio";
+import ResourceDownloads from "@/components/ResourceDownloads";
+import { resourcesForEpisode } from "@/lib/episode-resources";
+import { abs } from "@/lib/seo";
 import { fetchPodcasts, fetchTranscript, legacyPodcastSlug, thumbUrl } from "@/lib/sheet";
 import { platforms } from "@/lib/data";
 import JsonLd from "@/components/JsonLd";
@@ -123,12 +126,22 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
     : [];
   const transcriptDocId =
     episode.transcriptUrl.match(/document\/d\/([\w-]+)/)?.[1] ?? "";
+  const resources = resourcesForEpisode(episode.episode, episode.resources);
 
   return (
     <>
       <JsonLd
         data={graph(
           podcastEpisodeJsonLd(episode),
+          ...resources.map((r) => ({
+            "@type": "DigitalDocument",
+            name: r.label,
+            description: r.description,
+            url: abs(r.url),
+            encodingFormat: "application/pdf",
+            isAccessibleForFree: true,
+            publisher: { "@id": `${abs("/")}#organization` },
+          })),
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
             { name: "Podcast", path: "/podcast" },
@@ -346,6 +359,29 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
                 </dl>
               </aside>
             </FadeUp>
+
+            {resources.length > 0 && (
+              <FadeUp delay={0.18}>
+                <aside id="resources" className="card-frame scroll-mt-28 p-7">
+                  <div className="text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                    Free Episode Resource{resources.length > 1 ? "s" : ""}
+                  </div>
+                  <h3 className="display mt-2 text-[22px] text-navy">
+                    Take the playbook with you
+                  </h3>
+                  <p className="mt-2 text-[13px] leading-relaxed text-muted">
+                    A practical companion built from this conversation. Free to download.
+                  </p>
+                  <div className="mt-5">
+                    <ResourceDownloads
+                      resources={resources}
+                      gateLabel="this free resource"
+                      episodeSlug={episode.slug}
+                    />
+                  </div>
+                </aside>
+              </FadeUp>
+            )}
           </div>
         </div>
       </section>

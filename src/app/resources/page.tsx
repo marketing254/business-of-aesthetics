@@ -5,6 +5,9 @@ import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import NewsletterBand from "@/components/NewsletterBand";
 import KbExplorer from "@/components/KbExplorer";
+import ResourceDownloads from "@/components/ResourceDownloads";
+import { bundledResources, type EpisodeResource } from "@/lib/episode-resources";
+import { fetchPodcasts } from "@/lib/sheet";
 import { tools } from "@/lib/data";
 import { blogPosts } from "@/lib/blog";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
@@ -19,14 +22,22 @@ export const metadata: Metadata = {
     "Blogs, tools and a Knowledge Base / FAQ built for aesthetic practitioners - growth insights, practical calculators and answers to the questions we hear most.",
 };
 
-const kbStats = [
-  { v: "294+", label: "Podcast Episodes" },
-  { v: "297+", label: "Articles Published" },
-  { v: "20+", label: "Live Webinars" },
-  { v: "9", label: "Free Tools" },
-];
-
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  // only show downloads for episodes that are actually published in the sheet
+  const podcasts = await fetchPodcasts();
+  const live = new Set(podcasts.map((p) => p.episode));
+  const freebies: EpisodeResource[] = [
+    ...podcasts.flatMap((p) => p.resources),
+    ...bundledResources.filter((r) => live.has(r.episode)),
+  ]
+    .filter((r, i, arr) => arr.findIndex((x) => x.url === r.url) === i)
+    .sort((a, b) => b.episode - a.episode);
+  const kbStats = [
+    { v: "294+", label: "Podcast Episodes" },
+    { v: "297+", label: "Articles Published" },
+    { v: "20+", label: "Live Webinars" },
+    { v: String(freebies.length), label: "Free Downloads" },
+  ];
   return (
     <>
       <JsonLd
@@ -157,6 +168,32 @@ export default function ResourcesPage() {
               </StaggerItem>
             ))}
           </Stagger>
+        </div>
+      </section>
+
+      {/* free episode downloads */}
+      <section id="freebies" className="scroll-mt-32 py-20 lg:py-24">
+        <div className="mx-auto max-w-[1180px] px-5">
+          <SectionHead
+            kicker="Free Practice Resources"
+            title={
+              <>
+                Playbooks and toolkits from <em>recent episodes.</em>
+              </>
+            }
+            lede="Each guide turns one podcast conversation into a practical, printable workbook for your team. Free to download - enter your details once and every resource on the site unlocks."
+          />
+          <div className="mt-12">
+            {freebies.length > 0 ? (
+              <ResourceDownloads
+                resources={freebies}
+                layout="grid"
+                gateLabel="the free practice resources"
+              />
+            ) : (
+              <p className="text-center text-[15px] text-muted">New resources are added with each episode - check back soon.</p>
+            )}
+          </div>
         </div>
       </section>
 

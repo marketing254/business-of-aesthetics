@@ -78,7 +78,11 @@ const legacySectionRedirects: Redirect[] = [
   { source: "/laseroptek", destination: "/marketing", permanent: true },
 
   // --- resources / directories / sponsors
-  { source: "/resources/:path+", destination: "/resources", permanent: true },
+  // only the old WordPress sub-pages - /resources/* is otherwise live (anchors, downloads)
+  { source: "/resources/consultations", destination: "/resources", permanent: true },
+  { source: "/resources/exclusives", destination: "/resources", permanent: true },
+  { source: "/resources/resources", destination: "/resources", permanent: true },
+  { source: "/resources/freebies", destination: "/resources#freebies", permanent: true },
   { source: "/industry-directory", destination: "/resources", permanent: true },
   { source: "/buying-service", destination: "/resources", permanent: true },
   { source: "/our-sponsors", destination: "/contact", permanent: true },

@@ -12,6 +12,8 @@
  * is not a secret. A BOA_SHEET_ID env var still overrides it, e.g. to
  * point a fork at a different sheet.
  */
+import { parseResourceLines, type EpisodeResource } from "./episode-resources";
+
 const DEFAULT_SHEET_ID = "1RUbqWwqnIacOiUmuXpnV_hK88LEgMNORBIyb80tSRas";
 const SHEET_ID = process.env.BOA_SHEET_ID || DEFAULT_SHEET_ID;
 
@@ -51,6 +53,8 @@ export interface SheetPodcast {
   episodeUrl: string;
   slug: string;
   initials: string;
+  /** free downloads from the `resources` column (Label | URL per line) */
+  resources: EpisodeResource[];
 }
 
 export interface SheetEvent {
@@ -702,6 +706,7 @@ export async function fetchPodcasts(): Promise<SheetPodcast[]> {
         audioSource: value(row, "audio_source"),
         transcriptUrl: value(row, "transcript_url"),
         episodeUrl: value(row, "episode_url"),
+        resources: parseResourceLines(episode, value(row, "resources", "freebies", "downloads")),
         slug: `${episode}-${shortSlug(title, 56)}`,
         initials: initialsOf(guestName),
       };
