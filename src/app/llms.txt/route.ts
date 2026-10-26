@@ -1,4 +1,4 @@
-import { blogPosts } from "@/lib/blog";
+import { blogArticles, blogPosts } from "@/lib/blog";
 import {
   fetchEventPanels,
   fetchEvents,
@@ -27,7 +27,7 @@ export async function GET() {
 
   const upcoming = [...events, ...panels].filter(isUpcoming).slice(0, 10);
   const latestEpisodes = podcasts.slice(0, 15);
-  const latestPosts = blogPosts.slice(0, 15);
+  const latestPosts = blogArticles.slice(0, 20);
 
   const lines: string[] = [
     "# Business of Aesthetics (BOA)",
@@ -39,7 +39,7 @@ export async function GET() {
     `- Founded: 2019 · Headquarters: Las Vegas, NV, USA · Contact: ${site.email} · ${site.phone}`,
     `- Podcast: ${podcasts.length || "290"}+ published episodes, new episodes weekly, free on Spotify, Apple Podcasts and YouTube`,
     `- Expert panels: ${panelReplays.length || "50"}+ recorded moderated panels, all replays free`,
-    `- Blog: ${blogPosts.length} long-form articles`,
+    `- Blog: ${blogArticles.length} editorial articles plus show notes and transcripts for ${blogPosts.length - blogArticles.length} podcast episodes`,
     "- Audience: 3,700+ aesthetic practitioners; 200+ practices served by Ekwa Marketing",
     "- All content is free; podcast audio and replay videos ask for a name and email once.",
     "",
@@ -59,6 +59,7 @@ export async function GET() {
     `- Sitemap: ${SITE_URL}/sitemap.xml`,
     `- Speaker directory JSON: ${SITE_URL}/api/speakers`,
     `- Site search index JSON: ${SITE_URL}/api/search`,
+    `- Blog RSS feed: ${SITE_URL}/feed.xml`,
     "",
   ];
 

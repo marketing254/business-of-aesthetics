@@ -206,11 +206,19 @@ export function blogPostingJsonLd(p: BlogPost): Json {
     headline: strip(p.title, 110),
     description: strip(p.excerpt, 300),
     datePublished: p.date,
-    dateModified: p.date,
-    author: { "@id": ORG_ID },
+    dateModified: p.modified || p.date,
+    author: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: "Business of Aesthetics Editorial Team",
+      url: `${SITE_URL}/about`,
+    },
     publisher: { "@id": ORG_ID },
-    image: `${SITE_URL}/opengraph-image`,
+    ...(p.kind === "episode" ? { isPartOf: { "@id": PODCAST_ID } } : {}),
+    image: p.image ? abs(p.image) : `${SITE_URL}/opengraph-image`,
     articleSection: p.category,
+    about: { "@type": "Thing", name: "Aesthetic practice management" },
+    audience: { "@type": "Audience", audienceType: "Dermatology, plastic surgery and med spa practice owners" },
     wordCount: words,
     timeRequired: `PT${p.readMins}M`,
     inLanguage: "en-US",
@@ -323,5 +331,22 @@ export function graph(...nodes: (Json | null | undefined | false)[]): Json {
   return {
     "@context": "https://schema.org",
     "@graph": nodes.filter(Boolean),
+  };
+}
+
+/** Blog index: CollectionPage + ItemList of the newest articles. */
+export function blogIndexJsonLd(posts: { slug: string; title: string; date: string }[]): Json {
+  return {
+    "@type": "ItemList",
+    "@id": `${SITE_URL}/blog#articles`,
+    name: "Business of Aesthetics blog articles",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: posts.length,
+    itemListElement: posts.slice(0, 25).map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${SITE_URL}/blog/${p.slug}`,
+      name: p.title,
+    })),
   };
 }

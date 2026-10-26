@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   creator: SITE_NAME,
   publisher: SITE_NAME,
   category: "business",
-  alternates: { canonical: "./" },
+  alternates: { canonical: "./", types: { "application/rss+xml": "/feed.xml" } },
   robots: {
     index: true,
     follow: true,

@@ -5,20 +5,33 @@ import PageHero from "@/components/PageHero";
 import NewsletterBand from "@/components/NewsletterBand";
 import BlogExplorer from "@/components/BlogExplorer";
 import { FadeUp } from "@/components/motion/Animate";
-import { blogCards, blogPosts } from "@/lib/blog";
+import { blogArticles, blogCards } from "@/lib/blog";
+import JsonLd from "@/components/JsonLd";
+import { blogIndexJsonLd, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Blog - Growth Insights for Aesthetic Practices",
   description:
-    "The complete Business of Aesthetics article library - practical insights on marketing, operations, finance and leadership for aesthetic practices.",
+    "Practical articles on marketing, patient retention, operations, finance and leadership for dermatology, plastic surgery and med spa practices, plus show notes for every podcast episode.",
+  alternates: { canonical: "/blog", types: { "application/rss+xml": "/feed.xml" } },
+  openGraph: { title: "The Business of Aesthetics Blog", url: "/blog" },
 };
 
 export default function BlogPage() {
   const cards = blogCards();
-  const featured = blogPosts[0];
+  const featured = blogArticles[0];
+  const articleCount = blogArticles.length;
+  const episodeCount = cards.length - articleCount;
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageJsonLd({ path: "/blog", name: "The Business of Aesthetics Blog", description: metadata.description as string, type: "CollectionPage" }),
+          blogIndexJsonLd(blogArticles),
+          breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Blog", path: "/blog" }])
+        )}
+      />
       <PageHero
         kicker="The BOA Blog"
         title={
@@ -26,7 +39,7 @@ export default function BlogPage() {
             Ideas worth <em>reading twice.</em>
           </>
         }
-        lede={`${cards.length} articles on the business side of aesthetic medicine - marketing, operations, finance, and leadership, drawn from every episode and conversation we publish.`}
+        lede={`${articleCount} articles on the business side of aesthetic medicine - marketing, operations, finance, and leadership - plus show notes for all ${episodeCount} podcast episodes.`}
       >
         <a href="#articles" className="btn btn-navy">
           Browse Articles <span className="arr">→</span>
@@ -45,7 +58,7 @@ export default function BlogPage() {
                 href={`/blog/${featured.slug}`}
                 className="card-frame group block bg-sand p-8 text-center sm:p-10"
               >
-                <span className="chip teal">Latest Article</span>
+                <span className="chip teal">Latest Article · {featured.category}</span>
                 <h2 className="display mx-auto mt-5 max-w-[720px] text-[clamp(21px,2.6vw,29px)] leading-snug text-navy transition-colors group-hover:text-teal-deep">
                   {featured.title}
                 </h2>

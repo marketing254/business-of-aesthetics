@@ -14,22 +14,48 @@ import type { BlogCard } from "@/lib/blog";
 const EASE = [0.22, 0.61, 0.21, 1] as const;
 const PAGE_SIZE = 12;
 
-export default function BlogExplorer({ posts }: { posts: BlogCard[] }) {
+type Filter = "article" | "episode" | "all";
+
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: "article", label: "Articles" },
+  { key: "episode", label: "Episode Notes" },
+  { key: "all", label: "Everything" },
+];
+
+export default function BlogExplorer({
+  posts,
+  initialFilter = "article",
+}: {
+  posts: BlogCard[];
+  initialFilter?: Filter;
+}) {
   const [q, setQ] = useState("");
+  const [filter, setFilter] = useState<Filter>(initialFilter);
   const [page, setPage] = useState(1);
   const topRef = useRef<HTMLDivElement>(null);
 
+  const counts = useMemo(
+    () => ({
+      article: posts.filter((p) => p.kind === "article").length,
+      episode: posts.filter((p) => p.kind === "episode").length,
+      all: posts.length,
+    }),
+    [posts]
+  );
+
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    if (!needle) return posts;
-    return posts.filter(
-      (p) =>
+    return posts.filter((p) => {
+      if (filter !== "all" && p.kind !== filter) return false;
+      if (!needle) return true;
+      return (
         p.title.toLowerCase().includes(needle) ||
         p.excerpt.toLowerCase().includes(needle)
-    );
-  }, [posts, q]);
+      );
+    });
+  }, [posts, q, filter]);
 
-  useEffect(() => setPage(1), [q]);
+  useEffect(() => setPage(1), [q, filter]);
 
   const pageCount = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
   const paged = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -55,8 +81,20 @@ export default function BlogExplorer({ posts }: { posts: BlogCard[] }) {
           </span>
         </div>
         <p className="mt-3 text-center text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
-          {list.length} article{list.length === 1 ? "" : "s"}
+          {list.length} {filter === "episode" ? "episode" : "article"}{list.length === 1 ? "" : "s"}
         </p>
+      </div>
+
+      <div className="mt-6 flex flex-wrap justify-center gap-2.5">
+        {FILTERS.map((f) => (
+          <button
+            key={f.key}
+            className={`fpill ${filter === f.key ? "active" : ""}`}
+            onClick={() => setFilter(f.key)}
+          >
+            {f.label} ({counts[f.key]})
+          </button>
+        ))}
       </div>
 
       <div ref={topRef} className="scroll-mt-28" />
@@ -74,10 +112,25 @@ export default function BlogExplorer({ posts }: { posts: BlogCard[] }) {
             >
               <Link
                 href={`/blog/${p.slug}`}
-                className="card-frame group flex h-full flex-col p-7"
+                className="card-frame group flex h-full flex-col overflow-hidden"
               >
-                <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
-                  {p.dateLabel} · {p.readMins} min read
+                {p.image && (
+                  <div className="tone-img aspect-[16/9] bg-sand">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/_next/image?url=${encodeURIComponent(p.image)}&w=640&q=75`}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col p-7">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
+                  <span className={`chip !py-1 !text-[10.5px] ${p.kind === "article" ? "teal" : ""}`}>
+                    {p.category}
+                  </span>
+                  <span>{p.dateLabel} · {p.readMins} min read</span>
                 </div>
                 <h3 className="mt-3 flex-1 text-[16.5px] font-semibold leading-snug text-navy transition-colors group-hover:text-teal-deep">
                   {p.title}
@@ -86,8 +139,9 @@ export default function BlogExplorer({ posts }: { posts: BlogCard[] }) {
                   {p.excerpt}
                 </p>
                 <span className="linkline mt-5">
-                  Read article <span className="arr">→</span>
+                  {p.kind === "article" ? "Read article" : "Read show notes"} <span className="arr">→</span>
                 </span>
+                </div>
               </Link>
             </motion.div>
           ))}

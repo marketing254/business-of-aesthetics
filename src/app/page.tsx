@@ -2,6 +2,7 @@ import Link from "next/link";
 import Counter from "@/components/Counter";
 import CtaBand from "@/components/CtaBand";
 import HeroScene from "@/components/HeroScene";
+import PracticeSystemBanner from "@/components/PracticeSystemBanner";
 import SectionHead from "@/components/SectionHead";
 import NewsletterBand from "@/components/NewsletterBand";
 import TestimonialSlider from "@/components/TestimonialSlider";
@@ -83,6 +84,9 @@ export default async function Home() {
           breadcrumbJsonLd([{ name: "Home", path: "/" }])
         )}
       />
+      {/* ============ fixed promo banner (BOA Practice System + webinar) ============ */}
+      <PracticeSystemBanner />
+
       {/* ============ hero — centered, with cinematic 3D orbit ============ */}
       <section className="relative overflow-hidden">
         <HeroScene />

@@ -60,9 +60,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...blogPosts.map((b) => ({
       url: `${SITE_URL}/blog/${b.slug}`,
-      lastModified: when(b.date) ?? now,
-      changeFrequency: "yearly" as const,
-      priority: 0.6,
+      lastModified: when(b.modified || b.date) ?? now,
+      changeFrequency: (b.kind === "article" ? "monthly" : "yearly") as "monthly" | "yearly",
+      priority: b.kind === "article" ? 0.7 : 0.5,
+      ...(b.image ? { images: [`${SITE_URL}${b.image}`] } : {}),
     })),
     ...events.map((e) => ({
       url: `${SITE_URL}/events/${e.slug}`,
