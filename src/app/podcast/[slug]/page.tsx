@@ -238,8 +238,34 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
 
       {/* ============ show notes + sidebar ============ */}
       <section className="py-14 lg:py-16">
-        <div className="mx-auto grid max-w-[1180px] items-start gap-12 px-5 lg:grid-cols-[1fr_320px]">
-          <FadeUp>
+        <div className="mx-auto grid max-w-[1180px] items-start gap-10 px-5 lg:grid-cols-[1fr_320px] lg:gap-x-12 lg:gap-y-6">
+          {/* free resource: first on phones, top of the right column on desktop */}
+          {resources.length > 0 && (
+            <div className="lg:col-start-2 lg:row-start-1">
+              <FadeUp delay={0.06}>
+                <aside id="resources" className="card-frame scroll-mt-28 p-7">
+                  <div className="text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
+                    Free Episode Resource{resources.length > 1 ? "s" : ""}
+                  </div>
+                  <h3 className="display mt-2 text-[22px] text-navy">
+                    Take the playbook with you
+                  </h3>
+                  <p className="mt-2 text-[13px] leading-relaxed text-muted">
+                    A practical companion built from this conversation. Free to download.
+                  </p>
+                  <div className="mt-5">
+                    <ResourceDownloads
+                      resources={resources}
+                      gateLabel="this free resource"
+                      episodeSlug={episode.slug}
+                    />
+                  </div>
+                </aside>
+              </FadeUp>
+            </div>
+          )}
+
+          <FadeUp className="lg:col-start-1 lg:row-start-1 lg:row-span-2">
             <article>
               <span className="kicker">Episode Show Notes</span>
               <h2 className="display mt-4 text-[clamp(24px,3vw,34px)] text-navy">
@@ -276,7 +302,7 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
             </article>
           </FadeUp>
 
-          <div className="space-y-6 lg:sticky lg:top-28">
+          <div className="space-y-6 lg:col-start-2 lg:row-start-2">
             <FadeUp delay={0.08}>
               <aside className="card-frame p-7">
                 <div className="text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
@@ -360,28 +386,6 @@ export default async function PodcastDetailPage({ params }: PodcastDetailProps) 
               </aside>
             </FadeUp>
 
-            {resources.length > 0 && (
-              <FadeUp delay={0.18}>
-                <aside id="resources" className="card-frame scroll-mt-28 p-7">
-                  <div className="text-[12px] font-semibold uppercase tracking-[0.22em] text-teal-deep">
-                    Free Episode Resource{resources.length > 1 ? "s" : ""}
-                  </div>
-                  <h3 className="display mt-2 text-[22px] text-navy">
-                    Take the playbook with you
-                  </h3>
-                  <p className="mt-2 text-[13px] leading-relaxed text-muted">
-                    A practical companion built from this conversation. Free to download.
-                  </p>
-                  <div className="mt-5">
-                    <ResourceDownloads
-                      resources={resources}
-                      gateLabel="this free resource"
-                      episodeSlug={episode.slug}
-                    />
-                  </div>
-                </aside>
-              </FadeUp>
-            )}
           </div>
         </div>
       </section>

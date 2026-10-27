@@ -3,8 +3,8 @@
 /**
  * Downloadable episode resources, shown behind the site's one-time
  * name/email gate (same gate as the audio - visitors who already unlocked
- * anything are not asked again). Each download is logged to the Podcast
- * Gate tab as "Download: <label>" and sent to analytics as file_download.
+ * anything are not asked again). The unlock and every download are logged
+ * to the "Resource Downloads" tab in the sheet and sent to analytics.
  *
  * layout="list"  compact sidebar card (episode page)
  * layout="grid"  3-up cards (resources page)
@@ -45,12 +45,14 @@ function logDownload(r: EpisodeResource) {
     /* ignore */
   }
   if (email) {
-    void submitLead("podcast_gate", {
+    void submitLead("resource_download", {
       name,
       email,
-      title: `Download: ${r.label}`,
-      slug: r.url,
+      action: "downloaded",
+      resource: r.label,
       episode: r.episode,
+      file: r.url,
+      title: r.label,
     });
   }
   try {
@@ -134,10 +136,12 @@ export default function ResourceDownloads({
   return (
     <LeadGate
       label={gateLabel}
-      variant={layout === "grid" ? "bar" : "bar"}
+      variant={layout === "grid" ? "bar" : "stack"}
       meta={{
-        form: "podcast_gate",
-        title: `Resources: ${first.label}`,
+        form: "resource_download",
+        title: first.label,
+        resource: first.label,
+        file: first.url,
         slug: episodeSlug,
         episode: first.episode,
       }}

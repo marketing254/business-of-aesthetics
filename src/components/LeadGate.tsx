@@ -12,6 +12,7 @@
  *
  * variant="bar"   compact form for small media (audio players)
  * variant="panel" larger centered form for video embeds (fills the slot)
+ * variant="stack" stacked fields + full-width button for narrow sidebars
  */
 
 import { useEffect, useState, type ReactNode } from "react";
@@ -22,11 +23,14 @@ const DETAILS_KEY = "boa-lead-details";
 
 export interface GateMeta {
   /** which sheet tab the unlock is logged to */
-  form: Extract<LeadForm, "podcast_gate" | "event_replay_gate" | "panel_replay_gate">;
+  form: Extract<LeadForm, "podcast_gate" | "event_replay_gate" | "panel_replay_gate" | "resource_download">;
   title: string;
   slug: string;
   episode?: number;
   date?: string;
+  /** resource_download only: which resource/file was unlocked */
+  resource?: string;
+  file?: string;
 }
 
 export default function LeadGate({
@@ -37,7 +41,7 @@ export default function LeadGate({
 }: {
   children: ReactNode;
   label?: string;
-  variant?: "bar" | "panel";
+  variant?: "bar" | "panel" | "stack";
   meta: GateMeta;
 }) {
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
@@ -74,6 +78,9 @@ export default function LeadGate({
       slug: meta.slug,
       episode: meta.episode,
       date: meta.date,
+      resource: meta.resource,
+      file: meta.file,
+      action: "unlocked",
     });
     setUnlocked(true);
     setBusy(false);
@@ -122,6 +129,44 @@ export default function LeadGate({
           </div>
           <p className="mt-2 text-[12px] text-muted">
             Asked once - no spam, just new episodes and events.
+          </p>
+        </form>
+      )}
+
+      {locked && variant === "stack" && (
+        <form onSubmit={submit} className="rounded-2xl border border-line bg-sand p-5">
+          <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
+            Free access
+          </div>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
+            Enter your details once to unlock {label} - and everything else on the site.
+          </p>
+          <div className="mt-4 space-y-2.5">
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              aria-label="Your name"
+              autoComplete="name"
+              className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-[13.5px] focus:border-teal focus:outline-none"
+            />
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@yourpractice.com"
+              aria-label="Email address"
+              autoComplete="email"
+              className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-[13.5px] focus:border-teal focus:outline-none"
+            />
+          </div>
+          <button type="submit" disabled={busy} className="btn btn-teal mt-3 w-full">
+            Unlock &amp; Download
+          </button>
+          <p className="mt-2.5 text-[12px] text-muted">
+            Asked once - no spam, just new episodes and resources.
           </p>
         </form>
       )}

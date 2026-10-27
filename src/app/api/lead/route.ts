@@ -21,6 +21,7 @@ const ALLOWED_FORMS = new Set([
   "podcast_gate",
   "event_replay_gate",
   "panel_replay_gate",
+  "resource_download",
   "event_registration",
 ]);
 
