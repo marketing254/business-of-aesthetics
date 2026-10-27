@@ -67,7 +67,8 @@ const legacySectionRedirects: Redirect[] = [
   { source: "/submissions", destination: "/speakers#apply", permanent: true },
 
   // --- marketing / MSM funnels
-  { source: "/msm/:path*", destination: "/marketing", permanent: true },
+  { source: "/msm", destination: "/marketing", permanent: true },
+  { source: "/msm/expanels", destination: "/marketing", permanent: true }, // old WP page
   { source: "/strategycall", destination: "/marketing#book", permanent: true },
   { source: "/naren-scheduler", destination: "/marketing#book", permanent: true },
   { source: "/marketing-strategy-meeting-cindy", destination: "/marketing#book", permanent: true },
