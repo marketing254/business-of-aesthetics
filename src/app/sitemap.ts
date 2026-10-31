@@ -21,7 +21,6 @@ const STATIC: { path: string; priority: number; freq: Entry["changeFrequency"] }
   { path: "/panels", priority: 0.9, freq: "weekly" },
   { path: "/blog", priority: 0.9, freq: "weekly" },
   { path: "/marketing", priority: 0.8, freq: "monthly" },
-  { path: "/coaching", priority: 0.8, freq: "monthly" },
   { path: "/resources", priority: 0.8, freq: "monthly" },
   { path: "/speakers", priority: 0.7, freq: "weekly" },
   { path: "/about", priority: 0.6, freq: "monthly" },
