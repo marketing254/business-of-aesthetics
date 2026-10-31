@@ -18,6 +18,7 @@ const resourcesCol = [
   { href: "/resources", label: "Resources" },
   { href: "/resources#freebies", label: "Free Downloads" },
   { href: "/marketing", label: "Marketing (MSM)" },
+  { href: "/coaching", label: "BOA Practice System" },
   { href: "/marketing#book", label: "Free Strategy Meeting" },
   { href: "/contact", label: "Contact Us" },
 ];

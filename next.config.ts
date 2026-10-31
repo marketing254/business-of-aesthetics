@@ -29,9 +29,7 @@ function legacyPostRedirects(): Redirect[] {
 /** Old WordPress sections / pages -> new routes. Order matters (first match wins). */
 const legacySectionRedirects: Redirect[] = [
   // --- pages that moved
-  // coaching landing page removed Oct 31 2026 - temporary redirect so shared links do not 404
-  { source: "/coaching", destination: "/", permanent: false },
-  { source: "/preview/coaching", destination: "/", permanent: false },
+  { source: "/preview/coaching", destination: "/coaching", permanent: true },
   { source: "/about-us", destination: "/about", permanent: true },
   { source: "/cookie-policy", destination: "/privacy", permanent: true },
   { source: "/privacy-policy", destination: "/privacy", permanent: true },
@@ -167,6 +165,10 @@ const nextConfig: NextConfig = {
         basePath: process.env.NEXT_BASE_PATH || "",
       }
     : {
+        async rewrites() {
+          // Standalone landing page kept as a static HTML file (own Apps Script + sheet)
+          return [{ source: "/coaching", destination: "/coaching.html" }];
+        },
         async redirects() {
           return [...legacySectionRedirects, ...legacyPostRedirects()];
         },
