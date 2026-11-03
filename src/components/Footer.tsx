@@ -11,6 +11,7 @@ const explore = [
   { href: "/panels", label: "Expert Panels" },
   { href: "/panels#replays", label: "Panel Replays" },
   { href: "/speakers", label: "Speakers" },
+  { href: "/reviews", label: "Reviews" },
 ];
 
 const resourcesCol = [

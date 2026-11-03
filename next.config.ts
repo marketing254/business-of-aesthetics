@@ -110,8 +110,6 @@ const legacySectionRedirects: Redirect[] = [
   { source: "/newsletter", destination: "/#newsletter", permanent: true },
   { source: "/web-stories/:path*", destination: "/blog", permanent: true },
   { source: "/web-stories", destination: "/blog", permanent: true },
-  { source: "/reviews/:path*", destination: "/about", permanent: true },
-  { source: "/reviews", destination: "/about", permanent: true },
   { source: "/subscribe", destination: "/#newsletter", permanent: true },
   { source: "/thank-you-for-subscribing", destination: "/", permanent: true },
   { source: "/thank-you", destination: "/", permanent: true },

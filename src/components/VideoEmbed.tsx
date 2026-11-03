@@ -21,10 +21,13 @@ export default function VideoEmbed({
   embedUrl,
   title,
   poster,
+  cta = "Play replay",
 }: {
   embedUrl: string;
   title: string;
   poster?: string;
+  /** label under the play button */
+  cta?: string;
 }) {
   const [play, setPlay] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
@@ -69,7 +72,7 @@ export default function VideoEmbed({
               </svg>
             </span>
             <span className="rounded-full bg-black/40 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.16em] backdrop-blur-sm">
-              Play replay
+              {cta}
             </span>
           </span>
         </button>
