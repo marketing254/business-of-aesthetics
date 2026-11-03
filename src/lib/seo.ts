@@ -28,6 +28,13 @@ export const WEBSITE_ID = `${SITE_URL}/#website`;
 export const PODCAST_ID = `${SITE_URL}/podcast#series`;
 export const LOGO_URL = `${SITE_URL}/assets/logo.png`;
 
+/** Default 1200x630 social card (src/app/opengraph-image.tsx). Next.js does
+ *  not merge a page's `openGraph` with the file-based image, so any page that
+ *  sets its own openGraph must include `images: OG_IMAGES`. */
+export const OG_IMAGES = [
+  { url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: "Business of Aesthetics - Where Aesthetic Leaders Grow" },
+];
+
 export function abs(path: string) {
   if (/^https?:\/\//i.test(path)) return path;
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;

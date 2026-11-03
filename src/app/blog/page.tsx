@@ -7,14 +7,15 @@ import BlogExplorer from "@/components/BlogExplorer";
 import { FadeUp } from "@/components/motion/Animate";
 import { blogArticles, blogCards } from "@/lib/blog";
 import JsonLd from "@/components/JsonLd";
-import { blogIndexJsonLd, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
+import { OG_IMAGES, blogIndexJsonLd, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Blog - Growth Insights for Aesthetic Practices",
   description:
     "Practical articles on marketing, patient retention, operations, finance and leadership for dermatology, plastic surgery and med spa practices, plus show notes for every podcast episode.",
   alternates: { canonical: "/blog", types: { "application/rss+xml": "/feed.xml" } },
-  openGraph: { title: "The Business of Aesthetics Blog", url: "/blog" },
+  openGraph: { title: "The Business of Aesthetics Blog", url: "/blog", images: OG_IMAGES },
+  twitter: { card: "summary_large_image", title: "The Business of Aesthetics Blog", images: OG_IMAGES },
 };
 
 export default function BlogPage() {

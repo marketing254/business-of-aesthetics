@@ -6,7 +6,7 @@ import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import VideoEmbed from "@/components/VideoEmbed";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
-import { ORG_ID, SITE_NAME, abs, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
+import { OG_IMAGES, ORG_ID, SITE_NAME, abs, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
 import {
   averageStars,
   initials,
@@ -27,6 +27,12 @@ export const metadata: Metadata = {
       "Podcast guests, panelists and practice owners share what it is like to work with Business of Aesthetics - in their own words, on video.",
     url: "/reviews",
     type: "website",
+    images: OG_IMAGES,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Reviews - What Our Guests Say | Business of Aesthetics",
+    images: OG_IMAGES,
   },
 };
 

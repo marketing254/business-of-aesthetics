@@ -6,7 +6,7 @@ import ShareBar from "@/components/ShareBar";
 import { FadeUp } from "@/components/motion/Animate";
 import { fetchEvents, thumbUrl, legacyEventSlug } from "@/lib/sheet";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
+import { OG_IMAGES, breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
 
 
 type EventDetailProps = {
@@ -29,7 +29,8 @@ export async function generateMetadata({
     title: event.title,
     description: event.description.replace(/\s+/g, " ").slice(0, 160),
     alternates: { canonical: `/events/${event.slug}` },
-    openGraph: { title: event.title, url: `/events/${event.slug}` },
+    openGraph: { title: event.title, url: `/events/${event.slug}`, images: OG_IMAGES },
+    twitter: { card: "summary_large_image", title: event.title, images: OG_IMAGES },
   };
 }
 

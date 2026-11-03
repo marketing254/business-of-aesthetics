@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_IMAGES } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import MarketingLanding from "@/components/MarketingLanding";
 
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "Proven marketing for aesthetic practices - SEO, social media, websites and reputation, all tailored to dermatology, plastic surgery and aesthetics.",
     alternates: { canonical: "/marketing" },
     robots: { index: false, follow: true },
-    openGraph: { title: "Marketing Services (MSM)", url: `/msm/${ref}` },
+    openGraph: { title: "Marketing Services (MSM)", url: `/msm/${ref}`, images: OG_IMAGES },
   };
 }
 

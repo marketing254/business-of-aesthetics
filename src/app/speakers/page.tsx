@@ -9,7 +9,7 @@ import SpeakerDirectory from "@/components/SpeakerDirectory";
 import JsonLd from "@/components/JsonLd";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import { fetchSpeakers } from "@/lib/sheet";
-import {
+import { OG_IMAGES,
   breadcrumbJsonLd,
   graph,
   speakerListJsonLd,
@@ -26,7 +26,9 @@ export const metadata: Metadata = {
     description:
       "The experts behind BOA's podcast and expert panels, plus how to apply as a guest speaker.",
     url: "/speakers",
+    images: OG_IMAGES,
   },
+  twitter: { card: "summary_large_image", title: "Business of Aesthetics Speakers", images: OG_IMAGES },
 };
 
 const proof = [
