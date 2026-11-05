@@ -4,12 +4,13 @@ import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import VideoEmbed from "@/components/VideoEmbed";
+import ReviewsExplorer from "@/components/ReviewsExplorer";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import { OG_IMAGES, ORG_ID, SITE_NAME, abs, breadcrumbJsonLd, graph, webPageJsonLd } from "@/lib/seo";
 import {
   averageStars,
-  initials,
+  cleanQuote,
+  countBy,
   reviews,
   vimeoEmbedUrl,
   vimeoId,
@@ -36,28 +37,6 @@ export const metadata: Metadata = {
   },
 };
 
-function Stars({ n }: { n: number }) {
-  return (
-    <span className="inline-flex gap-[2px] text-gold" aria-label={`${n} out of 5 stars`} role="img">
-      {Array.from({ length: 5 }, (_, i) => (
-        <svg
-          key={i}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill={i < n ? "currentColor" : "none"}
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinejoin="round"
-          aria-hidden
-        >
-          <path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.9l1.2-6.6L2.5 9.7l6.6-.9z" />
-        </svg>
-      ))}
-    </span>
-  );
-}
-
 export default function ReviewsPage() {
   const avg = averageStars();
   const count = reviews.length;
@@ -70,12 +49,12 @@ export default function ReviewsPage() {
       itemReviewed: { "@id": ORG_ID },
       author: { "@type": "Person", name: r.name, jobTitle: r.role },
       reviewRating: { "@type": "Rating", ratingValue: r.stars, bestRating: 5, worstRating: 1 },
-      reviewBody: r.quote,
+      reviewBody: cleanQuote(r.quote),
       ...(id && {
         video: {
           "@type": "VideoObject",
           name: `${r.name} - ${r.tag} review`,
-          description: r.quote,
+          description: cleanQuote(r.quote),
           thumbnailUrl: vimeoPoster(r.vimeo),
           embedUrl: vimeoEmbedUrl(r.vimeo),
           uploadDate: "2026-11-03",
@@ -114,6 +93,7 @@ export default function ReviewsPage() {
       />
 
       <PageHero
+        compact
         kicker="Reviews"
         title={
           <>
@@ -131,16 +111,17 @@ export default function ReviewsPage() {
       </PageHero>
 
       {/* quick numbers - computed from the reviews list */}
-      <section className="border-b border-line bg-paper py-12">
-        <Stagger className="mx-auto grid max-w-[880px] grid-cols-3 gap-x-6 gap-y-8 px-5 text-center">
+      <section className="border-b border-line bg-paper py-9">
+        <Stagger className="mx-auto grid max-w-[880px] grid-cols-2 gap-x-6 gap-y-8 px-5 text-center sm:grid-cols-4">
           {[
             { v: avg.toFixed(1), label: "Average rating" },
-            { v: String(count), label: count === 1 ? "Video review" : "Video reviews" },
+            { v: String(countBy("podcast")), label: "Podcast guests" },
+            { v: String(countBy("panel")), label: "Expert panelists" },
             { v: "3,700+", label: "Practitioners reached" },
           ].map((s) => (
             <StaggerItem key={s.label}>
-              <div className="display text-[clamp(26px,3vw,36px)] leading-none text-navy">{s.v}</div>
-              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-teal-deep">
+              <div className="display text-[clamp(22px,2.6vw,30px)] leading-none text-navy">{s.v}</div>
+              <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-deep">
                 {s.label}
               </div>
             </StaggerItem>
@@ -149,7 +130,7 @@ export default function ReviewsPage() {
       </section>
 
       {/* reviews */}
-      <section id="reviews" className="scroll-mt-24 py-20 lg:py-24">
+      <section id="reviews" className="scroll-mt-24 py-14 lg:py-18">
         <div className="mx-auto max-w-[1180px] px-5">
           <SectionHead
             kicker="In Their Own Words"
@@ -158,50 +139,10 @@ export default function ReviewsPage() {
                 Honest feedback from the people <em>we work with.</em>
               </>
             }
-            lede="Every review is recorded by the guest themselves. Tap a video to watch."
+            lede="Every review is recorded by the guest themselves. Filter by podcast guests or expert panelists, and tap a video to watch."
           />
 
-          <Stagger
-            className={`mt-14 grid gap-8 ${count === 1 ? "mx-auto max-w-[600px]" : "md:grid-cols-2"}`}
-          >
-            {reviews.map((r, i) => (
-              <StaggerItem key={`${r.name}-${i}`}>
-                <article
-                  id={`review-${i + 1}`}
-                  className="card-frame flex h-full flex-col overflow-hidden scroll-mt-28"
-                >
-                  <div className="p-3 pb-0">
-                    <VideoEmbed
-                      embedUrl={vimeoEmbedUrl(r.vimeo)}
-                      title={`${r.name} - ${r.tag} review`}
-                      poster={vimeoPoster(r.vimeo)}
-                      cta="Play review"
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col gap-4 p-7 pt-6">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <span className="rounded-full bg-teal-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-teal-deep">
-                        {r.tag}
-                      </span>
-                      <Stars n={r.stars} />
-                    </div>
-                    <blockquote className="display text-[clamp(19px,1.7vw,23px)] leading-[1.3] text-navy">
-                      “{r.quote.replace(/^[“"]|[”"]$/g, "")}”
-                    </blockquote>
-                    <div className="mt-auto flex items-center gap-3 pt-2">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-navy text-[13px] font-bold tracking-wide text-white">
-                        {initials(r.name)}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="text-[15px] font-semibold text-navy">{r.name}</div>
-                        <div className="text-[13px] text-muted">{r.role}</div>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </StaggerItem>
-            ))}
-          </Stagger>
+          <ReviewsExplorer reviews={reviews} />
 
           {count === 0 && (
             <FadeUp>
