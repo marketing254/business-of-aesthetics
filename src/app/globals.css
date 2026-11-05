@@ -798,3 +798,144 @@ details.faq .faq-body {
 .prose-boa a {
   padding: 3px 0;
 }
+
+/* ============================================================
+   BOA Practice System banner - waiting list (homepage, above the hero)
+   Supplied by product marketing, Nov 2026. Brand fonts, 1320px container
+   (same as the navbar) and site button styles. Component:
+   src/components/PracticeSystemBanner.tsx
+   ============================================================ */
+.boa-bn {
+  --bn-aqua: #47cdc6;
+  --bn-soft: #a9bacd;
+  --bn-line: rgba(255, 255, 255, 0.14);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: linear-gradient(140deg, #14284a 0%, #13395a 55%, #0d4e57 100%);
+  color: #dce5ef;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+.boa-bn :where(*) { box-sizing: border-box; }
+.boa-bn :where(p, h2, h3, ul, li) { margin: 0; padding: 0; }
+.boa-bn::before {
+  content: "";
+  position: absolute;
+  right: -12%;
+  top: -70%;
+  width: 55%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(71, 205, 198, 0.18), rgba(71, 205, 198, 0) 65%);
+  pointer-events: none;
+}
+.boa-bn__in {
+  position: relative;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px 56px;
+  align-items: stretch;
+}
+@media (min-width: 1024px) { .boa-bn__in { padding: 40px 20px; } }
+.boa-bn__l { display: flex; flex-direction: column; justify-content: center; }
+.boa-bn__eye {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bn-aqua);
+}
+.boa-bn__h {
+  font-family: var(--font-display);
+  font-weight: 520;
+  font-variation-settings: "SOFT" 40;
+  letter-spacing: -0.005em;
+  color: #fff;
+  font-size: clamp(30px, 2.6vw, 42px);
+  line-height: 1.08;
+  margin-top: 10px;
+}
+.boa-bn__sub {
+  font-family: var(--font-display);
+  color: var(--bn-aqua);
+  font-size: clamp(17px, 1.25vw, 20px);
+  line-height: 1.25;
+  margin-top: 6px;
+}
+.boa-bn__tf { list-style: none; margin-top: 16px; border-top: 1px solid var(--bn-line); }
+.boa-bn__tf li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1.2fr);
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--bn-line);
+  font-size: 14px;
+  line-height: 1.3;
+}
+.boa-bn__tf .f { color: var(--bn-soft); }
+.boa-bn__tf .t { color: #fff; font-weight: 600; }
+.boa-bn__tf svg { width: 16px; height: 16px; color: var(--bn-aqua); }
+.boa-bn__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 18px;
+}
+.boa-bn__spots b { display: block; color: #fff; font-size: 16px; font-weight: 700; }
+.boa-bn__spots span { display: block; font-size: 13px; color: var(--bn-soft); margin-top: 2px; }
+
+/* right card */
+.boa-bn__sys {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--bn-line);
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25);
+}
+.boa-bn__st {
+  font-family: var(--font-display);
+  font-weight: 520;
+  font-variation-settings: "SOFT" 40;
+  color: #fff;
+  font-size: clamp(21px, 1.6vw, 25px);
+  line-height: 1.1;
+  margin-top: 6px;
+}
+.boa-bn__grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+.boa-bn__ar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bn-line);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.boa-bn__ar small { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--bn-aqua); }
+.boa-bn__ar b { display: block; color: #fff; font-size: 15px; font-weight: 700; line-height: 1.2; margin-top: 2px; }
+.boa-bn__ar span { display: block; font-size: 13px; color: var(--bn-soft); line-height: 1.35; margin-top: 2px; }
+
+@media (max-width: 960px) { .boa-bn__in { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .boa-bn__tf li { grid-template-columns: 1fr; gap: 2px; padding: 6px 0; }
+  .boa-bn__tf svg { display: none; }
+  .boa-bn__sys { padding: 16px; }
+  .boa-bn__ar { padding: 9px 11px; }
+  .boa-bn__ar b { font-size: 14px; }
+  .boa-bn__ar span { font-size: 12.5px; }
+}
