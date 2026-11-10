@@ -887,8 +887,6 @@ details.faq .faq-body {
   gap: 16px 28px;
   margin-top: 18px;
 }
-.boa-bn__spots b { display: block; color: #fff; font-size: 16px; font-weight: 700; }
-.boa-bn__spots span { display: block; font-size: 13px; color: var(--bn-soft); margin-top: 2px; }
 
 /* right card */
 .boa-bn__sys {

@@ -50,13 +50,9 @@ export default function PracticeSystemBanner() {
             ))}
           </ul>
           <div className="boa-bn__row">
-            <a className="btn btn-teal" href="/coaching#apply">
-              Join the waiting list <span className="arr">→</span>
+            <a className="btn btn-teal" href="/coaching">
+              Learn More <span className="arr">→</span>
             </a>
-            <div className="boa-bn__spots">
-              <b>Only 10 founding spots</b>
-              <span>Founding price $897 a month, instead of $1,497</span>
-            </div>
           </div>
         </div>
 
