@@ -6,7 +6,8 @@
  * so returning visitors aren't nagged.
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useLocalStorageRaw } from "@/lib/use-client-value";
 import { FadeUp } from "@/components/motion/Animate";
 import { submitLead } from "@/lib/lead";
 
@@ -14,15 +15,11 @@ const KEY = "boa-newsletter";
 
 export default function NewsletterBand({ source = "site" }: { source?: string }) {
   const [email, setEmail] = useState("");
-  const [done, setDone] = useState(false);
+  const [submitted, setDone] = useState(false);
+  const remembered = useLocalStorageRaw(KEY);
+  const done = submitted || Boolean(remembered);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(KEY)) setDone(true);
-    } catch {}
-  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

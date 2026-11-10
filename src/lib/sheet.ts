@@ -154,6 +154,19 @@ function keyOf(header: string): string {
     .replace(/^_+|_+$/g, "");
 }
 
+/**
+ * The `resources` column, or - when the editor added the links in a column
+ * with no header - any unnamed column that contains a Drive / PDF link.
+ */
+function resourcesCell(row: SheetRow): string {
+  const named = value(row, "resources", "freebies", "downloads");
+  if (named) return named;
+  return Object.entries(row)
+    .filter(([k, v]) => k.startsWith("_col") && /drive\.google\.com\/|\.pdf(\?|$)/i.test(v))
+    .map(([, v]) => v)
+    .join("\n");
+}
+
 function value(row: SheetRow, ...keys: string[]) {
   for (const key of keys) {
     const found = row[keyOf(key)];
@@ -205,7 +218,7 @@ export function shortSlug(text: string, max = 60): string {
   // curly apostrophes ("can’t") would otherwise become "can-t"
   const full = slugify(text.replace(/[‘’ʼ]/g, ""), 400);
   if (full.length <= max) return full;
-  let words = full.split("-").filter(Boolean);
+  const words = full.split("-").filter(Boolean);
   // drop filler words (never the first word) until it fits or nothing left to drop
   while (words.join("-").length > max) {
     const i = words.findIndex((w, k) => k > 0 && SLUG_STOPWORDS.has(w));
@@ -671,7 +684,9 @@ async function fetchSheetRows(gid: string): Promise<SheetRow[]> {
     const rows = parseCsv(text);
     if (rows.length < 2) return [];
 
-    const header = rows[0].map(keyOf);
+    // unnamed columns (editors sometimes add a column without a header) are
+    // kept as _col<N> so they can still be read as fallbacks
+    const header = rows[0].map((h, i) => keyOf(h) || `_col${i}`);
     return rows
       .slice(1)
       .map((row) =>
@@ -706,7 +721,7 @@ export async function fetchPodcasts(): Promise<SheetPodcast[]> {
         audioSource: value(row, "audio_source"),
         transcriptUrl: value(row, "transcript_url"),
         episodeUrl: value(row, "episode_url"),
-        resources: parseResourceLines(episode, value(row, "resources", "freebies", "downloads")),
+        resources: parseResourceLines(episode, resourcesCell(row)),
         slug: `${episode}-${shortSlug(title, 56)}`,
         initials: initialsOf(guestName),
       };

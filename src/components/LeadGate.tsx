@@ -15,7 +15,8 @@
  * variant="stack" stacked fields + full-width button for narrow sidebars
  */
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { useClientValue } from "@/lib/use-client-value";
 import { submitLead, type LeadForm } from "@/lib/lead";
 
 const KEY = "boa-lead-unlock";
@@ -44,18 +45,19 @@ export default function LeadGate({
   variant?: "bar" | "panel" | "stack";
   meta: GateMeta;
 }) {
-  const [unlocked, setUnlocked] = useState<boolean | null>(null);
+  // null on the server / first paint, then the remembered state; storage blocked => never trap the visitor
+  const stored = useClientValue<boolean | null>(() => {
+    try {
+      return localStorage.getItem(KEY) === "1";
+    } catch {
+      return true;
+    }
+  }, null);
+  const [justUnlocked, setUnlocked] = useState(false);
+  const unlocked = stored === null ? null : stored || justUnlocked;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    try {
-      setUnlocked(localStorage.getItem(KEY) === "1");
-    } catch {
-      setUnlocked(true); // storage blocked: never trap the visitor
-    }
-  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

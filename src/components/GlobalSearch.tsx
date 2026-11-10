@@ -98,7 +98,13 @@ export default function GlobalSearch() {
 
   const flat = useMemo(() => results.flatMap((g) => g.items), [results]);
 
-  useEffect(() => setActive(0), [query, open]);
+  // reset the highlighted row whenever the query or the open state changes
+  const activeKey = `${open ? 1 : 0}|${query}`;
+  const [prevActiveKey, setPrevActiveKey] = useState(activeKey);
+  if (activeKey !== prevActiveKey) {
+    setPrevActiveKey(activeKey);
+    setActive(0);
+  }
 
   const go = useCallback(
     (doc: SearchDoc) => {

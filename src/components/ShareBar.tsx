@@ -6,15 +6,12 @@
  * networks the BOA audience actually uses.
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useClientValue } from "@/lib/use-client-value";
 
 export default function ShareBar({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
-  const [canNative, setCanNative] = useState(false);
-
-  useEffect(() => {
-    setCanNative(typeof navigator !== "undefined" && "share" in navigator);
-  }, []);
+  const canNative = useClientValue(() => "share" in navigator, false);
 
   const url = () => (typeof window === "undefined" ? "" : window.location.href);
 

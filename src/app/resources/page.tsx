@@ -6,7 +6,7 @@ import SectionHead from "@/components/SectionHead";
 import NewsletterBand from "@/components/NewsletterBand";
 import KbExplorer from "@/components/KbExplorer";
 import ResourceDownloads from "@/components/ResourceDownloads";
-import { bundledResources, type EpisodeResource } from "@/lib/episode-resources";
+import { bundledResources, resourcesForEpisode, type EpisodeResource } from "@/lib/episode-resources";
 import { fetchPodcasts } from "@/lib/sheet";
 import { tools } from "@/lib/data";
 import { blogPosts } from "@/lib/blog";
@@ -26,11 +26,11 @@ export default async function ResourcesPage() {
   // only show downloads for episodes that are actually published in the sheet
   const podcasts = await fetchPodcasts();
   const live = new Set(podcasts.map((p) => p.episode));
-  const freebies: EpisodeResource[] = [
-    ...podcasts.flatMap((p) => p.resources),
-    ...bundledResources.filter((r) => live.has(r.episode)),
-  ]
-    .filter((r, i, arr) => arr.findIndex((x) => x.url === r.url) === i)
+  const episodes = Array.from(
+    new Set([...podcasts.map((p) => p.episode), ...bundledResources.map((r) => r.episode)])
+  ).filter((e) => live.has(e));
+  const freebies: EpisodeResource[] = episodes
+    .flatMap((e) => resourcesForEpisode(e, podcasts.find((p) => p.episode === e)?.resources ?? []))
     .sort((a, b) => b.episode - a.episode);
   const kbStats = [
     { v: "294+", label: "Podcast Episodes" },

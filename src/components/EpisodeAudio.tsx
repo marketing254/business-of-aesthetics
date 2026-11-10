@@ -6,9 +6,11 @@
  * and the /podcast page can offer a "continue listening" shortcut.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useLocalStorageRaw } from "@/lib/use-client-value";
 
-const STORE_KEY = "boa-listening";
+export const LISTEN_KEY = "boa-listening";
+const STORE_KEY = LISTEN_KEY;
 const KEEP = 12;
 
 export interface ListenEntry {
@@ -23,11 +25,18 @@ export interface ListenEntry {
   at: number;
 }
 
-export function readListening(): ListenEntry[] {
+export function parseListening(raw: string | null): ListenEntry[] {
   try {
-    const raw = localStorage.getItem(STORE_KEY);
     const list = raw ? (JSON.parse(raw) as ListenEntry[]) : [];
     return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+export function readListening(): ListenEntry[] {
+  try {
+    return parseListening(localStorage.getItem(STORE_KEY));
   } catch {
     return [];
   }
@@ -63,16 +72,14 @@ export default function EpisodeAudio({
   href: string;
 }) {
   const ref = useRef<HTMLAudioElement>(null);
-  const [resumeAt, setResumeAt] = useState(0);
   const [dismissed, setDismissed] = useState(false);
-
-  useEffect(() => {
-    const saved = readListening().find((e) => e.slug === slug);
+  // read once on mount (the raw string is stable until this player writes it)
+  const raw = useLocalStorageRaw(STORE_KEY);
+  const resumeAt = useMemo(() => {
+    const saved = parseListening(raw).find((e) => e.slug === slug);
     // offer resume only when meaningfully into the episode and not finished
-    if (saved && saved.t > 45 && (!saved.d || saved.t < saved.d * 0.97)) {
-      setResumeAt(saved.t);
-    }
-  }, [slug]);
+    return saved && saved.t > 45 && (!saved.d || saved.t < saved.d * 0.97) ? saved.t : 0;
+  }, [raw, slug]);
 
   const persist = () => {
     const el = ref.current;
@@ -117,6 +124,7 @@ export default function EpisodeAudio({
         preload="metadata"
         src={src}
         className="w-full"
+        onPlay={() => setDismissed(true)}
         onPause={persist}
         onEnded={persist}
         onTimeUpdate={(e) => {

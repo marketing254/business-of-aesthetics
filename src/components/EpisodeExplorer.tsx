@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { thumbUrl, type SheetPodcast } from "@/lib/sheet";
@@ -53,10 +53,6 @@ export default function EpisodeExplorer({
     });
   }, [cat, episodes, q]);
 
-  useEffect(() => {
-    setPage(1);
-  }, [q, cat]);
-
   const pageCount = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
   const paged = useMemo(
     () => list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
@@ -82,7 +78,10 @@ export default function EpisodeExplorer({
         <div className="relative w-full max-w-[420px]">
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => {
+              setQ(e.target.value);
+              setPage(1);
+            }}
             placeholder="Search episodes, guests, or topics..."
             className="w-full rounded-full border border-line bg-paper px-5 py-3 pr-11 text-[14px] transition-colors focus:border-teal focus:outline-none"
             aria-label="Search episodes"
@@ -96,7 +95,10 @@ export default function EpisodeExplorer({
             <button
               key={c}
               className={`fpill ${cat === c ? "active" : ""}`}
-              onClick={() => setCat(c)}
+              onClick={() => {
+                setCat(c);
+                setPage(1);
+              }}
             >
               {c}
             </button>

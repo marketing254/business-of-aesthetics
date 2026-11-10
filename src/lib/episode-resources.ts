@@ -82,26 +82,89 @@ export const bundledResources: EpisodeResource[] = [
     url: "/downloads/ep-305-owner-bottleneck-reset-kit.pdf",
     meta: "PDF · 8 pages",
   },
+  // 306 and 307 are hosted on Google Drive (links from the podcasts sheet)
+  {
+    episode: 306,
+    label: "The Aftercare Advantage Kit",
+    description:
+      "A treatment that went perfectly can still lose the patient. Four moves - promise, protect, prove, plan - to make the days after it earn the next booking, with Dr. Rob Knight.",
+    url: "https://drive.google.com/uc?export=download&id=1krpPGb1-g2ObL_PMgjocZjjWhSjMxTvI",
+    meta: "PDF · 12 pages",
+  },
+  {
+    episode: 307,
+    label: "The Brand-Ready Physician Checklist",
+    description:
+      "Audit your medical director against what aesthetic brands actually check before a launch, then build a plan to get on the shortlist. Based on insights from Megan Driscoll of EvolveMKD.",
+    url: "https://drive.google.com/uc?export=download&id=1SNLwePnb5XrN4PPBP3lfEA-fFQUmpc2J",
+    meta: "PDF · 7 pages",
+  },
 ];
 
-/** Parse the sheet's `resources` cell: one "Label | URL" per line. */
-export function parseResourceLines(episode: number, cell: string): EpisodeResource[] {
-  return (cell || "")
-    .split(/\n+/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const m = line.match(/^(.*?)\s*\|\s*(https?:\/\/\S+|\/\S+)\s*$/);
-      if (m) return { episode, label: m[1].trim() || "Download", url: m[2].trim() };
-      const bare = line.match(/^(https?:\/\/\S+)$/);
-      return bare ? { episode, label: "Episode resource", url: bare[1] } : null;
-    })
-    .filter((r): r is EpisodeResource => r !== null);
+const GENERIC_LABEL = "Free episode resource";
+const URL_RE = /(https?:\/\/\S+|\/downloads\/\S+)/i;
+
+/** Google Drive share links -> direct download, so the browser saves the file instead of opening the Drive viewer. */
+export function directDownloadUrl(url: string): string {
+  const m =
+    url.match(/drive\.google\.com\/file\/d\/([\w-]{20,})/i) ||
+    url.match(/drive\.google\.com\/(?:open|uc)\?.*?id=([\w-]{20,})/i);
+  return m ? `https://drive.google.com/uc?export=download&id=${m[1]}` : url;
 }
 
-/** Sheet resources first, then bundled PDFs; de-duplicated by URL. */
+/**
+ * Parse a sheet cell into resources. Editors write it in any of these ways:
+ *   Label | https://link          (one per line)
+ *   Label                         (label on one line, link on the next)
+ *   https://link
+ *   https://link                  (bare link - gets a generic label)
+ * Drive "view" links are turned into direct downloads.
+ */
+export function parseResourceLines(episode: number, cell: string): EpisodeResource[] {
+  const lines = (cell || "")
+    .split(/\r?\n+/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const out: EpisodeResource[] = [];
+  let pendingLabel = "";
+  for (const line of lines) {
+    const piped = line.match(/^(.*?)\s*\|\s*(https?:\/\/\S+|\/\S+)\s*$/);
+    if (piped) {
+      out.push({ episode, label: piped[1].trim() || GENERIC_LABEL, url: directDownloadUrl(piped[2].trim()) });
+      pendingLabel = "";
+      continue;
+    }
+    const url = line.match(URL_RE);
+    if (url) {
+      const inline = line.replace(url[0], "").replace(/[\s:|\-–—]+$/g, "").trim();
+      const label = inline || pendingLabel || GENERIC_LABEL;
+      out.push({ episode, label: /^resources?$/i.test(label) ? GENERIC_LABEL : label, url: directDownloadUrl(url[0]) });
+      pendingLabel = "";
+      continue;
+    }
+    pendingLabel = line; // a label waiting for its link on the next line
+  }
+  return out;
+}
+
+/** Drive file id when the URL is a Drive link, otherwise the URL itself. */
+function resourceKey(url: string): string {
+  const m = url.match(/[?&]id=([\w-]{20,})/) || url.match(/\/file\/d\/([\w-]{20,})/);
+  return m ? `drive:${m[1]}` : url;
+}
+
+/**
+ * Bundled entries (which have proper titles and descriptions) first, then
+ * sheet resources; de-duplicated by Drive file id / URL. A sheet link that
+ * came without a label is dropped when the episode already has a bundled
+ * resource - that is almost always the same file uploaded to Drive.
+ */
 export function resourcesForEpisode(episode: number, fromSheet: EpisodeResource[] = []): EpisodeResource[] {
-  const all = [...fromSheet, ...bundledResources.filter((r) => r.episode === episode)];
+  const bundled = bundledResources.filter((r) => r.episode === episode);
+  const extra = fromSheet.filter((r) => !(bundled.length && r.label === GENERIC_LABEL));
   const seen = new Set<string>();
-  return all.filter((r) => (seen.has(r.url) ? false : (seen.add(r.url), true)));
+  return [...bundled, ...extra].filter((r) => {
+    const k = resourceKey(r.url);
+    return seen.has(k) ? false : (seen.add(k), true);
+  });
 }

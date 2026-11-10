@@ -5,9 +5,10 @@
  * most recent unfinished episode from local listening memory.
  */
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
-import { readListening, type ListenEntry } from "@/components/EpisodeAudio";
+import { LISTEN_KEY, parseListening } from "@/components/EpisodeAudio";
+import { useLocalStorageRaw } from "@/lib/use-client-value";
 
 function fmt(sec: number) {
   const m = Math.floor(sec / 60);
@@ -16,14 +17,11 @@ function fmt(sec: number) {
 }
 
 export default function ContinueListening() {
-  const [entry, setEntry] = useState<ListenEntry | null>(null);
-
-  useEffect(() => {
-    const unfinished = readListening().find(
-      (e) => e.t > 45 && (!e.d || e.t < e.d * 0.97)
-    );
-    if (unfinished) setEntry(unfinished);
-  }, []);
+  const raw = useLocalStorageRaw(LISTEN_KEY);
+  const entry = useMemo(
+    () => parseListening(raw).find((e) => e.t > 45 && (!e.d || e.t < e.d * 0.97)) ?? null,
+    [raw]
+  );
 
   if (!entry) return null;
   const pct = entry.d ? Math.min(100, Math.round((entry.t / entry.d) * 100)) : 0;

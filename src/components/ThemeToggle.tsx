@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useClientValue } from "@/lib/use-client-value";
 import { AnimatePresence, motion } from "motion/react";
 
 export default function ThemeToggle({ className = "" }: { className?: string }) {
-  const [theme, setTheme] = useState<"light" | "dark" | null>(null);
-
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    setTheme(current === "dark" ? "dark" : "light");
-  }, []);
+  // the inline script in layout sets data-theme before hydration; read it, then track toggles
+  const initial = useClientValue<"light" | "dark" | null>(
+    () => (document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"),
+    null
+  );
+  const [override, setTheme] = useState<"light" | "dark" | null>(null);
+  const theme = override ?? initial;
 
   const toggle = () => {
     const next = theme === "dark" ? "light" : "dark";

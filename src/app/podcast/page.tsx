@@ -7,7 +7,6 @@ import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import NewsletterBand from "@/components/NewsletterBand";
 import ContinueListening from "@/components/ContinueListening";
-import EpisodeAudio from "@/components/EpisodeAudio";
 import EpisodeExplorer from "@/components/EpisodeExplorer";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import { hosts, platforms } from "@/lib/data";
@@ -125,22 +124,13 @@ export default async function PodcastPage() {
                     </h2>
                   </div>
                 </div>
-                {latest.audioSource && (
-                  <div className="mt-5">
-                    <EpisodeAudio
-                      src={latest.audioSource}
-                      slug={latest.slug}
-                      title={latest.title}
-                      href={`/podcast/${latest.slug}`}
-                    />
-                  </div>
-                )}
-                <div className="mt-5 text-center">
-                  <Link
-                    href={`/podcast/${latest.slug}`}
-                    className="linkline"
-                  >
-                    Open the episode page <span className="arr">→</span>
+                {/* audio lives on the episode page only, behind the one-time name/email gate */}
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                  <Link href={`/podcast/${latest.slug}`} className="btn btn-teal">
+                    Listen to the episode <span className="arr">→</span>
+                  </Link>
+                  <Link href={`/podcast/${latest.slug}#transcript`} className="btn btn-outline">
+                    Read the transcript
                   </Link>
                 </div>
               </div>

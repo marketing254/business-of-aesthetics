@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Counter from "@/components/Counter";
 import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";

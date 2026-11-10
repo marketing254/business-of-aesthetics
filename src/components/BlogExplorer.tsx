@@ -5,7 +5,7 @@
  * podcast and panel explorers so the whole site feels like one system.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import Paginator from "@/components/Paginator";
@@ -55,8 +55,6 @@ export default function BlogExplorer({
     });
   }, [posts, q, filter]);
 
-  useEffect(() => setPage(1), [q, filter]);
-
   const pageCount = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
   const paged = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -71,7 +69,10 @@ export default function BlogExplorer({
         <div className="relative">
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => {
+              setQ(e.target.value);
+              setPage(1);
+            }}
             placeholder="Search articles..."
             aria-label="Search articles"
             className="w-full rounded-full border border-line bg-paper px-5 py-3 pr-11 text-[14px] transition-colors focus:border-teal focus:outline-none"
@@ -90,7 +91,10 @@ export default function BlogExplorer({
           <button
             key={f.key}
             className={`fpill ${filter === f.key ? "active" : ""}`}
-            onClick={() => setFilter(f.key)}
+            onClick={() => {
+              setFilter(f.key);
+              setPage(1);
+            }}
           >
             {f.label} ({counts[f.key]})
           </button>
