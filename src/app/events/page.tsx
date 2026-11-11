@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";
+import PersonAvatar from "@/components/PersonAvatar";
 import SectionHead from "@/components/SectionHead";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
 import {
@@ -11,7 +12,6 @@ import {
   isUpcoming,
   type SheetEvent,
   type SheetReplay,
-  thumbUrl,
 } from "@/lib/sheet";
 
 const LATEST_REPLAYS_LIMIT = 12;
@@ -37,11 +37,14 @@ function groupEventsByYear(events: SheetEvent[]): YearGroup[] {
 }
 
 function EventCard({ event }: { event: SheetEvent }) {
-  const href =
-    event.kind === "event-panel" ? `/panels/${event.slug}` : `/events/${event.slug}`;
+  const detailHref =
+    event.kind === "event-panel"
+      ? `/panels/${event.slug}`
+      : `/events/${event.slug}`;
+  const external = /^https?:\/\//i.test(event.registerUrl);
 
   return (
-    <Link href={href} className="card-frame group flex h-full flex-col p-7">
+    <article className="card-frame flex h-full flex-col p-7">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <span className="index-no text-[15px]">
@@ -56,7 +59,7 @@ function EventCard({ event }: { event: SheetEvent }) {
         </span>
       </div>
 
-      <h3 className="display mt-5 text-[21px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+      <h3 className="display mt-5 text-[21px] leading-snug text-navy">
         {event.title}
       </h3>
       <p className="mt-4 line-clamp-5 flex-1 text-[14px] leading-relaxed text-muted">
@@ -74,20 +77,12 @@ function EventCard({ event }: { event: SheetEvent }) {
                 key={person.name}
                 className="inline-flex items-center gap-2 rounded-full border border-line bg-cream px-2.5 py-1.5 text-[12px] font-bold text-ink"
               >
-                {person.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={thumbUrl(person.imageUrl, 120)}
-                    alt=""
-                    referrerPolicy="no-referrer"
-                    className="h-6 w-6 rounded-full object-cover object-top"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="grid h-6 w-6 place-items-center rounded-full bg-navy-ink text-[9px] text-teal">
-                    {person.initials}
-                  </span>
-                )}
+                <PersonAvatar
+  imageUrl={person.imageUrl}
+  initials={person.initials}
+  imgClassName="h-6 w-6 rounded-full object-cover object-top"
+  fallbackClassName="grid h-6 w-6 place-items-center rounded-full bg-navy-ink text-[9px] text-teal"
+/>
                 {person.name}
               </span>
             ))}
@@ -95,10 +90,22 @@ function EventCard({ event }: { event: SheetEvent }) {
         </div>
       )}
 
-      <span className="linkline mt-7">
-        View details <span className="arr">→</span>
-      </span>
-    </Link>
+      {/* registration lives on Zoom / the panel's own page - send people straight there */}
+      {external ? (
+        <a
+          href={event.registerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-navy mt-7 w-full sm:w-auto"
+        >
+          Register free <span className="arr">→</span>
+        </a>
+      ) : (
+        <Link href={detailHref} className="linkline mt-7">
+          View details <span className="arr">→</span>
+        </Link>
+      )}
+    </article>
   );
 }
 
@@ -137,8 +144,8 @@ function StayTunedCard() {
         This session has concluded.
       </h3>
       <p className="max-w-[440px] text-[14.5px] leading-relaxed text-muted">
-        The next live session will be announced here soon - keep an eye on
-        this page or join the list.
+        The next live session will be announced here soon - keep an eye on this
+        page or join the list.
       </p>
       <Link href="/contact" className="btn btn-outline mt-2">
         Get Notified
@@ -210,7 +217,7 @@ export default async function EventsPage() {
                 Upcoming and scheduled <em>events</em>
               </>
             }
-            lede="Every upcoming session on the BOA calendar - each one opens into its own page with the full description, featured voices, and registration."
+            lede="Every upcoming session on the BOA calendar - register in one click, straight from the card."
           />
 
           {upcomingEvents.length > 0 ? (

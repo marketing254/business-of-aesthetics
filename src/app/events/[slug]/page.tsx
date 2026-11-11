@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
+import PersonAvatar from "@/components/PersonAvatar";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp } from "@/components/motion/Animate";
-import { fetchEvents, thumbUrl, legacyEventSlug } from "@/lib/sheet";
+import { fetchEvents, legacyEventSlug } from "@/lib/sheet";
 import JsonLd from "@/components/JsonLd";
 import { OG_IMAGES, breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
 
@@ -124,21 +125,13 @@ export default async function EventDetailPage({ params }: EventDetailProps) {
               <div className="mt-7 flex flex-wrap items-start justify-center gap-x-10 gap-y-8">
                 {event.panelists.map((person) => (
                   <div key={person.name} className="w-[130px]">
-                    {person.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={thumbUrl(person.imageUrl, 120)}
-                        alt={person.name}
-                        referrerPolicy="no-referrer"
-                        className="mx-auto h-20 w-20 rounded-full border border-line object-cover object-top"
-                      />
-                    ) : (
-                      <span className="dark-canvas mx-auto grid h-20 w-20 place-items-center rounded-full">
-                        <span className="display text-[20px] text-teal">
-                          {person.initials}
-                        </span>
-                      </span>
-                    )}
+                    <PersonAvatar
+  imageUrl={person.imageUrl}
+  initials={person.initials} alt={person.name}
+  imgClassName="mx-auto h-20 w-20 rounded-full border border-line object-cover object-top"
+  fallbackClassName="dark-canvas mx-auto grid h-20 w-20 place-items-center rounded-full"
+  initialsClassName="display text-[20px] text-teal"
+/>
                     <div className="mt-3 text-[13.5px] font-semibold leading-snug text-navy">
                       {person.name}
                     </div>

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
+import PersonAvatar from "@/components/PersonAvatar";
 import ShareBar from "@/components/ShareBar";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
-import { fetchEventPanels, thumbUrl, legacyEventSlug } from "@/lib/sheet";
+import { fetchEventPanels, legacyEventSlug } from "@/lib/sheet";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, eventJsonLd, graph } from "@/lib/seo";
 
@@ -133,21 +134,13 @@ export default async function PanelDetailPage({ params }: PanelDetailProps) {
             {panel.panelists.map((person) => (
               <StaggerItem key={person.name} className="h-full">
                 <div className="card-frame flex h-full flex-col items-center gap-4 p-7 text-center">
-                  {person.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={thumbUrl(person.imageUrl, 120)}
-                      alt={person.name}
-                      referrerPolicy="no-referrer"
-                      className="h-24 w-24 shrink-0 rounded-full border border-line object-cover object-top"
-                    />
-                  ) : (
-                    <span className="dark-canvas grid h-24 w-24 shrink-0 place-items-center rounded-full">
-                      <span className="display text-[26px] text-teal">
-                        {person.initials}
-                      </span>
-                    </span>
-                  )}
+                  <PersonAvatar
+  imageUrl={person.imageUrl}
+  initials={person.initials} alt={person.name}
+  imgClassName="h-24 w-24 shrink-0 rounded-full border border-line object-cover object-top"
+  fallbackClassName="dark-canvas grid h-24 w-24 shrink-0 place-items-center rounded-full"
+  initialsClassName="display text-[26px] text-teal"
+/>
                   <div>
                     <h3 className="display text-[20px] text-navy">
                       {person.name}

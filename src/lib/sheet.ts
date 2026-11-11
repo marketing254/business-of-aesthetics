@@ -285,22 +285,53 @@ function normalizePersonKey(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
+/**
+ * Name as editors type it in the image column: "Kristen Wilson, APRN, FNP-C"
+ * and "Kristen Wilson" must meet, so credentials after the first comma,
+ * semicolon or bracket are dropped before comparing.
+ */
+function personMatchKey(name: string) {
+  return normalizePersonKey(name.split(/[,;(]/)[0]);
+}
+
+const URL_RE = /https?:\/\/[^\s,]+/gi;
+
+/**
+ * The image cell accepts two shapes:
+ *   "Name : https://..."  one per line  -> matched to the panelist by name
+ *   bare URLs (comma/newline separated) -> matched to panelists in order
+ */
 function imageMap(raw: string) {
-  const map = new Map<string, string>();
+  const named = new Map<string, string>();
+  const ordered: string[] = [];
   for (const line of splitLines(raw)) {
     const match = line.match(/^(.+?)\s*:\s*(https?:\/\/\S+)/i);
-    if (match) map.set(normalizePersonKey(match[1]), mediaImageUrl(match[2]));
+    if (match) {
+      named.set(personMatchKey(match[1]), mediaImageUrl(match[2]));
+      continue;
+    }
+    for (const url of line.match(URL_RE) ?? []) ordered.push(mediaImageUrl(url));
   }
-  return map;
+  return { named, ordered };
 }
 
 function parsePeople(names: string, images: string): SheetPerson[] {
-  const imagesByName = imageMap(images);
-  return splitLines(names).map((name) => ({
-    name,
-    imageUrl: imagesByName.get(normalizePersonKey(name)) ?? "",
-    initials: initialsOf(name),
-  }));
+  const { named, ordered } = imageMap(images);
+  return splitLines(names).map((name, index) => {
+    const key = personMatchKey(name);
+    let imageUrl = named.get(key) ?? "";
+    if (!imageUrl) {
+      // a first name alone, or a different credential spelling, still resolves
+      for (const [k, url] of named) {
+        if (k.startsWith(key) || key.startsWith(k)) {
+          imageUrl = url;
+          break;
+        }
+      }
+    }
+    if (!imageUrl && named.size === 0) imageUrl = ordered[index] ?? "";
+    return { name, imageUrl, initials: initialsOf(name) };
+  });
 }
 
 function replayTitle(text: string) {

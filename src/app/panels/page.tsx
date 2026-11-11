@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";
+import PersonAvatar from "@/components/PersonAvatar";
 import SectionHead from "@/components/SectionHead";
 import PanelExplorer from "@/components/PanelExplorer";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion/Animate";
@@ -10,7 +11,6 @@ import {
   fetchPanelReplays,
   isUpcoming,
   type SheetEvent,
-  thumbUrl,
 } from "@/lib/sheet";
 
 export const metadata: Metadata = {
@@ -43,11 +43,10 @@ const comparison = [
 ];
 
 function UpcomingPanel({ panel }: { panel: SheetEvent }) {
+  const external = /^https?:\/\//i.test(panel.registerUrl);
+
   return (
-    <Link
-      href={`/panels/${panel.slug}`}
-      className="card-frame group flex h-full flex-col p-7"
-    >
+    <article className="card-frame flex h-full flex-col p-7">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <span className="index-no text-[15px]">
@@ -60,7 +59,7 @@ function UpcomingPanel({ panel }: { panel: SheetEvent }) {
         <span className="chip teal">Live Panel</span>
       </div>
 
-      <h3 className="display mt-5 text-[21px] leading-snug text-navy transition-colors group-hover:text-teal-deep">
+      <h3 className="display mt-5 text-[21px] leading-snug text-navy">
         {panel.title}
       </h3>
       <p className="mt-4 line-clamp-5 flex-1 text-[14px] leading-relaxed text-muted">
@@ -77,30 +76,34 @@ function UpcomingPanel({ panel }: { panel: SheetEvent }) {
               key={person.name}
               className="inline-flex items-center gap-2 rounded-full border border-line bg-cream px-2.5 py-1.5 text-[12px] font-bold text-ink"
             >
-              {person.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={thumbUrl(person.imageUrl, 120)}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="h-6 w-6 rounded-full object-cover object-top"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="grid h-6 w-6 place-items-center rounded-full bg-navy-ink text-[9px] text-teal">
-                  {person.initials}
-                </span>
-              )}
+              <PersonAvatar
+  imageUrl={person.imageUrl}
+  initials={person.initials}
+  imgClassName="h-6 w-6 rounded-full object-cover object-top"
+  fallbackClassName="grid h-6 w-6 place-items-center rounded-full bg-navy-ink text-[9px] text-teal"
+/>
               {person.name}
             </span>
           ))}
         </div>
       </div>
 
-      <span className="linkline mt-7">
-        Open panel <span className="arr">→</span>
-      </span>
-    </Link>
+      {/* registration lives on Zoom / the panel's own page - send people straight there */}
+      {external ? (
+        <a
+          href={panel.registerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-navy mt-7 w-full sm:w-auto"
+        >
+          Register free <span className="arr">→</span>
+        </a>
+      ) : (
+        <Link href={`/panels/${panel.slug}`} className="linkline mt-7">
+          Open panel <span className="arr">→</span>
+        </Link>
+      )}
+    </article>
   );
 }
 
@@ -112,8 +115,8 @@ function StayTunedCard() {
         This session has concluded.
       </h3>
       <p className="max-w-[440px] text-[14.5px] leading-relaxed text-muted">
-        The next live session will be announced here soon - keep an eye on
-        this page or join the list.
+        The next live session will be announced here soon - keep an eye on this
+        page or join the list.
       </p>
       <Link href="/contact" className="btn btn-outline mt-2">
         Get Notified
