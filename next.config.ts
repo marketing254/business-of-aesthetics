@@ -164,8 +164,11 @@ const nextConfig: NextConfig = {
       }
     : {
         async rewrites() {
-          // Standalone landing page kept as a static HTML file (own Apps Script + sheet)
-          return [{ source: "/coaching", destination: "/coaching.html" }];
+          // Standalone landing pages kept as static HTML files
+          return [
+            { source: "/coaching", destination: "/coaching.html" }, // own Apps Script + sheet
+            { source: "/system", destination: "/system.html" }, // unlisted; checkout not live yet
+          ];
         },
         async redirects() {
           return [...legacySectionRedirects, ...legacyPostRedirects()];
@@ -175,6 +178,11 @@ const nextConfig: NextConfig = {
             { source: "/:path*", headers: securityHeaders },
             {
               source: "/preview/:path*",
+              headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
+            },
+            {
+              // hidden page: reachable by direct link only
+              source: "/system",
               headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
             },
             {

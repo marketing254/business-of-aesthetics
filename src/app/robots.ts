@@ -10,7 +10,7 @@ import { SITE_URL } from "@/lib/seo";
  * allowed. Only the JSON API routes are excluded (they are not pages).
  */
 export default function robots(): MetadataRoute.Robots {
-  const disallow = ["/api/", "/preview/"];
+  const disallow = ["/api/", "/preview/", "/system"];
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow },
